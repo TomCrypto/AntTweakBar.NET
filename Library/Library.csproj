@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Build</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DBA56339-8E67-4801-BF26-A06F052AF7FC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AntTweakBar</RootNamespace>
+    <AssemblyName>AntTweakBar.NET</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Build|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentation>true</GenerateDocumentation>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Native.cs" />
+    <Compile Include="Variable.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="Bar.cs" />
+    <Compile Include="Exception.cs" />
+    <Compile Include="VariableTypes\Composite.cs" />
+    <Compile Include="VariableTypes\Continuous.cs" />
+    <Compile Include="VariableTypes\Discrete.cs" />
+    <Compile Include="VariableTypes\Enum.cs" />
+    <Compile Include="VariableTypes\Other.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
