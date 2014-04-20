@@ -59,7 +59,6 @@ namespace AntTweakBar
             TW.AddSeparator(Owner, ID);
 
             Owner.Add(this);
-            Label = "undef";
 
             if (def != null)
                 SetDefinition(def);
