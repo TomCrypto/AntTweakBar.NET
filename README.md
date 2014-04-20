@@ -31,7 +31,7 @@ FAQ
 **Q**. The AntTweakBar API lets you give identifiers to variables to refer to them later on. Is there an equivalent?
 **A**. Yes, the variable instance itself. If you need to keep it around, do so. In many cases, though, you just need to set the variable up once at startup and then bind it to some concrete variable in your program via its `Changed` event, and can forget about it afterwards.
 
-**Q**. The AntTweakBar API has a handy mechanism to create/configure a variable from a definition string (e.g. `title=foo visible=false`). Can I do this with AntTweakBar.NET?
+**Q**. The AntTweakBar API has a handy mechanism to create/configure a variable from a definition string (e.g. `label=foo visible=false`). Can I do this with AntTweakBar.NET?
 
 **A**. Partly, yes. You cannot implicitly create variables this way, but you can provide a definition string to the constructor or to the `SetDefinition` method in order to configure the variable. Remember that variables have no unique "identifier" in AntTweakBar.NET, it is more natural in C# to consider the variable instance itself as an identifier. I'm sure it will become clear once you use the wrapper for a bit.
 
