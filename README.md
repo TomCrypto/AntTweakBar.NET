@@ -29,6 +29,7 @@ FAQ
 **A**. You haven't set up event handling. Make sure you are sending your window events to AntTweakBar by using one of the predefined event handlers (e.g. `EventHandlerSFML` for SFML) or do it manually by hooking up your events to call `HandleKeyPress`, `HandleMouseMove`, and so on.
 
 **Q**. The AntTweakBar API lets you give identifiers to variables to refer to them later on. Is there an equivalent?
+
 **A**. Yes, the variable instance itself. If you need to keep it around, do so. In many cases, though, you just need to set the variable up once at startup and then bind it to some concrete variable in your program via its `Changed` event, and can forget about it afterwards.
 
 **Q**. The AntTweakBar API has a handy mechanism to create/configure a variable from a definition string (e.g. `label=foo visible=false`). Can I do this with AntTweakBar.NET?
