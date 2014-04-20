@@ -13,6 +13,14 @@ Status
 
 The wrapper is functional, but not every feature AntTweakBar provides is implemented. Each feature needs to be tested and integrated into the code, which is why I've tried to start with a minimal set of often-used features, leaving the less popular ones to be added over time. The wrapper is also not a direct mapping from the native C API to C#, as you will soon notice if you are familiar with the former.
 
+**Todo**:
+
+- add more predefined event handlers for all of the events supported by AntTweakBar (SDL and so on)
+- more/better unit tests
+- test multi-window support
+- check it works on OSX
+- ...
+
 FAQ
 ---
 
