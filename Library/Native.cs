@@ -205,6 +205,9 @@ namespace AntTweakBar
         private static extern int TwEventSFML(IntPtr sfmlEvent, byte major, byte minor);
 
         [DllImport(DLLName, CharSet = CharSet.Ansi)]
+        private static extern int TwEventSDL(IntPtr sdlEvent, byte major, byte minor);
+
+        [DllImport(DLLName, CharSet = CharSet.Ansi)]
         private static extern int TwEventWin(IntPtr wnd, int msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport(DLLName, CharSet = CharSet.Ansi)]
@@ -333,6 +336,11 @@ namespace AntTweakBar
         internal static bool EventSFML(IntPtr sfmlEvent, byte majorVersion, byte minorVersion)
         {
             return TwEventSFML(sfmlEvent, majorVersion, minorVersion) != 0;
+        }
+
+        internal static bool EventSDL(IntPtr sdlEvent, byte majorVersion, byte minorVersion)
+        {
+            return TwEventSDL(sdlEvent, majorVersion, minorVersion) != 0;
         }
 
         internal static bool EventWin(IntPtr wnd, int msg, IntPtr wParam, IntPtr lParam)

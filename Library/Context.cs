@@ -133,6 +133,15 @@ namespace AntTweakBar
         }
 
         /// <summary>
+        /// Event handler for SDL.
+        /// </summary>
+        public bool EventHandlerSDL(IntPtr sdlEvent, byte majorVersion, byte minorVersion)
+        {
+            TW.SetCurrentWindow(windowIndex);
+            return TW.EventSDL(sdlEvent, majorVersion, minorVersion);
+        }
+
+        /// <summary>
         /// Event handler for Windows messages.
         /// </summary>
         public bool EventHandlerWin(IntPtr wnd, int msg, IntPtr wParam, IntPtr lParam)
