@@ -235,6 +235,7 @@ namespace AntTweakBar
             setCallback = SetCallback;
             getCallback = GetCallback;
 
+            TW.SetCurrentWindow(bar.Owner.WindowIndex); /* Necessary to add variable. */
             variableType = ResolveType(value = initialValue); /* Detect variable type */
             TW.AddVarCB(Owner, ID, variableType, setCallback, getCallback, IntPtr.Zero);
             if (typeof(T).IsEnum) variableType = TW.VariableType.TW_TYPE_UNDEF; // enum!
