@@ -46,7 +46,7 @@ FAQ
 
 **Q**. *So I can't create a color variable because it wants my color type to implement the ColorType interface. It doesn't, and I can't change that (also applies to vectors and quaternions).*
 
-**A**. This is a problem with generics which I have given a lot of thought to, and ultimately decided that the best way to solve this problem was for you to write a transitional type which implements ColorType and internally holds an instance of your own color type (by composition). If you then write implicit conversion operators to and from your type and this transitional type, you can use your own type with the wrapper almost seamlessly. If your type uses doubles, just cast away as precision is irrelevant here.
+**A**. This is a problem with generics which I have given a lot of thought to, and ultimately decided that the best way to solve this problem was for you to write a transitional type which implements ColorType and internally holds an instance of your own color type (by composition). If you then write implicit conversion operators to and from your type and this transitional type, you can use your own type with the wrapper almost seamlessly. If your type uses doubles, just cast away as precision is irrelevant here. Please note that this type must have a constructor taking three floats (four floats for quaternions), though this is almost always going to be the case.
 
 **Q**. *Why is there only one integer variable type? AntTweakBar supports 8-, 16-, and 32-bit signed and unsigned variable types.*
 
