@@ -65,3 +65,5 @@ Contribute
 ----------
 
 Any issues or pull requests are welcome, I especially need help with verifying and streamlining multi-window support, thread safety, Mac OSX testing, and adding more stuff to the FAQ, but any contribution is greatly appreciated.
+
+Thanks to *Ilkka Jahnukainen* for helping in testing AntTweakBar.NET throughout its ongoing development and providing valuable feedback to guide its design.
