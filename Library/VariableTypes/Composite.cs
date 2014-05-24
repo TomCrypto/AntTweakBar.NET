@@ -6,6 +6,22 @@ using System.Collections.Generic;
 namespace AntTweakBar
 {
     /// <summary>
+    /// The possible color selection modes.
+    /// </summary>
+    public enum ColorMode
+    {
+        /// <summary>
+        /// RGB color selection.
+        /// </summary>
+        RGB,
+
+        /// <summary>
+        /// HLS color selection.
+        /// </summary>
+        HLS
+    }
+
+    /// <summary>
     /// Interface to implement for RGB colors.
     /// </summary>
     public interface ColorType
@@ -34,22 +50,6 @@ namespace AntTweakBar
         float Y { get; }
         float Z { get; }
         float W { get; }
-    }
-
-    /// <summary>
-    /// The possible color selection modes.
-    /// </summary>
-    public enum ColorMode
-    {
-        /// <summary>
-        /// RGB color selection.
-        /// </summary>
-        RGB,
-
-        /// <summary>
-        /// HLS color selection.
-        /// </summary>
-        HLS
     }
 
     /// <summary>

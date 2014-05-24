@@ -195,7 +195,7 @@ namespace AntTweakBar
         public event EventHandler Changed;
 
         /// <summary>
-        /// floataises the Changed event.
+        /// Raises the Changed event.
         /// </summary>
         private void OnChanged(EventArgs e)
         {
@@ -274,20 +274,6 @@ namespace AntTweakBar
             return (T2)obj;
         }
 
-        /// <summary>
-        /// Helper method to invoke a constructor.
-        /// </summary>
-        internal static T2 Create<T2>(params Object[] args)
-        {
-            var argTypes = args.Select(x => x.GetType()).ToArray(); // Save the types of each parameter, in order to look up the constructor.
-            var ctor = typeof(T2).GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, argTypes, null);
-
-            if (ctor == null)
-                throw new InvalidOperationException(String.Format("Missing constructor {0}({1}) expected", typeof(T2).Name, String.Join(", ", argTypes.Select(t => t.Name))));
-            else
-                return (T2)ctor.Invoke(args);
-        }
-
         #endregion
 
         #region Polymorphic Methods
@@ -320,7 +306,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// floateads the supplied pointer and interprets the variable value.
+        /// Reads the supplied pointer and interprets the variable value.
         /// </summary>
         private unsafe static T ReadPointer(TW.VariableType varType, IntPtr pointer)
         {
@@ -339,18 +325,18 @@ namespace AntTweakBar
                 case TW.VariableType.TW_TYPE_DOUBLE:
                     return Cast<T>(*(double*)pointer);
                 case TW.VariableType.TW_TYPE_COLOR3F:
-                    return Create<T>(((float*)pointer)[0],
-                                     ((float*)pointer)[1],
-                                     ((float*)pointer)[2]);
+                    return Helper.Create<T>(((float*)pointer)[0],
+                                            ((float*)pointer)[1],
+                                            ((float*)pointer)[2]);
                 case TW.VariableType.TW_TYPE_DIR3F:
-                    return Create<T>(((float*)pointer)[0],
-                                     ((float*)pointer)[1],
-                                     ((float*)pointer)[2]);
+                    return Helper.Create<T>(((float*)pointer)[0],
+                                            ((float*)pointer)[1],
+                                            ((float*)pointer)[2]);
                 case TW.VariableType.TW_TYPE_QUAT4F:
-                    return Create<T>(((float*)pointer)[0],
-                                     ((float*)pointer)[1],
-                                     ((float*)pointer)[2],
-                                     ((float*)pointer)[3]);
+                    return Helper.Create<T>(((float*)pointer)[0],
+                                            ((float*)pointer)[1],
+                                            ((float*)pointer)[2],
+                                            ((float*)pointer)[3]);
                 default:
                     throw new InvalidOperationException("Unknown variable type");
             }
@@ -405,5 +391,88 @@ namespace AntTweakBar
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Helper class for type reflection.
+    /// </summary>
+    internal static class Helper
+    {
+        /// <summary>
+        /// Invokes a suitable float/double/byte constructor.
+        /// </summary>
+        internal static T Create<T>(params float[] args)
+        {
+            foreach (var ctor in typeof(T).GetConstructors().Where(x => x.GetParameters().Length == args.Length))
+            {
+                var cargs = ctor.GetParameters().Select(x => x.ParameterType); /* Get param types */
+                if (cargs.Count(x => x != cargs.First()) > 0) continue; /* All of the same type? */
+                if (!ValidType(cargs.First())) continue; /* Are these types float/double/bytes? */
+                return (T)ctor.Invoke(Array.ConvertAll(args, x => ConvertFrom(x, cargs.First())));
+            }
+
+            throw new InvalidOperationException(String.Format("Expected constructor {0}({1}×float/double/byte) missing", typeof(T).Name, args.Length));
+        }
+
+        /// <summary>
+        /// Looks up a float member in a class from a list of possible names.
+        /// </summary>
+        internal static float Lookup<T>(T instance, params String[] candidates)
+        {
+            foreach (var candidate in candidates)
+            {
+                var prop = typeof(T).GetProperty(candidate);
+                if ((prop != null) && ValidType(prop.PropertyType))
+                    return ConvertTo(prop.GetValue(instance, null));
+
+                var method = typeof(T).GetMethod(candidate);
+                if ((method != null) && (method.GetParameters().Length == 0) && ValidType(method.ReturnType))
+                    return ConvertTo(method.Invoke(instance, null));
+
+                var field = typeof(T).GetField(candidate);
+                if ((field != null) && ValidType(field.FieldType))
+                    return ConvertTo(typeof(T).GetField(candidate).GetValue(instance));
+            }
+
+            throw new InvalidOperationException(String.Format("Lookup on {0} failed, consider writing a transitional type", typeof(T).Name));
+        }
+
+        /// <summary>
+        /// Returns whether a type can be converted to a float.
+        /// </summary>
+        private static bool ValidType(Type type)
+        {
+            return (type == typeof(float))
+                || (type == typeof(double))
+                || (type == typeof(byte));
+        }
+
+        /// <summary>
+        /// Converts a float/double/byte to a float.
+        /// </summary>
+        private static float ConvertTo(Object x)
+        {
+            if (x.GetType() == typeof(float))
+                return (float)x;
+            if (x.GetType() == typeof(double))
+                return (float)(double)x;
+            if (x.GetType() == typeof(byte))
+                return (float)((byte)x / 255.0f);
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Converts a float to a float/double/byte.
+        /// </summary>
+        private static Object ConvertFrom(float x, Type type)
+        {
+            if (type == typeof(float))
+                return x;
+            if (type == typeof(double))
+                return (double)x;
+            if (type == typeof(byte))
+                return (byte)(x * 255);
+            throw new InvalidOperationException();
+        }
     }
 }
