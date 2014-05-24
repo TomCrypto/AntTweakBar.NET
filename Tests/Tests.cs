@@ -574,6 +574,20 @@ namespace Tests
     }
 
     [TestFixture()]
+    public class ColorWrapper : RequiresEnvironment
+    {
+        private ColorVariable<ColorWrapper<MyColor>> Variable { get; set; }
+        [SetUp] public new void Init() { Variable = new ColorVariable<ColorWrapper<MyColor>>(Bar); }
+
+        [Test()]
+        public void Value()
+        {
+            Variable.Value = new MyColor(0.5f, 0.3f, 0.1f);
+            Assert.IsTrue(Variable.Value == new MyColor(0.5f, 0.3f, 0.1f));
+        }
+    }
+
+    [TestFixture()]
     public class VectorVariableProperties : RequiresEnvironment
     {
         private VectorVariable<MyVector> Variable { get; set; }
@@ -602,6 +616,20 @@ namespace Tests
     }
 
     [TestFixture()]
+    public class VectorWrapper : RequiresEnvironment
+    {
+        private VectorVariable<VectorWrapper<MyVector>> Variable { get; set; }
+        [SetUp] public new void Init() { Variable = new VectorVariable<VectorWrapper<MyVector>>(Bar); }
+
+        [Test()]
+        public void Value()
+        {
+            Variable.Value = new MyVector(0.5f, 0.2f, 0.3f);
+            Assert.IsTrue(Variable.Value == new MyVector(0.5f, 0.2f, 0.3f));
+        }
+    }
+
+    [TestFixture()]
     public class QuaternionVariableProperties : RequiresEnvironment
     {
         private QuaternionVariable<MyQuaternion> Variable { get; set; }
@@ -626,6 +654,20 @@ namespace Tests
         {
             Variable.ShowValue = false;
             Assert.AreEqual(false, Variable.ShowValue);
+        }
+    }
+
+    [TestFixture()]
+    public class QuaternionWrapper : RequiresEnvironment
+    {
+        private QuaternionVariable<QuaternionWrapper<MyQuaternion>> Variable { get; set; }
+        [SetUp] public new void Init() { Variable = new QuaternionVariable<QuaternionWrapper<MyQuaternion>>(Bar); }
+
+        [Test()]
+        public void Value()
+        {
+            Variable.Value = new MyQuaternion(0.5f, 0.2f, 0.3f, 1.5f);
+            Assert.IsTrue(Variable.Value == new MyQuaternion(0.5f, 0.2f, 0.3f, 1.5f));
         }
     }
 
