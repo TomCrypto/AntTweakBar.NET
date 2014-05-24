@@ -49,7 +49,7 @@ namespace Tutorial
                     bar.Label = "My new bar!";
 
                     /* Bars have a variety of properties that you can manipulate as
-                     * if it were a typical control. For example, its title...   */
+                     * if it were a typical control. For example, its label...   */
 
                     bar.Label = "Another title";
 
