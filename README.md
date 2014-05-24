@@ -1,7 +1,7 @@
 AntTweakBar.NET
 ===============
 
-AntTweakBar.NET is a C# wrapper for the [AntTweakBar](http://anttweakbar.sourceforge.net) GUI library released under the MIT license.
+AntTweakBar.NET is an MIT-licensed C# wrapper for the [AntTweakBar](http://anttweakbar.sourceforge.net) GUI library.
 
 Getting Started
 ---------------
