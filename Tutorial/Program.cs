@@ -1,7 +1,7 @@
 /* AntTweakBar.NET
  * ===============
  * 
- * This is a sample program which doesn't actually do
+ * This is some tutorial code which doesn't really do
  * anything, but shows how to use this wrapper. Since
  * it was designed to be engine-agnostic, each engine
  * specific section is replaced with a comment, which
@@ -60,6 +60,12 @@ namespace Tutorial
                     /* ... or whether it must stay within the window... */
 
                     bar.Contained = true;
+                    
+                    /* You can also use the C-style definition API - note this also
+                     * works for variables (they will stay synchronized with all of
+                     * the properties, so they are 2 ways to do the same thing). */
+                    
+                    bar.SetDefinition("label='Hello World' contained=false");
 
                     /* To remove a bar, simply dispose of it, calling Dispose(). */
 

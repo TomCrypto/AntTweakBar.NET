@@ -15,9 +15,9 @@ The wrapper is functional, but not every feature AntTweakBar provides is impleme
 
 **Todo**:
 
-- add more predefined event handlers for all of the events supported by AntTweakBar (SDL and so on)
+- add more predefined event handlers for all of the events supported by AntTweakBar (missing GLUT and a couple others)
 - more/better unit tests
-- test multi-window support
+- test multi-window support exhaustively
 - check it works on OSX
 - ...
 
@@ -38,7 +38,7 @@ FAQ
 
 **Q**. *The AntTweakBar API lets you give identifiers to variables to refer to them later on. Is there an equivalent?*
 
-**A**. Yes, the variable instance itself. If you need to keep it around, do so. In many cases, though, you just need to set the variable up once at startup and then bind it to some concrete variable in your program via its `Changed` event, and can forget about it afterwards.
+**A**. Yes, the variable instance itself. If you need to keep it around, do so. In many cases, though, you just need to set the variable up once at startup and then bind it to some concrete variable in your program via its `Changed` event, and can forget about it afterwards. Note, though, that you can always emulate identifiers easily using, for instance, a dictionary from variable identifiers to variable instances.
 
 **Q**. *The AntTweakBar API has a handy mechanism to create/configure a variable from a definition string (e.g. `label=foo visible=false`). Can I do this with AntTweakBar.NET?*
 
