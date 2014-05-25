@@ -8,7 +8,7 @@ namespace AntTweakBar
     /// <summary>
     /// A wrapper which tries to accommodate most RGB color types.
     /// </summary>
-    public struct ColorWrapper<T> : ColorType, IEquatable<ColorWrapper<T>> where T : IEquatable<T>
+    public struct ColorWrapper<T> : ColorType, IEquatable<ColorWrapper<T>>
     {
         private static readonly String[] RNames = { "R", "r", "Red",   "red",   "GetRed"   };
         private static readonly String[] GNames = { "G", "g", "Green", "green", "GetGreen" };
@@ -78,7 +78,7 @@ namespace AntTweakBar
     /// <summary>
     /// A wrapper which tries to accommodate most vector types.
     /// </summary>
-    public struct VectorWrapper<T> : VectorType, IEquatable<VectorWrapper<T>> where T : IEquatable<T>
+    public struct VectorWrapper<T> : VectorType, IEquatable<VectorWrapper<T>>
     {
         private static readonly String[] XNames = { "X", "x", "GetX" };
         private static readonly String[] YNames = { "Y", "y", "GetY" };
@@ -148,7 +148,7 @@ namespace AntTweakBar
     /// <summary>
     /// A wrapper which tries to accommodate most quaternion types.
     /// </summary>
-    public struct QuaternionWrapper<T> : QuaternionType, IEquatable<QuaternionWrapper<T>> where T : IEquatable<T>
+    public struct QuaternionWrapper<T> : QuaternionType, IEquatable<QuaternionWrapper<T>>
     {
         private static readonly String[] XNames = { "X", "x", "GetX" };
         private static readonly String[] YNames = { "Y", "y", "GetY" };
