@@ -19,6 +19,8 @@ The wrapper is functional, but not every feature AntTweakBar provides is impleme
 - more/better unit tests
 - test multi-window support exhaustively
 - check it works on OSX
+- consider implementing custom struct type (perhaps through reflection, looking for FieldOffset attributes?)
+- automatic nested groups? (not sure if it is meaningful since you can't easily move variables around anyway)
 - ...
 
 FAQ
