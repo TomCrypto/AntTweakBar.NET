@@ -117,10 +117,19 @@ namespace AntTweakBar
         /// <summary>
         /// Passes a key press event to the context.
         /// </summary>
-        public bool HandleKeyPress(int key, TW.KeyModifier modifiers)
+        public bool HandleKeyPress(char key)
         {
             TW.SetCurrentWindow(windowIndex);
-            return TW.KeyPressed(key, modifiers);
+            return TW.KeyPressed((int)key, TW.KeyModifier.None);
+        }
+
+        /// <summary>
+        /// Passes a special key press event to the context.
+        /// </summary>
+        public bool HandleKeyPress(TW.SpecialKey key, TW.KeyModifier modifiers)
+        {
+            TW.SetCurrentWindow(windowIndex);
+            return TW.KeyPressed((int)key, modifiers);
         }
 
         /// <summary>
