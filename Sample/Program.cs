@@ -328,8 +328,8 @@ namespace Sample
 
             new Separator(configsBar);
 
-			var paletteVar = new Color4Variable<Color4Wrapper<Color4>>(configsBar, fractal.Palette);
-			paletteVar.Changed += delegate { fractal.Palette = paletteVar.Value; };
+			var paletteVar = new Color4Variable(configsBar, fractal.Palette.R, fractal.Palette.G, fractal.Palette.B, fractal.Palette.A);
+			paletteVar.Changed += delegate { fractal.Palette = new Color4(paletteVar.R, paletteVar.G, paletteVar.B, paletteVar.A); };
 			paletteVar.Label = "Palette";
 
 			var shadingVar = new EnumVariable<ShadingType>(configsBar, fractal.Shading);
@@ -382,6 +382,8 @@ namespace Sample
 						poly.Value = "1 + iz - 1/2z^2 + (1/6i)z^3";
 						break;
 				}
+
+				fractal.Polynomial = poly.Polynomial;
 			};
         }
 

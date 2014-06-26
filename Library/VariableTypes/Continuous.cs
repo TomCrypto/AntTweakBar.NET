@@ -58,21 +58,21 @@ namespace AntTweakBar
             get { return value; }
             set
             {
-                if (!((Min <= value) && (value <= Max)))
-                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-                else
-                {
-                    bool changed = !value.Equals(this.value);
-                    this.value = value;
-                    if (changed)
-                        OnChanged(EventArgs.Empty);
-                }
+				if (!((Min <= value) && (value <= Max)))
+					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+				else
+					this.value = value;
             }
         }
 
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-            Value = *(float*)pointer;
+            float tmp = *(float*)pointer;
+			bool changed = tmp != Value;
+			Value = tmp;
+
+			if (changed)
+				OnChanged(EventArgs.Empty);
         }
 
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
@@ -182,21 +182,21 @@ namespace AntTweakBar
             get { return value; }
             set
             {
-                if (!((Min <= value) && (value <= Max)))
-                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-                else
-                {
-                    bool changed = !value.Equals(this.value);
-                    this.value = value;
-                    if (changed)
-                        OnChanged(EventArgs.Empty);
-                }
+				if (!((Min <= value) && (value <= Max)))
+					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+				else
+					this.value = value;
             }
         }
 
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-            Value = *(double*)pointer;
+			double tmp = *(double*)pointer;
+			bool changed = tmp != Value;
+			Value = tmp;
+
+			if (changed)
+				OnChanged(EventArgs.Empty);
         }
 
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)

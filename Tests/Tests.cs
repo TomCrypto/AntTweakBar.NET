@@ -9,82 +9,11 @@ namespace Tests
 {
     #region Test Types
 
-    public enum MyEnum
+    public enum TestEnum
     {
         Choice1 = 1,
         Choice2 = 1894,
         Choice3 = 2005,
-    }
-
-    public struct MyColor : IEquatable<MyColor>, ColorType
-    {
-        private float r, g, b;
-
-        public float R { get { return r; } }
-        public float G { get { return g; } }
-        public float B { get { return b; } }
-
-        public MyColor(float r, float g, float b)
-        {
-            this.r = r;
-            this.g = g;
-            this.b = b;
-        }
-
-        public bool Equals(MyColor other)
-        {
-            return (R == other.R && G == other.G && B == other.B);
-        }
-
-        // etc...
-    }
-
-    public struct MyVector : IEquatable<MyVector>, VectorType
-    {
-        private float x, y, z;
-
-        public float X { get { return x; } }
-        public float Y { get { return y; } }
-        public float Z { get { return z; } }
-
-        public MyVector(float x, float y, float z)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        public bool Equals(MyVector other)
-        {
-            return (X == other.X && Y == other.Y && Z == other.Z);
-        }
-
-        // etc...
-    }
-
-    public struct MyQuaternion : IEquatable<MyQuaternion>, QuaternionType
-    {
-        private float x, y, z, w;
-
-        public float X { get { return x; } }
-        public float Y { get { return y; } }
-        public float Z { get { return z; } }
-        public float W { get { return w; } }
-
-        public MyQuaternion(float x, float y, float z, float w)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.w = w;
-        }
-
-        public bool Equals(MyQuaternion other)
-        {
-            return (X == other.X && Y == other.Y && Z == other.Z && W == other.W);
-        }
-
-        // etc...
     }
 
     #endregion
@@ -555,14 +484,18 @@ namespace Tests
     [TestFixture()]
     public class ColorVariableProperties : RequiresEnvironment
     {
-        private ColorVariable<MyColor> Variable { get; set; }
-        [SetUp] public new void Init() { Variable = new ColorVariable<MyColor>(Bar); }
+        private ColorVariable Variable { get; set; }
+        [SetUp] public new void Init() { Variable = new ColorVariable(Bar); }
 
         [Test()]
         public void Value()
         {
-            Variable.Value = new MyColor(0.5f, 0.3f, 0.1f);
-            Assert.AreEqual(new MyColor(0.5f, 0.3f, 0.1f), Variable.Value);
+			Variable.R = 0.5f;
+			Variable.G = 0.3f;
+			Variable.B = 0.1f;
+            Assert.AreEqual(0.5f, Variable.R);
+			Assert.AreEqual(0.3f, Variable.G);
+			Assert.AreEqual(0.1f, Variable.B);
         }
 
         [Test()]
@@ -574,30 +507,21 @@ namespace Tests
     }
 
     [TestFixture()]
-    public class ColorWrapper : RequiresEnvironment
-    {
-        private ColorVariable<ColorWrapper<MyColor>> Variable { get; set; }
-        [SetUp] public new void Init() { Variable = new ColorVariable<ColorWrapper<MyColor>>(Bar); }
-
-        [Test()]
-        public void Value()
-        {
-            Variable.Value = new MyColor(0.5f, 0.3f, 0.1f);
-            Assert.IsTrue(Variable.Value == new MyColor(0.5f, 0.3f, 0.1f));
-        }
-    }
-
-    [TestFixture()]
     public class VectorVariableProperties : RequiresEnvironment
     {
-        private VectorVariable<MyVector> Variable { get; set; }
-        [SetUp] public new void Init() { Variable = new VectorVariable<MyVector>(Bar); }
+        private VectorVariable Variable { get; set; }
+        [SetUp] public new void Init() { Variable = new VectorVariable(Bar); }
 
         [Test()]
         public void Value()
         {
-            Variable.Value = new MyVector(0.5f, 0.2f, 0.3f);
-            Assert.AreEqual(new MyVector(0.5f, 0.2f, 0.3f), Variable.Value);
+			Variable.X = 0.5f;
+			Variable.Y = 0.2f;
+			Variable.Z = 0.3f;
+
+            Assert.AreEqual(0.5f, Variable.X);
+			Assert.AreEqual(0.2f, Variable.Y);
+			Assert.AreEqual(0.3f, Variable.Z);
         }
 
         [Test()]
@@ -612,34 +536,27 @@ namespace Tests
         {
             Variable.ShowValue = false;
             Assert.AreEqual(false, Variable.ShowValue);
-        }
-    }
-
-    [TestFixture()]
-    public class VectorWrapper : RequiresEnvironment
-    {
-        private VectorVariable<VectorWrapper<MyVector>> Variable { get; set; }
-        [SetUp] public new void Init() { Variable = new VectorVariable<VectorWrapper<MyVector>>(Bar); }
-
-        [Test()]
-        public void Value()
-        {
-            Variable.Value = new MyVector(0.5f, 0.2f, 0.3f);
-            Assert.IsTrue(Variable.Value == new MyVector(0.5f, 0.2f, 0.3f));
         }
     }
 
     [TestFixture()]
     public class QuaternionVariableProperties : RequiresEnvironment
     {
-        private QuaternionVariable<MyQuaternion> Variable { get; set; }
-        [SetUp] public new void Init() { Variable = new QuaternionVariable<MyQuaternion>(Bar); }
+        private QuaternionVariable Variable { get; set; }
+        [SetUp] public new void Init() { Variable = new QuaternionVariable(Bar); }
 
         [Test()]
         public void Value()
         {
-            Variable.Value = new MyQuaternion(0.5f, 0.2f, 0.3f, 1.5f);
-            Assert.AreEqual(new MyQuaternion(0.5f, 0.2f, 0.3f, 1.5f), Variable.Value);
+			Variable.X = 0.5f;
+			Variable.Y = 0.2f;
+			Variable.Z = 0.3f;
+			Variable.W = -0.9f;
+
+			Assert.AreEqual(0.5f, Variable.X);
+			Assert.AreEqual(0.2f, Variable.Y);
+			Assert.AreEqual(0.3f, Variable.Z);
+			Assert.AreEqual(-0.9f, Variable.W);
         }
 
         [Test()]
@@ -658,38 +575,24 @@ namespace Tests
     }
 
     [TestFixture()]
-    public class QuaternionWrapper : RequiresEnvironment
-    {
-        private QuaternionVariable<QuaternionWrapper<MyQuaternion>> Variable { get; set; }
-        [SetUp] public new void Init() { Variable = new QuaternionVariable<QuaternionWrapper<MyQuaternion>>(Bar); }
-
-        [Test()]
-        public void Value()
-        {
-            Variable.Value = new MyQuaternion(0.5f, 0.2f, 0.3f, 1.5f);
-            Assert.IsTrue(Variable.Value == new MyQuaternion(0.5f, 0.2f, 0.3f, 1.5f));
-        }
-    }
-
-    [TestFixture()]
     public class EnumVariableProperties : RequiresEnvironment
     {
-        private EnumVariable<MyEnum> Variable { get; set; }
-        [SetUp] public new void Init() { Variable = new EnumVariable<MyEnum>(Bar, MyEnum.Choice1); }
+        private EnumVariable<TestEnum> Variable { get; set; }
+        [SetUp] public new void Init() { Variable = new EnumVariable<TestEnum>(Bar, TestEnum.Choice1); }
 
         [Test()]
         public void Value()
         {
-            Variable.Value = MyEnum.Choice2;
-            Assert.AreEqual(MyEnum.Choice2, Variable.Value);
+            Variable.Value = TestEnum.Choice2;
+            Assert.AreEqual(TestEnum.Choice2, Variable.Value);
         }
 
         [Test()]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ValueCheck()
         {
-            Assert.IsFalse(Enum.IsDefined(typeof(MyEnum), (int)397528781));
-            Variable.Value = (MyEnum)397528781; // won't be in enum range
+            Assert.IsFalse(Enum.IsDefined(typeof(TestEnum), (int)397528781));
+            Variable.Value = (TestEnum)397528781; // won't be in enum range
         }
     }
 }

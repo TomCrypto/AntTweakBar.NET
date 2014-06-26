@@ -56,8 +56,12 @@ namespace AntTweakBar
 
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-            Value = *(bool*)pointer;
-            OnChanged(EventArgs.Empty);
+			bool tmp = *(bool*)pointer;
+			bool changed = tmp != Value;
+			Value = tmp;
+
+			if (changed)
+				OnChanged(EventArgs.Empty);
         }
 
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
@@ -145,21 +149,21 @@ namespace AntTweakBar
             get { return value; }
             set
             {
-                if (!Enum.IsDefined(typeof(T), value))
-                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-                else
-                {
-                    bool changed = !value.Equals(this.value);
-                    this.value = value;
-                    if (changed)
-                        OnChanged(EventArgs.Empty);
-                }
+				if (!Enum.IsDefined (typeof(T), value))
+					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+				else
+					this.value = value;
             }
         }
 
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-            Value = (T)(Object)(*(int*)pointer);
+			int tmp = *(int*)pointer;
+			bool changed = tmp != (int)(Object)Value;
+			Value = (T)(Object)tmp;
+
+			if (changed)
+				OnChanged(EventArgs.Empty);
         }
 
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
