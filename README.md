@@ -18,7 +18,7 @@ The wrapper is functional, but not every feature AntTweakBar provides is impleme
 - add more predefined event handlers for all of the events supported by AntTweakBar (missing GLUT and a couple others)
 - more/better unit tests
 - test multi-window support exhaustively
-- check it works on OSX
+- check it works on OS X
 - consider implementing custom struct type (perhaps through reflection, looking for FieldOffset attributes?)
 - automatic nested groups? (not sure if it is meaningful since you can't easily move variables around anyway)
 - ...
@@ -46,10 +46,6 @@ FAQ
 
 **A**. Partly, yes. You cannot implicitly create variables this way, but you can provide a definition string to the constructor or to the `SetDefinition` method in order to configure the variable. Remember that variables have no unique "identifier" in AntTweakBar.NET, it is more natural in C# to consider the variable instance itself as an identifier. I'm sure it will become clear once you use the wrapper for a bit.
 
-**Q**. *I can't create a color variable because it wants my color type to implement the ColorType interface. It doesn't, and I can't change that (also applies to vectors and quaternions).*
-
-**A**. Either wrap your type with the provided ColorWrapper, which *does* implement ColorType and only requires that your original type be reasonably sane (it uses reflection to parse your type, looking for e.g. an R property, a GetRed() method, etc..). If this does not work or is otherwise unsuitable, you can of course write your own wrapper type. Keep in mind that color and vector types must have a public constructor taking three floats (four floats for quaternions) or a type compatible with float, such as double or byte, but this is unlikely to be a problem. Note the provided wrappers will implicitly convert to and from your original type, so you should only need to specify the wrapper when declaring the variable, e.g. `ColorVariable<ColorWrapper<MyColor>>`, but be wary of equality comparisons between your type and the wrapper.
-
 **Q**. *Why is there only one integer variable type? AntTweakBar supports 8-, 16-, and 32-bit signed and unsigned variable types.*
 
 **A**. The integer variable type that's there already supports minimum and maximum ranges, and its value can be easily converted to and from the other types. Each additional variable type is one that must be tested and maintained, so it's not worth the effort (except maybe unsigned 32-bit integers, which might be added eventually).
@@ -61,7 +57,7 @@ FAQ
 Compatibility
 -------------
 
-AntTweakBar.NET runs on the Microsoft .NET framework and on the Mono runtime, both 32-bit and 64-bit (provided it can find the appropriate AntTweakBar DLL or shared library, of course). It has been tested on Windows and Linux, and is expected to work - but has not been tested - on Mac OSX and presumably BSD.
+AntTweakBar.NET runs on the Microsoft .NET framework and on the Mono runtime, both 32-bit and 64-bit (provided it can find the appropriate AntTweakBar DLL or shared library, of course). It has been tested on Windows and Linux, and is expected to work - but has not been tested - on Mac OS X and presumably BSD.
 
 Contribute
 ----------
