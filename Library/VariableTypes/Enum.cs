@@ -9,18 +9,63 @@ namespace AntTweakBar
     /// <summary>
     /// A variable holding a boolean value.
     /// </summary>
-    public sealed class BoolVariable : Variable<Boolean>
+    public sealed class BoolVariable : Variable
     {
+        #region Fields
+
+        private readonly TW.GetVarCallback getCallback;
+        private readonly TW.SetVarCallback setCallback;
+
+        /// <summary>
+        /// Occurs when the user changes the variable.
+        /// </summary>
+        public event EventHandler Changed;
+
+        /// <summary>
+        /// Raises the Changed event.
+        /// </summary>
+        private void OnChanged(EventArgs e)
+        {
+            if (Changed != null)
+                Changed(this, e);
+        }
+
+        #endregion
+
         public BoolVariable(Bar bar, Boolean initialValue = false, String def = null)
-            : base(bar, initialValue, def)
+            : base(bar)
         {
+            setCallback = SetCallback;
+            getCallback = GetCallback;
 
+            TW.SetCurrentWindow(bar.Owner.WindowIndex);
+            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_BOOL8,
+                        setCallback, getCallback, IntPtr.Zero);
+
+            Owner.Add(this);
+            Label = "undef";
+            if (def != null)
+                SetDefinition(def);
+            Value = initialValue;
         }
 
-        protected override bool Validate(Boolean newValue)
+        /// <summary>
+        /// Gets or sets the value of this variable.
+        /// </summary>
+        public Boolean Value { get; set; }
+
+        private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-            return true; // no restrictions
+            Value = *(bool*)pointer;
+            OnChanged(EventArgs.Empty);
         }
+
+        private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
+        {
+            *(bool*)pointer = Value;
+        }
+
+        #region Customization
 
         /// <summary>
         /// Gets or sets the "true" label for this variable.
@@ -39,25 +84,87 @@ namespace AntTweakBar
             get { return TW.GetStringParam(Owner, ID, "false"); }
             set { TW.SetParam(Owner, ID, "false", value); }
         }
+
+        #endregion
     }
 
     /// <summary>
     /// A variable holding an enumeration value.
     /// </summary>
-    public sealed class EnumVariable<T> : Variable<T>
+    public class EnumVariable<T> : Variable where T : struct
     {
-        public EnumVariable(Bar bar, T initialValue = default(T), String def = null)
-            : base(bar, initialValue, def)
-        {
-            if (variableType != TW.VariableType.TW_TYPE_UNDEF) // check the type was actually an enumeration
-                throw new InvalidOperationException(String.Format("Type {0} is not an enumeration", typeof(T).Name));
+        #region Fields
 
-            TW.SetParam(Owner, ID, "enum", EnumString);
+        private readonly TW.GetVarCallback getCallback;
+        private readonly TW.SetVarCallback setCallback;
+
+        /// <summary>
+        /// Occurs when the user changes the variable.
+        /// </summary>
+        public event EventHandler Changed;
+
+        /// <summary>
+        /// Raises the Changed event.
+        /// </summary>
+        private void OnChanged(EventArgs e)
+        {
+            if (Changed != null)
+                Changed(this, e);
         }
 
-        protected override bool Validate(T newValue)
+        private T value;
+
+        #endregion
+
+        public EnumVariable(Bar bar, T initialValue, String def = null)
+            : base(bar)
         {
-            return Enum.IsDefined(typeof(T), (int)(object)newValue);
+            if (!typeof(T).IsEnum)
+                throw new InvalidOperationException(String.Format("Type {0} is not an enumeration", typeof(T).Name));
+
+            setCallback = SetCallback;
+            getCallback = GetCallback;
+
+            var variableType = TW.DefineEnumFromString(typeof(T).Name, String.Join(",", typeof(T).GetEnumNames()));
+
+            TW.AddVarCB(Owner, ID, variableType, setCallback, getCallback, IntPtr.Zero);
+            TW.SetParam(Owner, ID, "enum", EnumString);
+
+            Owner.Add(this);
+            Label = "undef";
+            if (def != null)
+                SetDefinition(def);
+            Value = initialValue;
+        }
+
+        /// <summary>
+        /// Gets or sets the value of this variable.
+        /// </summary>
+        public T Value
+        {
+            get { return value; }
+            set
+            {
+                if (!Enum.IsDefined(typeof(T), value))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                {
+                    bool changed = !value.Equals(this.value);
+                    this.value = value;
+                    if (changed)
+                        OnChanged(EventArgs.Empty);
+                }
+            }
+        }
+
+        private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
+        {
+            Value = (T)(Object)(*(int*)pointer);
+        }
+
+        private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
+        {
+            *(int*)pointer = (int)(Object)Value;
         }
 
         /// <summary>

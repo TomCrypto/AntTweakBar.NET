@@ -10,9 +10,9 @@ namespace AntTweakBar
     /// </summary>
     public struct ColorWrapper<T> : ColorType, IEquatable<ColorWrapper<T>>
     {
-        private static readonly String[] RNames = { "R", "r", "Red",   "red",   "GetRed"   };
-        private static readonly String[] GNames = { "G", "g", "Green", "green", "GetGreen" };
-        private static readonly String[] BNames = { "B", "b", "Blue",  "blue",  "GetBlue"  };
+        private static readonly String[] RNames = { "R", "r", "Red",   "red",   "GetR", "GetRed"   };
+        private static readonly String[] GNames = { "G", "g", "Green", "green", "GetG", "GetGreen" };
+        private static readonly String[] BNames = { "B", "b", "Blue",  "blue",  "GetB", "GetBlue"  };
 
         private readonly T color;
 
@@ -63,6 +63,79 @@ namespace AntTweakBar
         {
             if ((obj != null) && (obj is ColorWrapper<T>))
                 return Equals((ColorWrapper<T>)obj);
+            else
+                return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return color.GetHashCode();
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// A wrapper which tries to accommodate most RGBA color types.
+    /// </summary>
+    public struct Color4Wrapper<T> : Color4Type, IEquatable<Color4Wrapper<T>>
+    {
+        private static readonly String[] RNames = { "R", "r", "Red",   "red",   "GetR", "GetRed"    };
+        private static readonly String[] GNames = { "G", "g", "Green", "green", "GetG", "GetGreen"  };
+        private static readonly String[] BNames = { "B", "b", "Blue",  "blue",  "GetB", "GetBlue"   };
+        private static readonly String[] ANames = { "A", "a", "Alpha", "alpha", "GetA", "GetAlpha"  };
+
+        private readonly T color;
+
+        public float R { get { return Helper.Lookup(color, RNames); } }
+        public float G { get { return Helper.Lookup(color, GNames); } }
+        public float B { get { return Helper.Lookup(color, BNames); } }
+        public float A { get { return Helper.Lookup(color, ANames); } }
+
+        public Color4Wrapper(float r, float g, float b, float a)
+        {
+            color = Helper.Create<T>(r, g, b, a);
+        }
+
+        public static implicit operator Color4Wrapper<T>(T color)
+        {
+            return new Color4Wrapper<T>(Helper.Lookup(color, RNames),
+                                        Helper.Lookup(color, GNames),
+                                        Helper.Lookup(color, BNames),
+                                        Helper.Lookup(color, ANames));
+        }
+
+        public static implicit operator T(Color4Wrapper<T> wrapper)
+        {
+            return Helper.Create<T>(wrapper.R, wrapper.G, wrapper.B, wrapper.A);
+        }
+
+        public override String ToString()
+        {
+            return color.ToString();
+        }
+
+        #region IEquatable
+
+        public static bool operator ==(Color4Wrapper<T> a, Color4Wrapper<T> b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Color4Wrapper<T> a, Color4Wrapper<T> b)
+        {
+            return !(a == b);
+        }
+
+        public bool Equals(Color4Wrapper<T> other)
+        {
+            return color.Equals(other.color);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((obj != null) && (obj is Color4Wrapper<T>))
+                return Equals((Color4Wrapper<T>)obj);
             else
                 return false;
         }

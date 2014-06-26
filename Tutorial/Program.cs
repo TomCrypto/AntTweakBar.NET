@@ -180,7 +180,7 @@ namespace Tutorial
                      * below to tell AntTweakBar to draw every bar in a context, on
                      * top of whatever has been rendered (if anything). Enjoy!   */
 
-                    context.Draw();
+                    /* context.Draw(); */
 
                     // [display frame to screen]
                 }

@@ -127,7 +127,7 @@ namespace AntTweakBar
             Pause = 0x13,
             Escape = 0x1b,
             Space = ' ',
-            Delete = 0xf7,
+            Delete = 0x7f,
             Up = 273,
             Down,
             Right,

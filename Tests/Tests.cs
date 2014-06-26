@@ -675,7 +675,7 @@ namespace Tests
     public class EnumVariableProperties : RequiresEnvironment
     {
         private EnumVariable<MyEnum> Variable { get; set; }
-        [SetUp] public new void Init() { Variable = new EnumVariable<MyEnum>(Bar); }
+        [SetUp] public new void Init() { Variable = new EnumVariable<MyEnum>(Bar, MyEnum.Choice1); }
 
         [Test()]
         public void Value()

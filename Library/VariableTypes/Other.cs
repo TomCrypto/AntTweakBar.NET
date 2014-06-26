@@ -1,14 +1,16 @@
 using System;
+using System.Text;
 using System.Linq;
 using System.Drawing;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace AntTweakBar
 {
     /// <summary>
     /// An event-driven button.
     /// </summary>
-    public sealed class Button : Variable
+    public class Button : Variable
     {
         private readonly TW.ButtonCallback callback;
 
@@ -52,7 +54,7 @@ namespace AntTweakBar
     /// <summary>
     /// A separator to delimitate variables.
     /// </summary>
-    public sealed class Separator : Variable
+    public class Separator : Variable
     {
         public Separator(Bar bar, String def = null) : base(bar)
         {
@@ -68,17 +70,83 @@ namespace AntTweakBar
     /// <summary>
     /// A variable holding a string value.
     /// </summary>
-    public sealed class StringVariable : Variable<String>
+    public class StringVariable : Variable
     {
-        public StringVariable(Bar bar, String initialValue = "", String def = null)
-            : base(bar, initialValue, def)
-        {
+        #region Fields
 
+        private readonly TW.GetVarCallback getCallback;
+        private readonly TW.SetVarCallback setCallback;
+
+        /// <summary>
+        /// Occurs when the user changes the variable.
+        /// </summary>
+        public event EventHandler Changed;
+
+        /// <summary>
+        /// Raises the Changed event.
+        /// </summary>
+        private void OnChanged(EventArgs e)
+        {
+            if (Changed != null)
+                Changed(this, e);
         }
 
-        protected override bool Validate(String newValue)
+        private String value;
+
+        #endregion
+
+        public StringVariable(Bar bar, String initialValue = "", String def = null)
+            : base(bar)
         {
-            return (newValue != null);
+            setCallback = SetCallback;
+            getCallback = GetCallback;
+
+            TW.SetCurrentWindow(bar.Owner.WindowIndex);
+            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_CSSTRING,
+                        setCallback, getCallback, IntPtr.Zero);
+
+            Owner.Add(this);
+            Label = "undef";
+            if (def != null)
+                SetDefinition(def);
+            Value = initialValue;
+        }
+
+        /// <summary>
+        /// Gets or sets the value of this variable.
+        /// </summary>
+        public String Value
+        {
+            get { return value; }
+            set
+            {
+                if ((value == null) || !Validate(value))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                {
+                    bool changed = !value.Equals(this.value);
+                    this.value = value;
+                    if (changed)
+                        OnChanged(EventArgs.Empty);
+                }
+            }
+        }
+
+        protected virtual bool Validate(String value)
+        {
+            return true; /* to be overridden */
+        }
+
+        private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
+        {
+            Value = Marshal.PtrToStringAnsi(pointer);
+        }
+
+        private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
+        {
+            var bytes = Encoding.UTF8.GetBytes(Value);
+            Marshal.Copy(bytes, 0, pointer, bytes.Length);
+            ((byte*)pointer)[bytes.Length] = 0;
         }
     }
 }

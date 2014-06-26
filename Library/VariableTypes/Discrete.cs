@@ -8,18 +8,79 @@ namespace AntTweakBar
     /// <summary>
     /// A variable holding an integer value.
     /// </summary>
-    public sealed class IntVariable : Variable<Int32>
+    public class IntVariable : Variable
     {
+        #region Fields
+
+        private readonly TW.GetVarCallback getCallback;
+        private readonly TW.SetVarCallback setCallback;
+
+        /// <summary>
+        /// Occurs when the user changes the variable.
+        /// </summary>
+        public event EventHandler Changed;
+
+        /// <summary>
+        /// Raises the Changed event.
+        /// </summary>
+        private void OnChanged(EventArgs e)
+        {
+            if (Changed != null)
+                Changed(this, e);
+        }
+
+        private Int32 value;
+
+        #endregion
+
         public IntVariable(Bar bar, Int32 initialValue = 0, String def = null)
-            : base(bar, initialValue, def)
+            : base(bar)
         {
+            setCallback = SetCallback;
+            getCallback = GetCallback;
 
+            TW.SetCurrentWindow(bar.Owner.WindowIndex);
+            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_INT32,
+                        setCallback, getCallback, IntPtr.Zero);
+
+            Owner.Add(this);
+            Label = "undef";
+            if (def != null)
+                SetDefinition(def);
+            Value = initialValue;
         }
 
-        protected override bool Validate(Int32 newValue)
+        /// <summary>
+        /// Gets or sets the value of this variable.
+        /// </summary>
+        public Int32 Value
         {
-            return (Min <= newValue) && (newValue <= Max);
+            get { return value; }
+            set
+            {
+                if (!((Min <= value) && (value <= Max)))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                {
+                    bool changed = !value.Equals(this.value);
+                    this.value = value;
+                    if (changed)
+                        OnChanged(EventArgs.Empty);
+                }
+            }
         }
+
+        private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
+        {
+            Value = *(int*)pointer;
+        }
+
+        private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
+        {
+            *(int*)pointer = Value;
+        }
+
+        #region Customization
 
         /// <summary>
         /// Gets or sets the minimum value of this variable.
@@ -64,6 +125,8 @@ namespace AntTweakBar
             get { return TW.GetIntParam(Owner, ID, "step")[0]; }
             set { TW.SetParam(Owner, ID, "step", value); }
         }
+
+        #endregion
     }
 }
 
