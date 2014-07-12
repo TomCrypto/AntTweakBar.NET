@@ -6,6 +6,8 @@ AntTweakBar.NET is an MIT-licensed C# wrapper for the [AntTweakBar](http://anttw
 Getting Started
 ---------------
 
+First of all, install AntTweakBar on your system. For Linux, this means compiling the code at [the AntTweakBar sourceforge page](http://anttweakbar.sourceforge.net) with the usual `make && make install` procedure. For Windows, prebuilt binaries are provided at said website, which you can add to your C# project as external libraries (to be copied to the output folder).
+
 A solution file is provided which can be used to compile the managed library wrapper, `AntTweakBar.NET.dll`, just add it as a reference to your project and you're good to go! See the tutorial provided to find out how to use it (it's really short) and refer to the FAQ below if you encounter a problem or have a specific question. If the FAQ does not help, feel free to post an issue and I'll take a look at it.
 
 Status
@@ -28,7 +30,7 @@ FAQ
 
 **Q**. *I've added the library in my references but when I run my program I get a strange exception at startup.*
 
-**A**. The AntTweakBar library (the native one, not the managed wrapper DLL) cannot be found. Are you sure it is somewhere your program can find it, and is it built for the right architecture (32-bit or 64-bit)? The exception is somewhat convoluted because the wrapper does some setup work in a static constructor (the inner exception is the relevant one).
+**A**. The AntTweakBar library (the native one, not the managed wrapper DLL) cannot be found. Are you sure it is somewhere your program can find it, and is it built for the right architecture (32-bit or 64-bit)? The exception is somewhat convoluted because the wrapper does some setup work in a static constructor (the inner DLLNotFoundException is the important one).
 
 **Q**. *I'm able to create bars and variables but as soon as I call the `Draw` method on my context I get a "Bad Size" exception.*
 
