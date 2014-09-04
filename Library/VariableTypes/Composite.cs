@@ -6,6 +6,118 @@ using System.Collections.Generic;
 namespace AntTweakBar
 {
     /// <summary>
+    /// An axis-aligned coordinate system.
+    /// </summary>
+    public struct CoordinateSystem : IEquatable<CoordinateSystem>
+    {
+        /// <summary>
+        /// The different axis types.
+        /// </summary>
+        public enum Axis
+        {
+            /// <summary>
+            /// Right axis.
+            /// </summary>
+            PositiveX,
+            /// <summary>
+            /// Left axis.
+            /// </summary>
+            NegativeX,
+            /// <summary>
+            /// Upwards axis.
+            /// </summary>
+            PositiveY,
+            /// <summary>
+            /// Downwards axis.
+            /// </summary>
+            NegativeY,
+            /// <summary>
+            /// Front axis (towards the viewer).
+            /// </summary>
+            PositiveZ,
+            /// <summary>
+            /// Back axis (into the screen).
+            /// </summary>
+            NegativeZ
+        }
+
+        public readonly Axis axisX;
+        public readonly Axis axisY;
+        public readonly Axis axisZ;
+
+        public CoordinateSystem(Axis axisX, Axis axisY, Axis axisZ)
+        {
+            if (!((axisX == Axis.PositiveX) || (axisX == Axis.NegativeX)
+               || (axisY == Axis.PositiveX) || (axisY == Axis.NegativeX)
+               || (axisZ == Axis.PositiveX) || (axisZ == Axis.NegativeX)))
+                throw new ArgumentException("Invalid coordinate system");
+
+            if (!((axisX == Axis.PositiveY) || (axisX == Axis.NegativeY)
+               || (axisY == Axis.PositiveY) || (axisY == Axis.NegativeY)
+               || (axisZ == Axis.PositiveY) || (axisZ == Axis.NegativeY)))
+                throw new ArgumentException("Invalid coordinate system");
+
+            if (!((axisX == Axis.PositiveZ) || (axisX == Axis.NegativeZ)
+               || (axisY == Axis.PositiveZ) || (axisY == Axis.NegativeZ)
+               || (axisZ == Axis.PositiveZ) || (axisZ == Axis.NegativeZ)))
+                throw new ArgumentException("Invalid coordinate system");
+
+            this.axisX = axisX;
+            this.axisY = axisY;
+            this.axisZ = axisZ;
+        }
+
+        private static String Convert(Axis axis)
+        {
+            switch (axis)
+            {
+                case Axis.PositiveX: return "x";
+                case Axis.NegativeX: return "-x";
+                case Axis.PositiveY: return "y";
+                case Axis.NegativeY: return "-y";
+                case Axis.PositiveZ: return "z";
+                case Axis.NegativeZ: return "-z";
+                default: throw new ArgumentException();
+            }
+        }
+
+        internal String GetAxis(int t)
+        {
+            switch (t)
+            {
+                case 0: return Convert(axisX);
+                case 1: return Convert(axisY);
+                case 2: return Convert(axisZ);
+                default: throw new ArgumentException();
+            }
+        }
+
+        public bool Equals(CoordinateSystem other)
+        {
+            return (this.axisX == other.axisX)
+                && (this.axisY == other.axisY)
+                && (this.axisZ == other.axisZ);
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if (!(obj is CoordinateSystem))
+                return false;
+
+            return Equals((CoordinateSystem)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash = hash * 67 + axisX.GetHashCode();
+            hash = hash * 67 + axisY.GetHashCode();
+            hash = hash * 67 + axisZ.GetHashCode();
+            return hash;
+        }
+    }
+
+    /// <summary>
     /// The possible color selection modes.
     /// </summary>
     public enum ColorMode
@@ -449,6 +561,28 @@ namespace AntTweakBar
             set { TW.SetParam(Owner, ID, "showval", value); }
         }
 
+        // For whatever reason SetParam doesn't appear to work
+        // with axisx/axisy/axisz, so we cache the value here.
+        private CoordinateSystem coordinates = 
+            new CoordinateSystem(CoordinateSystem.Axis.PositiveX,
+                                 CoordinateSystem.Axis.PositiveY,
+                                 CoordinateSystem.Axis.PositiveZ);
+
+        /// <summary>
+        /// Gets or sets the vector's coordinate system.
+        /// </summary>
+        public CoordinateSystem Coordinates
+        {
+            get { return coordinates; }
+            set
+            {
+                TW.SetParam(Owner, ID, "axisx", value.GetAxis(0));
+                TW.SetParam(Owner, ID, "axisy", value.GetAxis(1));
+                TW.SetParam(Owner, ID, "axisz", value.GetAxis(2));
+                this.coordinates = value;
+            }
+        }
+
         #endregion
     }
 
@@ -562,6 +696,26 @@ namespace AntTweakBar
         {
             get { return TW.GetBooleanParam(Owner, ID, "showval"); }
             set { TW.SetParam(Owner, ID, "showval", value); }
+        }
+
+        private CoordinateSystem coordinates =
+            new CoordinateSystem(CoordinateSystem.Axis.PositiveX,
+                                 CoordinateSystem.Axis.PositiveY,
+                                 CoordinateSystem.Axis.PositiveZ);
+
+        /// <summary>
+        /// Gets or sets the quaternion's coordinate system.
+        /// </summary>
+        public CoordinateSystem Coordinates
+        {
+            get { return coordinates; }
+            set
+            {
+                TW.SetParam(Owner, ID, "axisx", value.GetAxis(0));
+                TW.SetParam(Owner, ID, "axisy", value.GetAxis(1));
+                TW.SetParam(Owner, ID, "axisz", value.GetAxis(2));
+                this.coordinates = value;
+            }
         }
 
         #endregion

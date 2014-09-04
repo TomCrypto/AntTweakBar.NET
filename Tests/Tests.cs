@@ -537,6 +537,39 @@ namespace Tests
             Variable.ShowValue = false;
             Assert.AreEqual(false, Variable.ShowValue);
         }
+
+        [Test()]
+        public void Coordinates()
+        {
+            var coords = new CoordinateSystem(CoordinateSystem.Axis.PositiveX,
+                                              CoordinateSystem.Axis.NegativeZ,
+                                              CoordinateSystem.Axis.NegativeY);
+
+            Variable.Coordinates = coords;
+            Assert.AreEqual(coords, Variable.Coordinates);
+        }
+
+        [Test()]
+        public void Coordinates2()
+        {
+            var coords = new CoordinateSystem(CoordinateSystem.Axis.NegativeY,
+                                              CoordinateSystem.Axis.PositiveZ,
+                                              CoordinateSystem.Axis.PositiveX);
+
+            Variable.Coordinates = coords;
+            Assert.AreEqual(coords, Variable.Coordinates);
+        }
+
+        [Test()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BadCoordinates()
+        {
+            var coords = new CoordinateSystem(CoordinateSystem.Axis.NegativeY,
+                                              CoordinateSystem.Axis.NegativeZ,
+                                              CoordinateSystem.Axis.PositiveZ);
+
+            Variable.Coordinates = coords;
+        }
     }
 
     [TestFixture()]
@@ -571,6 +604,39 @@ namespace Tests
         {
             Variable.ShowValue = false;
             Assert.AreEqual(false, Variable.ShowValue);
+        }
+
+        [Test()]
+        public void Coordinates()
+        {
+            var coords = new CoordinateSystem(CoordinateSystem.Axis.PositiveX,
+                                              CoordinateSystem.Axis.NegativeZ,
+                                              CoordinateSystem.Axis.NegativeY);
+
+            Variable.Coordinates = coords;
+            Assert.AreEqual(coords, Variable.Coordinates);
+        }
+
+        [Test()]
+        public void Coordinates2()
+        {
+            var coords = new CoordinateSystem(CoordinateSystem.Axis.NegativeY,
+                                              CoordinateSystem.Axis.PositiveZ,
+                                              CoordinateSystem.Axis.PositiveX);
+
+            Variable.Coordinates = coords;
+            Assert.AreEqual(coords, Variable.Coordinates);
+        }
+
+        [Test()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BadCoordinates()
+        {
+            var coords = new CoordinateSystem(CoordinateSystem.Axis.NegativeY,
+                                              CoordinateSystem.Axis.NegativeZ,
+                                              CoordinateSystem.Axis.PositiveZ);
+
+            Variable.Coordinates = coords;
         }
     }
 
