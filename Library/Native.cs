@@ -474,7 +474,7 @@ namespace AntTweakBar
             var retval = TwGetParam(bar, varName, paramName, type, outValueMaxCount, outValues);
 
             if (retval == 0)
-                throw new AntTweakBarException("TwSetParam failed");
+                throw new AntTweakBarException("TwGetParam failed");
             else
                 return retval;
         }
