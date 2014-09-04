@@ -43,7 +43,9 @@ namespace AntTweakBar
                     if (graphicsAPI == TW.GraphicsAPI.Unspecified)
                         throw new InvalidOperationException("Must specify graphics API for initial context");
 
-                    if ((graphicsAPI == TW.GraphicsAPI.D3D9 || graphicsAPI == TW.GraphicsAPI.D3D10 || graphicsAPI == TW.GraphicsAPI.D3D11) && device == IntPtr.Zero)
+                    if ((graphicsAPI == TW.GraphicsAPI.D3D9
+                      || graphicsAPI == TW.GraphicsAPI.D3D10
+                      || graphicsAPI == TW.GraphicsAPI.D3D11) && device == IntPtr.Zero)
                         throw new InvalidOperationException("DirectX interop requires a valid device pointer");
 
                     TW.Init(graphicsAPI, device);
