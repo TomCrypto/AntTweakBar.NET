@@ -67,3 +67,25 @@ Contribute
 Any issues or pull requests are welcome, I especially need help with verifying and streamlining multi-window support, thread safety, Mac OSX testing, and adding more stuff to the FAQ, but any contribution is greatly appreciated.
 
 Thanks to *Ilkka Jahnukainen* for helping in testing AntTweakBar.NET throughout its ongoing development and providing valuable feedback to guide its design.
+
+Changelog
+---------
+
+4 September 2014
+ - added coordinate axes property
+   (vectors/quaternions)
+
+26 June 2014
+ - added sample
+ - many bug fixes
+ - removed wrappers and redesigned composite types
+   (colors/vectors/quaternions)
+
+28 May 2014
+ - added char overload for HandleKeyPress
+
+24 May 2014
+ - added wrappers for color/vector types
+
+21 April 2014
+ - First release
