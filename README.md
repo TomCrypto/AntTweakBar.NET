@@ -6,9 +6,11 @@ AntTweakBar.NET is an MIT-licensed C# wrapper for the [AntTweakBar](http://anttw
 Getting Started
 ---------------
 
-First of all, install AntTweakBar on your system. For Linux, this means compiling the code at [the AntTweakBar sourceforge page](http://anttweakbar.sourceforge.net) with the usual `make && make install` procedure. For Windows, prebuilt binaries are provided at said website, which you can add to your C# project as external libraries (to be copied to the output folder).
+First of all, install AntTweakBar on your system. For Linux, this means compiling the code at [the AntTweakBar sourceforge page](http://anttweakbar.sourceforge.net) with the usual `make && make install` procedure. For Windows, prebuilt binaries are provided at said website, which you can add to your C# project as external native libraries (to be copied to the output folder) or install globally on your system.
 
 A solution file is provided which can be used to compile the managed library wrapper, `AntTweakBar.NET.dll`, just add it as a reference to your project and you're good to go! See the tutorial provided to find out how to use it (it's really short) and refer to the FAQ below if you encounter a problem or have a specific question. If the FAQ does not help, feel free to post an issue and I'll take a look at it.
+
+Now on [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/0.3.8 "NuGet")! Search for "AntTweakBar.NET" in the package manager to one-click install the wrapper.
 
 Status
 ------
