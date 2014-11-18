@@ -1,8 +1,7 @@
 using System;
-using System.Linq;
-using System.Reflection;
-using System.ComponentModel;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace AntTweakBar
 {
@@ -38,14 +37,13 @@ namespace AntTweakBar
             setCallback = SetCallback;
             getCallback = GetCallback;
 
-            TW.SetCurrentWindow(bar.Owner.Identifier);
-            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_BOOL8,
+            TW.SetCurrentWindow(bar.ParentContext.Identifier);
+            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_BOOL8,
                         setCallback, getCallback, IntPtr.Zero);
 
-            Owner.Add(this);
-            Label = "undef";
-            if (def != null)
-                SetDefinition(def);
+            ParentBar.Add(this);
+            Label = Variable.UnnamedLabel;
+            SetDefinition(def);
             Value = initialValue;
         }
 
@@ -76,8 +74,8 @@ namespace AntTweakBar
         /// </summary>
         public String LabelTrue
         {
-            get { return TW.GetStringParam(Owner, ID, "true"); }
-            set { TW.SetParam(Owner, ID, "true", value); }
+            get { return TW.GetStringParam(ParentBar.Pointer, ID, "true"); }
+            set { TW.SetParam(ParentBar.Pointer, ID, "true", value); }
         }
 
         /// <summary>
@@ -85,8 +83,8 @@ namespace AntTweakBar
         /// </summary>
         public String LabelFalse
         {
-            get { return TW.GetStringParam(Owner, ID, "false"); }
-            set { TW.SetParam(Owner, ID, "false", value); }
+            get { return TW.GetStringParam(ParentBar.Pointer, ID, "false"); }
+            set { TW.SetParam(ParentBar.Pointer, ID, "false", value); }
         }
 
         #endregion
@@ -131,13 +129,12 @@ namespace AntTweakBar
 
             var variableType = TW.DefineEnumFromString(typeof(T).Name, String.Join(",", typeof(T).GetEnumNames()));
 
-            TW.AddVarCB(Owner, ID, variableType, setCallback, getCallback, IntPtr.Zero);
-            TW.SetParam(Owner, ID, "enum", EnumString);
+            TW.AddVarCB(ParentBar.Pointer, ID, variableType, setCallback, getCallback, IntPtr.Zero);
+            TW.SetParam(ParentBar.Pointer, ID, "enum", EnumString);
 
-            Owner.Add(this);
+            ParentBar.Add(this);
             Label = "undef";
-            if (def != null)
-                SetDefinition(def);
+            SetDefinition(def);
             Value = initialValue;
         }
 

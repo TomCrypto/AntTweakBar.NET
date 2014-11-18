@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using System.Drawing;
-using System.Collections.Generic;
 
 namespace AntTweakBar
 {
@@ -167,14 +165,13 @@ namespace AntTweakBar
             setCallback = SetCallback;
             getCallback = GetCallback;
 
-            TW.SetCurrentWindow(bar.Owner.Identifier);
-            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_COLOR3F,
+            TW.SetCurrentWindow(bar.ParentContext.Identifier);
+            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_COLOR3F,
                         setCallback, getCallback, IntPtr.Zero);
 
-            Owner.Add(this);
+            ParentBar.Add(this);
             Label = "undef";
-            if (def != null)
-                SetDefinition(def);
+            SetDefinition(def);
             R = r;
             G = g;
             B = b;
@@ -257,7 +254,7 @@ namespace AntTweakBar
         {
             get
             {
-                switch (TW.GetStringParam(Owner, ID, "colormode"))
+                switch (TW.GetStringParam(ParentBar.Pointer, ID, "colormode"))
                 {
                     case "rgb":
                         return ColorMode.RGB;
@@ -272,10 +269,10 @@ namespace AntTweakBar
                 switch (value)
                 {
                     case ColorMode.RGB:
-                        TW.SetParam(Owner, ID, "colormode", "rgb");
+                        TW.SetParam(ParentBar.Pointer, ID, "colormode", "rgb");
                         break;
                     case ColorMode.HLS:
-                        TW.SetParam(Owner, ID, "colormode", "hls");
+                        TW.SetParam(ParentBar.Pointer, ID, "colormode", "hls");
                         break;
                     default:
                         throw new ArgumentException("Invalid color mode");
@@ -320,14 +317,13 @@ namespace AntTweakBar
             setCallback = SetCallback;
             getCallback = GetCallback;
 
-            TW.SetCurrentWindow(bar.Owner.Identifier);
-            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_COLOR4F,
+            TW.SetCurrentWindow(bar.ParentContext.Identifier);
+            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_COLOR4F,
                         setCallback, getCallback, IntPtr.Zero);
 
-            Owner.Add(this);
+            ParentBar.Add(this);
             Label = "undef";
-            if (def != null)
-                SetDefinition(def);
+            SetDefinition(def);
             R = r;
             G = g;
             B = b;
@@ -429,7 +425,7 @@ namespace AntTweakBar
         {
             get
             {
-                switch (TW.GetStringParam(Owner, ID, "colormode"))
+                switch (TW.GetStringParam(ParentBar.Pointer, ID, "colormode"))
                 {
                     case "rgb":
                         return ColorMode.RGB;
@@ -444,10 +440,10 @@ namespace AntTweakBar
                 switch (value)
                 {
                     case ColorMode.RGB:
-                        TW.SetParam(Owner, ID, "colormode", "rgb");
+                        TW.SetParam(ParentBar.Pointer, ID, "colormode", "rgb");
                         break;
                     case ColorMode.HLS:
-                        TW.SetParam(Owner, ID, "colormode", "hls");
+                        TW.SetParam(ParentBar.Pointer, ID, "colormode", "hls");
                         break;
                     default:
                         throw new ArgumentException("Invalid color mode");
@@ -490,14 +486,13 @@ namespace AntTweakBar
             setCallback = SetCallback;
             getCallback = GetCallback;
 
-            TW.SetCurrentWindow(bar.Owner.Identifier);
-            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_DIR3F,
+            TW.SetCurrentWindow(bar.ParentContext.Identifier);
+            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_DIR3F,
                         setCallback, getCallback, IntPtr.Zero);
 
-            Owner.Add(this);
+            ParentBar.Add(this);
             Label = "undef";
-            if (def != null)
-                SetDefinition(def);
+            SetDefinition(def);
             X = x;
             Y = y;
             Z = z;
@@ -548,8 +543,8 @@ namespace AntTweakBar
         /// </summary>
         public Color ArrowColor
         {
-            get { return TW.GetColorParam(Owner, ID, "arrowcolor"); }
-            set { TW.SetParam(Owner, ID, "arrowcolor", value); }
+            get { return TW.GetColorParam(ParentBar.Pointer, ID, "arrowcolor"); }
+            set { TW.SetParam(ParentBar.Pointer, ID, "arrowcolor", value); }
         }
 
         /// <summary>
@@ -557,8 +552,8 @@ namespace AntTweakBar
         /// </summary>
         public Boolean ShowValue
         {
-            get { return TW.GetBooleanParam(Owner, ID, "showval"); }
-            set { TW.SetParam(Owner, ID, "showval", value); }
+            get { return TW.GetBooleanParam(ParentBar.Pointer, ID, "showval"); }
+            set { TW.SetParam(ParentBar.Pointer, ID, "showval", value); }
         }
 
         // For whatever reason SetParam doesn't appear to work
@@ -576,9 +571,9 @@ namespace AntTweakBar
             get { return coordinates; }
             set
             {
-                TW.SetParam(Owner, ID, "axisx", value.GetAxis(0));
-                TW.SetParam(Owner, ID, "axisy", value.GetAxis(1));
-                TW.SetParam(Owner, ID, "axisz", value.GetAxis(2));
+                TW.SetParam(ParentBar.Pointer, ID, "axisx", value.GetAxis(0));
+                TW.SetParam(ParentBar.Pointer, ID, "axisy", value.GetAxis(1));
+                TW.SetParam(ParentBar.Pointer, ID, "axisz", value.GetAxis(2));
                 this.coordinates = value;
             }
         }
@@ -618,14 +613,13 @@ namespace AntTweakBar
             setCallback = SetCallback;
             getCallback = GetCallback;
 
-            TW.SetCurrentWindow(bar.Owner.Identifier);
-            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_QUAT4F,
+            TW.SetCurrentWindow(bar.ParentContext.Identifier);
+            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_QUAT4F,
                         setCallback, getCallback, IntPtr.Zero);
 
-            Owner.Add(this);
+            ParentBar.Add(this);
             Label = "undef";
-            if (def != null)
-                SetDefinition(def);
+            SetDefinition(def);
             X = x;
             Y = y;
             Z = z;
@@ -685,8 +679,8 @@ namespace AntTweakBar
         /// </summary>
         public Color ArrowColor
         {
-            get { return TW.GetColorParam(Owner, ID, "arrowcolor"); }
-            set { TW.SetParam(Owner, ID, "arrowcolor", value); }
+            get { return TW.GetColorParam(ParentBar.Pointer, ID, "arrowcolor"); }
+            set { TW.SetParam(ParentBar.Pointer, ID, "arrowcolor", value); }
         }
 
         /// <summary>
@@ -694,8 +688,8 @@ namespace AntTweakBar
         /// </summary>
         public Boolean ShowValue
         {
-            get { return TW.GetBooleanParam(Owner, ID, "showval"); }
-            set { TW.SetParam(Owner, ID, "showval", value); }
+            get { return TW.GetBooleanParam(ParentBar.Pointer, ID, "showval"); }
+            set { TW.SetParam(ParentBar.Pointer, ID, "showval", value); }
         }
 
         private CoordinateSystem coordinates =
@@ -711,9 +705,9 @@ namespace AntTweakBar
             get { return coordinates; }
             set
             {
-                TW.SetParam(Owner, ID, "axisx", value.GetAxis(0));
-                TW.SetParam(Owner, ID, "axisy", value.GetAxis(1));
-                TW.SetParam(Owner, ID, "axisz", value.GetAxis(2));
+                TW.SetParam(ParentBar.Pointer, ID, "axisx", value.GetAxis(0));
+                TW.SetParam(ParentBar.Pointer, ID, "axisy", value.GetAxis(1));
+                TW.SetParam(ParentBar.Pointer, ID, "axisz", value.GetAxis(2));
                 this.coordinates = value;
             }
         }

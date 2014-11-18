@@ -1,9 +1,6 @@
 using System;
-using System.Text;
-using System.Linq;
-using System.Drawing;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace AntTweakBar
 {
@@ -41,13 +38,12 @@ namespace AntTweakBar
             Clicked += clicked;
             callback = Callback;
 
-            TW.AddButton(Owner, ID, callback, IntPtr.Zero);
+            TW.AddButton(ParentBar.Pointer, ID, callback, IntPtr.Zero);
 
-            Owner.Add(this);
+            ParentBar.Add(this);
             Label = "undef";
 
-            if (def != null)
-                SetDefinition(def);
+            SetDefinition(def);
         }
     }
 
@@ -58,12 +54,11 @@ namespace AntTweakBar
     {
         public Separator(Bar bar, String def = null) : base(bar)
         {
-            TW.AddSeparator(Owner, ID);
+            TW.AddSeparator(ParentBar.Pointer, ID);
 
-            Owner.Add(this);
+            ParentBar.Add(this);
 
-            if (def != null)
-                SetDefinition(def);
+            SetDefinition(def);
         }
     }
 
@@ -101,14 +96,13 @@ namespace AntTweakBar
             setCallback = SetCallback;
             getCallback = GetCallback;
 
-            TW.SetCurrentWindow(bar.Owner.Identifier);
-            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_CSSTRING,
+            TW.SetCurrentWindow(bar.ParentContext.Identifier);
+            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_CSSTRING,
                         setCallback, getCallback, IntPtr.Zero);
 
-            Owner.Add(this);
+            ParentBar.Add(this);
             Label = "undef";
-            if (def != null)
-                SetDefinition(def);
+            SetDefinition(def);
             Value = initialValue;
         }
 

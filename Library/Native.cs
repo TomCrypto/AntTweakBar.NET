@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
@@ -289,14 +288,16 @@ namespace AntTweakBar
             return Marshal.PtrToStringAuto(TwGetLastError());
         }
 
-        internal static bool Init(GraphicsAPI graphicsAPI, IntPtr device)
+        internal static void Init(GraphicsAPI graphicsAPI, IntPtr device)
         {
-            return !(TwInit(graphicsAPI, device) == 0);
+             if (TwInit(graphicsAPI, device) == 0)
+                 throw new AntTweakBarException("TwInit failed.");
         }
 
         internal static void Terminate()
         {
-            TwTerminate(); /* We cannot meaningfully handle TwTerminate errors anyway. */
+            if (TwTerminate() == 0)
+                throw new AntTweakBarException("TwTerminate failed.");
         }
 
         internal static void Draw()

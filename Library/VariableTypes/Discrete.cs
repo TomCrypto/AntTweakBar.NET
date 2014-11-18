@@ -1,7 +1,4 @@
 using System;
-using System.Linq;
-using System.Drawing;
-using System.Collections.Generic;
 
 namespace AntTweakBar
 {
@@ -39,14 +36,13 @@ namespace AntTweakBar
             setCallback = SetCallback;
             getCallback = GetCallback;
 
-            TW.SetCurrentWindow(bar.Owner.Identifier);
-            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_INT32,
+            TW.SetCurrentWindow(bar.ParentContext.Identifier);
+            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_INT32,
                         setCallback, getCallback, IntPtr.Zero);
 
-            Owner.Add(this);
+            ParentBar.Add(this);
             Label = "undef";
-            if (def != null)
-                SetDefinition(def);
+            SetDefinition(def);
             Value = initialValue;
         }
 
@@ -87,10 +83,10 @@ namespace AntTweakBar
         /// </summary>
         public Int32 Min
         {
-            get { return TW.GetIntParam(Owner, ID, "min")[0]; }
+            get { return TW.GetIntParam(ParentBar.Pointer, ID, "min")[0]; }
             set
             {
-                TW.SetParam(Owner, ID, "min", value);
+                TW.SetParam(ParentBar.Pointer, ID, "min", value);
                 Value = Math.Max(value, Value);
             }
         }
@@ -100,10 +96,10 @@ namespace AntTweakBar
         /// </summary>
         public Int32 Max
         {
-            get { return TW.GetIntParam(Owner, ID, "max")[0]; }
+            get { return TW.GetIntParam(ParentBar.Pointer, ID, "max")[0]; }
             set
             {
-                TW.SetParam(Owner, ID, "max", value);
+                TW.SetParam(ParentBar.Pointer, ID, "max", value);
                 Value = Math.Min(value, Value);
             }
         }
@@ -113,8 +109,8 @@ namespace AntTweakBar
         /// </summary>
         public Boolean Hexadecimal
         {
-            get { return TW.GetBooleanParam(Owner, ID, "hexa"); }
-            set { TW.SetParam(Owner, ID, "hexa", value); }
+            get { return TW.GetBooleanParam(ParentBar.Pointer, ID, "hexa"); }
+            set { TW.SetParam(ParentBar.Pointer, ID, "hexa", value); }
         }
 
         /// <summary>
@@ -122,8 +118,8 @@ namespace AntTweakBar
         /// </summary>
         public Int32 Step
         {
-            get { return TW.GetIntParam(Owner, ID, "step")[0]; }
-            set { TW.SetParam(Owner, ID, "step", value); }
+            get { return TW.GetIntParam(ParentBar.Pointer, ID, "step")[0]; }
+            set { TW.SetParam(ParentBar.Pointer, ID, "step", value); }
         }
 
         #endregion

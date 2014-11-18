@@ -1,201 +1,188 @@
 using System;
-using System.Linq;
-using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace AntTweakBar
 {
     /// <summary>
-    /// Represents a configuration bar.
+    /// An AntTweakBar bar, which holds a set of variables.
     /// </summary>
-    public class Bar : IDisposable, IEnumerable<Variable>
+    public class Bar : IEnumerable<Variable>, IDisposable
     {
-        private readonly IntPtr pointer;
-        private readonly Context owner;
-        private readonly String id;
+        /// <summary>
+        /// The default label for unnamed bars.
+        /// </summary>
+        private const String UnnamedLabel = "<unnamed>";
 
         /// <summary>
-        /// Gets the identifier of this bar.
+        /// Gets this bar's context-dependent unique identifier.
         /// </summary>
-        internal String ID { get { return id; } }
+        internal String ID { get; private set; }
 
         /// <summary>
-        /// Gets the unmanaged pointer of this bar.
+        /// Gets this bar's unmanaged AntTweakBar pointer.
         /// </summary>
-        internal IntPtr Pointer { get { return pointer; } }
+        internal IntPtr Pointer { get; private set; }
 
         /// <summary>
-        /// Used implicitly to obtain access to the bar pointer.
+        /// Gets this bar's parent context.
         /// </summary>
-        /// <remarks>
-        /// Used to simplify internal code. Do not use!
-        /// </remarks>
-        public static implicit operator IntPtr(Bar bar) { return bar.Pointer; }
+        public Context ParentContext { get; private set; }
 
         /// <summary>
-        /// Gets the context which owns this bar.
+        /// Creates a new bar in a a given AntTweakBar context.
         /// </summary>
-        internal Context Owner { get { return owner; } }
-
-        /// <summary>
-        /// Creates a new bar associated with a given context.
-        /// </summary>
-        public Bar(Context context, String def = null)
+        /// <param name="parent">The context the bar should be created in.</param>
+        /// <param name="def">An optional definition string for the new bar.</param>
+        public Bar(Context parent, String def = null)
         {
-            if ((this.owner = context) == null)
-                throw new ArgumentNullException("context");
-            else
+            if ((ParentContext = parent) == null)
+                throw new ArgumentNullException("parent");
+            
+            TW.SetCurrentWindow(parent.Identifier);
+            ID = Guid.NewGuid().ToString();
+            Pointer = TW.NewBar(ID);
+            ParentContext.Add(this);
+            Label = UnnamedLabel;
+            SetDefinition(def);
+        }
+
+        /// <summary>
+        /// Sets this bar's properties from a definition string.
+        /// </summary>
+        /// <param name="def">An AntTweakBar definition string, excluding the name prefix.</param>
+        public void SetDefinition(String def)
+        {
+            if (def != null)
             {
-                TW.SetCurrentWindow(context.Identifier);
-                id = Guid.NewGuid().ToString();
-                pointer = TW.NewBar(id);
-
-                Owner.Add(this);
-                Label = "undef";
-
-                if (def != null)
-                    SetDefinition(def);
+                TW.SetCurrentWindow(ParentContext.Identifier);
+                TW.Define(String.Format("{0} {1}", ID, def));
             }
         }
 
         #region Customization
 
         /// <summary>
-        /// Configures the bar from a definition string.
+        /// Shows or hides a variable group in this bar.
         /// </summary>
-        public void SetDefinition(String def)
+        /// <param name="groupName">The name of the group to show or hide.</param>
+        /// <param name="visible">Whether the group should be visible.</param>
+        public void ShowGroup(String groupName, Boolean visible)
         {
-            if (def == null)
-                throw new ArgumentNullException("def");
-            else
-            {
-                TW.SetCurrentWindow(Owner.Identifier);
-                TW.Define(String.Format("{0} {1}", ID, def));
-            }
+            TW.SetCurrentWindow(ParentContext.Identifier);
+            TW.Define(String.Format("{0}/{1} visible={2}", ID, groupName, visible ? "true" : "false"));
         }
 
         /// <summary>
-        /// Shows or hides a group in this bar.
+        /// Opens or closes a variable group in this bar.
         /// </summary>
-        public void ShowGroup(String name, Boolean visible)
+        /// <param name="groupName">The name of the group to open or close.</param>
+        /// <param name="opened">Whether the group should be open.</param>
+        public void OpenGroup(String groupName, Boolean opened)
         {
-            TW.SetCurrentWindow(Owner.Identifier);
-            TW.Define(String.Format("{0}/{1} visible={2}", id, name, visible ? "true" : "false"));
+            TW.SetCurrentWindow(ParentContext.Identifier);
+            TW.Define(String.Format("{0}/{1} opened={2}", ID, groupName, opened ? "true" : "false"));
         }
 
         /// <summary>
-        /// Expands or collapses a group in this bar.
-        /// </summary>
-        public void ExpandGroup(String name, Boolean expand)
-        {
-            TW.SetCurrentWindow(Owner.Identifier);
-            TW.Define(String.Format("{0}/{1} opened={2}", id, name, expand ? "true" : "false"));
-        }
-
-        /// <summary>
-        /// Gets or sets the bar's label.
+        /// Gets or sets this bar's label.
         /// </summary>
         public String Label
         {
-            get { return TW.GetStringParam(pointer, null, "label"); }
-            set { TW.SetParam(pointer, null, "label", value); }
+            get { return TW.GetStringParam(Pointer, null, "label"); }
+            set { TW.SetParam(Pointer, null, "label", value); }
         }
 
         /// <summary>
-        /// Gets or sets the bar's help text.
+        /// Gets or sets this bar's help text.
         /// </summary>
         public String Help
         {
-            get { return TW.GetStringParam(pointer, null, "help"); }
-            set { TW.SetParam(pointer, null, "help", value); }
+            get { return TW.GetStringParam(Pointer, null, "help"); }
+            set { TW.SetParam(Pointer, null, "help", value); }
         }
 
         /// <summary>
-        /// Gets or sets the bar's color.
+        /// Gets or sets this bar's color.
         /// </summary>
         public Color Color
         {
-            get { return TW.GetColorParam(pointer, null, "color"); }
-            set { TW.SetParam(pointer, null, "color", value); }
+            get { return TW.GetColorParam(Pointer, null, "color"); }
+            set { TW.SetParam(Pointer, null, "color", value); }
         }
 
         /// <summary>
-        /// Gets or sets the bar's alpha value (opacity).
+        /// Gets or sets this bar's alpha value (opacity).
         /// </summary>
-        public Single Alpha
+        public byte Alpha
         {
-            get { return TW.GetSingleParam(pointer, null, "alpha")[0] / 255.0f; }
-            set
-            {
-                if ((0 <= value) && (value <= 1))
-                    TW.SetParam(pointer, null, "alpha", (int)(value * 255.0f));
-                else
-                    throw new ArgumentOutOfRangeException("value", "Alpha must be in the interval [0, 1]");
-            }
+            get { return (byte)TW.GetIntParam(Pointer, null, "alpha")[0]; }
+            set { TW.SetParam(Pointer, null, "alpha", value); }
         }
 
         /// <summary>
-        /// Gets or sets the bar's position.
+        /// Gets or sets this bar's position.
         /// </summary>
         public Point Position
         {
-            get { return TW.GetPointParam(pointer, null, "position"); }
-            set { TW.SetParam(pointer, null, "position", value); }
+            get { return TW.GetPointParam(Pointer, null, "position"); }
+            set { TW.SetParam(Pointer, null, "position", value); }
         }
 
         /// <summary>
-        /// Gets or sets the bar's size.
+        /// Gets or sets this bar's size.
         /// </summary>
         public Size Size
         {
-            get { return TW.GetSizeParam(pointer, null, "size"); }
-            set { TW.SetParam(pointer, null, "size", value); }
+            get { return TW.GetSizeParam(Pointer, null, "size"); }
+            set { TW.SetParam(Pointer, null, "size", value); }
         }
 
         /// <summary>
-        /// Gets or sets whether the bar can be iconified by the user.
+        /// Gets or sets whether this bar can be iconified by the user.
         /// </summary>
         public Boolean Iconifiable
         {
-            get { return TW.GetBooleanParam(pointer, null, "iconifiable"); }
-            set { TW.SetParam(pointer, null, "iconifiable", value); }
+            get { return TW.GetBooleanParam(Pointer, null, "iconifiable"); }
+            set { TW.SetParam(Pointer, null, "iconifiable", value); }
         }
 
         /// <summary>
-        /// Gets or sets whether the bar can be moved by the user.
+        /// Gets or sets whether this bar can be moved by the user.
         /// </summary>
         public Boolean Movable
         {
-            get { return TW.GetBooleanParam(pointer, null, "movable"); }
-            set { TW.SetParam(pointer, null, "movable", value); }
+            get { return TW.GetBooleanParam(Pointer, null, "movable"); }
+            set { TW.SetParam(Pointer, null, "movable", value); }
         }
 
         /// <summary>
-        /// Gets or sets whether the bar can be resized by the user.
+        /// Gets or sets whether this bar can be resized by the user.
         /// </summary>
         public Boolean Resizable
         {
-            get { return TW.GetBooleanParam(pointer, null, "resizable"); }
-            set { TW.SetParam(pointer, null, "resizable", value); }
+            get { return TW.GetBooleanParam(Pointer, null, "resizable"); }
+            set { TW.SetParam(Pointer, null, "resizable", value); }
         }
 
         /// <summary>
-        /// Gets or sets whether the bar is constrained to the window.
+        /// Gets or sets whether this bar is constrained to the window.
         /// </summary>
         public Boolean Contained
         {
-            get { return TW.GetBooleanParam(pointer, null, "contained"); }
-            set { TW.SetParam(pointer, null, "contained", value); }
+            get { return TW.GetBooleanParam(Pointer, null, "contained"); }
+            set { TW.SetParam(Pointer, null, "contained", value); }
         }
 
         /// <summary>
-        /// Gets or sets whether the bar is visible.
+        /// Gets or sets whether this bar is visible.
         /// </summary>
         public Boolean Visible
         {
-            get { return TW.GetBooleanParam(pointer, null, "visible"); }
-            set { TW.SetParam(pointer, null, "visible", value); }
+            get { return TW.GetBooleanParam(Pointer, null, "visible"); }
+            set { TW.SetParam(Pointer, null, "visible", value); }
         }
 
         /// <summary>
@@ -209,7 +196,7 @@ namespace AntTweakBar
         /// <summary>
         /// Sends this bar behind all others.
         /// </summary>
-        public void SendToBack(Bar bar)
+        public void SendToBack()
         {
             TW.SetBottomBar(Pointer);
         }
@@ -257,26 +244,34 @@ namespace AntTweakBar
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposed)
-                return;
-
-            if (disposing)
+            if (!disposed && (ParentContext != null))
             {
-                while (variables.Any())
+                while (disposing && variables.Any()) {
                     variables.First().Dispose();
-            }
+                }
 
-            if (Owner.Contains(this))
-            {
-                TW.SetCurrentWindow(Owner.Identifier);
-                TW.DeleteBar(pointer);
-                Owner.Remove(this);
-            }
+                if (disposing && ParentContext.Contains(this)) {
+                    ParentContext.Remove(this);
+                }
+                
+                if (Pointer != null) {
+                    TW.DeleteBar(Pointer);
+                }
 
-            disposed = true;
+                disposed = true;
+            }
         }
 
         private bool disposed = false;
+
+        #endregion
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[Bar: {0} variables, ParentContext={1}]", variables.Count, ParentContext);
+        }
 
         #endregion
     }

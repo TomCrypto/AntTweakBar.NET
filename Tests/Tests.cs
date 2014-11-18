@@ -108,8 +108,8 @@ namespace Tests
         [Test()]
         public void Alpha()
         {
-            Bar.Alpha = 0.4f;
-            Assert.AreEqual(0.4f, Bar.Alpha);
+            Bar.Alpha = 101;
+            Assert.AreEqual(101, Bar.Alpha);
         }
 
         [Test()]

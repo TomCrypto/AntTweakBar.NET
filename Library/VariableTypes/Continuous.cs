@@ -1,7 +1,4 @@
 using System;
-using System.Linq;
-using System.Drawing;
-using System.Collections.Generic;
 
 namespace AntTweakBar
 {
@@ -39,14 +36,13 @@ namespace AntTweakBar
             setCallback = SetCallback;
             getCallback = GetCallback;
 
-            TW.SetCurrentWindow(bar.Owner.Identifier);
-            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_FLOAT,
+            TW.SetCurrentWindow(bar.ParentContext.Identifier);
+            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_FLOAT,
                         setCallback, getCallback, IntPtr.Zero);
 
-            Owner.Add(this);
+            ParentBar.Add(this);
             Label = "undef";
-            if (def != null)
-                SetDefinition(def);
+            SetDefinition(def);
             Value = initialValue;
         }
 
@@ -87,10 +83,10 @@ namespace AntTweakBar
         /// </summary>
         public Single Min
         {
-            get { return TW.GetSingleParam(Owner, ID, "min")[0]; }
+            get { return TW.GetSingleParam(ParentBar.Pointer, ID, "min")[0]; }
             set
             {
-                TW.SetParam(Owner, ID, "min", value);
+                TW.SetParam(ParentBar.Pointer, ID, "min", value);
                 Value = Math.Max(value, Value);
             }
         }
@@ -100,10 +96,10 @@ namespace AntTweakBar
         /// </summary>
         public Single Max
         {
-            get { return TW.GetSingleParam(Owner, ID, "max")[0]; }
+            get { return TW.GetSingleParam(ParentBar.Pointer, ID, "max")[0]; }
             set
             {
-                TW.SetParam(Owner, ID, "max", value);
+                TW.SetParam(ParentBar.Pointer, ID, "max", value);
                 Value = Math.Min(value, Value);
             }
         }
@@ -113,8 +109,8 @@ namespace AntTweakBar
         /// </summary>
         public Single Step
         {
-            get { return TW.GetSingleParam(Owner, ID, "step")[0]; }
-            set { TW.SetParam(Owner, ID, "step", value); }
+            get { return TW.GetSingleParam(ParentBar.Pointer, ID, "step")[0]; }
+            set { TW.SetParam(ParentBar.Pointer, ID, "step", value); }
         }
 
         /// <summary>
@@ -122,8 +118,8 @@ namespace AntTweakBar
         /// </summary>
         public Single Precision
         {
-            get { return TW.GetSingleParam(Owner, ID, "precision")[0]; }
-            set { TW.SetParam(Owner, ID, "precision", value); }
+            get { return TW.GetSingleParam(ParentBar.Pointer, ID, "precision")[0]; }
+            set { TW.SetParam(ParentBar.Pointer, ID, "precision", value); }
         }
 
         #endregion
@@ -163,14 +159,13 @@ namespace AntTweakBar
             setCallback = SetCallback;
             getCallback = GetCallback;
 
-            TW.SetCurrentWindow(bar.Owner.Identifier);
-            TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_DOUBLE,
+            TW.SetCurrentWindow(bar.ParentContext.Identifier);
+            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_DOUBLE,
                         setCallback, getCallback, IntPtr.Zero);
 
-            Owner.Add(this);
+            ParentBar.Add(this);
             Label = "undef";
-            if (def != null)
-                SetDefinition(def);
+            SetDefinition(def);
             Value = initialValue;
         }
 
@@ -211,10 +206,10 @@ namespace AntTweakBar
         /// </summary>
         public Double Min
         {
-            get { return TW.GetDoubleParam(Owner, ID, "min")[0]; }
+            get { return TW.GetDoubleParam(ParentBar.Pointer, ID, "min")[0]; }
             set
             {
-                TW.SetParam(Owner, ID, "min", value);
+                TW.SetParam(ParentBar.Pointer, ID, "min", value);
                 Value = Math.Max(value, Value);
             }
         }
@@ -224,10 +219,10 @@ namespace AntTweakBar
         /// </summary>
         public Double Max
         {
-            get { return TW.GetDoubleParam(Owner, ID, "max")[0]; }
+            get { return TW.GetDoubleParam(ParentBar.Pointer, ID, "max")[0]; }
             set
             {
-                TW.SetParam(Owner, ID, "max", value);
+                TW.SetParam(ParentBar.Pointer, ID, "max", value);
                 Value = Math.Min(value, Value);
             }
         }
@@ -237,8 +232,8 @@ namespace AntTweakBar
         /// </summary>
         public Double Step
         {
-            get { return TW.GetDoubleParam(Owner, ID, "step")[0]; }
-            set { TW.SetParam(Owner, ID, "step", value); }
+            get { return TW.GetDoubleParam(ParentBar.Pointer, ID, "step")[0]; }
+            set { TW.SetParam(ParentBar.Pointer, ID, "step", value); }
         }
 
         /// <summary>
@@ -246,8 +241,8 @@ namespace AntTweakBar
         /// </summary>
         public Double Precision
         {
-            get { return TW.GetDoubleParam(Owner, ID, "precision")[0]; }
-            set { TW.SetParam(Owner, ID, "precision", value); }
+            get { return TW.GetDoubleParam(ParentBar.Pointer, ID, "precision")[0]; }
+            set { TW.SetParam(ParentBar.Pointer, ID, "precision", value); }
         }
 
         #endregion
