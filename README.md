@@ -1,4 +1,4 @@
-AntTweakBar.NET 0.3.9
+AntTweakBar.NET 0.4.0
 =====================
 
 AntTweakBar.NET is an MIT-licensed C# wrapper for the [AntTweakBar](http://anttweakbar.sourceforge.net) GUI library.
@@ -44,7 +44,7 @@ FAQ
 
 **Q**. *The AntTweakBar API lets you give identifiers to variables to refer to them later on. Is there an equivalent?*
 
-**A**. Yes, the variable instance itself. If you need to keep it around, do so. In many cases, though, you just need to set the variable up once at startup and then bind it to some concrete variable in your program via its `Changed` event, and can forget about it afterwards. Note, though, that you can always emulate identifiers easily using, for instance, a dictionary from variable identifiers to variable instances.
+**A**. Yes, the variable instance itself. If you need to keep it around, do so. In many cases, you just need to set the variable up once at startup and then bind it to some concrete variable in your program via its `Changed` event, and can forget about it afterwards. Note, though, that you can always emulate identifiers easily using, for instance, a dictionary from variable identifiers to variable instances.
 
 **Q**. *The AntTweakBar API has a handy mechanism to create/configure a variable from a definition string (e.g. `label=foo visible=false`). Can I do this with AntTweakBar.NET?*
 
@@ -60,7 +60,7 @@ FAQ
 
 **Q**. *The sample won't build, and generates an error on some OpenTK-related code.*
 
-**A**. You probably have an older, incompatible version of OpenTK installed on your system (for instance, the `libopentk-cil-dev` package on Ubuntu and/or Debian). NuGet dependencies, here OpenTK, are not included in the repository. If for some reason they are not automatically downloaded upon building the sample, for whatever reason the OpenTK reference will map to the one you have installed on your system, causing the errors. To fix this, perform a package restore (by right-clicking on the sample project and clicking "restore NuGet packages") and close/restart the IDE, the reference should now map to the correct one. If you know how to prevent this, please issue a pull request!
+**A**. You probably have an older or newer incompatible version of OpenTK installed on your system (for instance, the `libopentk-cil-dev` package on Ubuntu and/or Debian). NuGet dependencies, here OpenTK, are not included in the repository. If for some reason they are not automatically downloaded upon building the sample, for whatever reason the OpenTK reference will map to the one you have installed on your system, causing the errors. To fix this, perform a package restore (by right-clicking on the sample project and clicking "restore NuGet packages") and close/restart the IDE, the reference should now map to the correct one. If you know how to prevent this, please issue a pull request!
 
 Compatibility
 -------------
@@ -77,30 +77,42 @@ Thanks to *Ilkka Jahnukainen* for helping in testing AntTweakBar.NET throughout 
 Changelog
 ---------
 
+19 November 2014 (v0.4.0)
+
+ - major refactoring, improvements and bug fixes
+ - a few public changes, mostly renaming
+
 18 November 2014 (v0.3.9)
+
  - tidied up project structure
  - fixed broken OpenTK references
  - added note about OpenTK references
  - renamed sample project window
 
 18 November 2014 (v0.3.8)
+
  - uploaded wrapper to NuGet
 
 4 September 2014 (v0.1.0)
+
  - added coordinate axes property
    (vectors/quaternions)
 
 26 June 2014
+
  - added sample
  - many bug fixes
  - removed wrappers and redesigned composite types
    (colors/vectors/quaternions)
 
 28 May 2014
+
  - added char overload for HandleKeyPress
 
 24 May 2014
+
  - added wrappers for color/vector types
 
 21 April 2014
+
  - first release
