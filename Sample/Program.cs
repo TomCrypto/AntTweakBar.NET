@@ -275,18 +275,20 @@ namespace Sample
 
         #endregion
 
-        private readonly Context context;
-        private readonly Fractal fractal;
+        private Context context;
+        private Fractal fractal;
 
         public Program() : base(1024, 768, GraphicsMode.Default, "AntTweakBar.NET Sample")
         {
-            context = new Context(TW.GraphicsAPI.OpenGLCore);
-            fractal = new Fractal();
+            
         }
 
         protected override void OnLoad(EventArgs _)
         {
             base.OnLoad(_);
+
+            context = new Context(TW.GraphicsAPI.OpenGLCore);
+            fractal = new Fractal();
 
             /* Hook up the different events to the AntTweakBar.NET context, and
              * allow the user to navigate the fractal using the keyboard/mouse. */
@@ -402,12 +404,6 @@ namespace Sample
             ExpIz,
         }
 
-        protected override void OnUnload(EventArgs e)
-        {
-            fractal.Dispose();
-            context.Dispose();
-        }
-
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
@@ -419,6 +415,19 @@ namespace Sample
             fractal.Draw();
             context.Draw();
             SwapBuffers();
+        }
+
+        protected override void Dispose(bool manual)
+        {
+            if (fractal != null) {
+                fractal.Dispose();
+            }
+
+            if (context != null) {
+                context.Dispose();
+            }
+
+            base.Dispose(manual);
         }
     }
 }

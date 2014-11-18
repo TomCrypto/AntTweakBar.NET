@@ -30,14 +30,14 @@ namespace AntTweakBar
             {
                 if (graphicsAPI == TW.GraphicsAPI.D3D9 || graphicsAPI == TW.GraphicsAPI.D3D10 || graphicsAPI == TW.GraphicsAPI.D3D11) {
                     if (device == IntPtr.Zero) {
-                        throw new InvalidOperationException("A valid device pointer is required for Direct3D interop.");
+                        throw new ArgumentException("A valid device pointer is required for Direct3D interop.");
                     }
                 }
 
                 if (contextCounter == 0)
                 {
                     if (graphicsAPI == TW.GraphicsAPI.Unspecified) {
-                        throw new InvalidOperationException("A graphics API must be specified for the initial context.");
+                        throw new ArgumentException("A graphics API must be specified for the initial context.");
                     }
 
                     TW.Init(graphicsAPI, device);

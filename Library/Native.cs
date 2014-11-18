@@ -413,6 +413,9 @@ namespace AntTweakBar
 
         internal unsafe static void SetParam(IntPtr bar, String varName, String paramName, String value)
         {
+            if ((value == null) || (value == ""))
+                throw new ArgumentException("Bad value"); /* TODO */
+
             /* I couldn't make the IntPtr one work with strings so I just added another overload. */
             if (TwSetParam(bar, varName, paramName, ParamValueType.TW_PARAM_CSTRING, 1, value) == 0)
                 throw new AntTweakBarException("TwSetParam failed");

@@ -29,14 +29,15 @@ namespace AntTweakBar
         /// <param name="parent">The bar the variable should be created in.</param>
         /// <param name="initFunc">A delegate which will initialize the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
-        protected Variable(Bar parent, Action<Variable, String> initFunc, String def = null)
+        /// <param name="initLabel">Whether to initialize the variable's label to default.</param>
+        protected Variable(Bar parent, Action<Variable, String> initFunc, String def = null, bool initLabel = true)
         {
             if ((ParentBar = parent) == null)
                 throw new ArgumentNullException("parent");
             
             TW.SetCurrentWindow(ParentBar.ParentContext.Identifier);
             initFunc(this, ID = Guid.NewGuid().ToString());
-            Label = UnnamedLabel;
+            if (initLabel) Label = UnnamedLabel;
             ParentBar.Add(this);
             SetDefinition(def);
         }
@@ -151,7 +152,9 @@ namespace AntTweakBar
                     ParentBar.Remove(this);
                 }
 
-                TW.RemoveVar(ParentBar.Pointer, ID);
+                if (ID != null) {
+                    TW.RemoveVar(ParentBar.Pointer, ID);
+                }
 
                 disposed = true;
             }
