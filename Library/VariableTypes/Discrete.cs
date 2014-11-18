@@ -3,48 +3,22 @@ using System;
 namespace AntTweakBar
 {
     /// <summary>
-    /// A variable holding an integer value.
+    /// An AntTweakBar variable which can hold an integer.
     /// </summary>
     public class IntVariable : Variable
     {
-        #region Fields
-
-        private readonly TW.GetVarCallback getCallback;
-        private readonly TW.SetVarCallback setCallback;
-
         /// <summary>
-        /// Occurs when the user changes the variable.
+        /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
 
         /// <summary>
         /// Raises the Changed event.
         /// </summary>
-        private void OnChanged(EventArgs e)
+        public void OnChanged(EventArgs e)
         {
             if (Changed != null)
                 Changed(this, e);
-        }
-
-        private Int32 value;
-
-        #endregion
-
-        private static void InitVariable(Variable var, String id)
-        {
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.VariableType.TW_TYPE_INT32,
-                        ((IntVariable)var).SetCallback,
-                        ((IntVariable)var).GetCallback,
-                        IntPtr.Zero);
-        }
-
-        public IntVariable(Bar bar, Int32 initialValue = 0, String def = null)
-            : base(bar, InitVariable, def)
-        {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
-            Value = initialValue;
         }
 
         /// <summary>
@@ -62,6 +36,38 @@ namespace AntTweakBar
             }
         }
 
+        private Int32 value;
+
+        /// <summary>
+        /// Initialization delegate, which creates the integer variable.
+        /// </summary>
+        private static void InitIntVariable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_INT32,
+                        ((IntVariable)var).SetCallback,
+                        ((IntVariable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Creates a new integer variable in a given bar.
+        /// </summary>
+        /// <param name="bar">The bar to create the integer variable in.</param>
+        /// <param name="initialValue">The initial value of the variable.</param>
+        /// <param name="def">An optional definition string for the new variable.</param>
+        public IntVariable(Bar bar, Int32 initialValue = 0, String def = null)
+            : base(bar, InitIntVariable, def)
+        {
+            setCallback = SetCallback;
+            getCallback = GetCallback;
+            Value = initialValue;
+        }
+
+        /// <summary>
+        /// Called by AntTweakBar when the user changes the variable's value.
+        /// </summary>
+        private readonly TW.SetVarCallback setCallback;
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             int tmp = *(int*)pointer;
@@ -72,6 +78,10 @@ namespace AntTweakBar
                 OnChanged(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Called by AntTweakBar when AntTweakBar needs the variable's value.
+        /// </summary>
+        private readonly TW.GetVarCallback getCallback;
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             *(int*)pointer = Value;
@@ -80,7 +90,7 @@ namespace AntTweakBar
         #region Customization
 
         /// <summary>
-        /// Gets or sets the minimum value of this variable.
+        /// Gets or sets this variable's minimum value.
         /// </summary>
         public Int32 Min
         {
@@ -93,7 +103,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the maximum value of this variable.
+        /// Gets or sets this variable's maximum value.
         /// </summary>
         public Int32 Max
         {
@@ -106,7 +116,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets whether to use hexadecimal notation.
+        /// Gets or sets whether this variable should display in hexadecimal.
         /// </summary>
         public Boolean Hexadecimal
         {
@@ -115,12 +125,21 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the step (increment) of this variable.
+        /// Gets or sets this variable's step (increment).
         /// </summary>
         public Int32 Step
         {
             get { return TW.GetIntParam(ParentBar.Pointer, ID, "step")[0]; }
             set { TW.SetParam(ParentBar.Pointer, ID, "step", value); }
+        }
+
+        #endregion
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[IntVariable: Label={0}, Value={1}]", Label, Value);
         }
 
         #endregion

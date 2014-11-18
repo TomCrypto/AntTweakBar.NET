@@ -3,17 +3,12 @@ using System;
 namespace AntTweakBar
 {
     /// <summary>
-    /// A variable holding a single-precision floating-point value.
+    /// An AntTweakBar variable which can hold a single-precision floating-point number.
     /// </summary>
     public class FloatVariable : Variable
     {
-        #region Fields
-
-        private readonly TW.GetVarCallback getCallback;
-        private readonly TW.SetVarCallback setCallback;
-
         /// <summary>
-        /// Occurs when the user changes the variable.
+        /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
 
@@ -24,27 +19,6 @@ namespace AntTweakBar
         {
             if (Changed != null)
                 Changed(this, e);
-        }
-
-        private Single value;
-
-        #endregion
-
-        private static void InitVariable(Variable var, String id)
-        {
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.VariableType.TW_TYPE_FLOAT,
-                        ((FloatVariable)var).SetCallback,
-                        ((FloatVariable)var).GetCallback,
-                        IntPtr.Zero);
-        }
-
-        public FloatVariable(Bar bar, Single initialValue = 0, String def = null)
-            : base(bar, InitVariable, def)
-        {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
-            Value = initialValue;
         }
 
         /// <summary>
@@ -62,6 +36,38 @@ namespace AntTweakBar
             }
         }
 
+        private Single value;
+
+        /// <summary>
+        /// Initialization delegate, which creates the floating-point variable.
+        /// </summary>
+        private static void InitFloatVariable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_FLOAT,
+                        ((FloatVariable)var).SetCallback,
+                        ((FloatVariable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Creates a new single-precision floating-point variable in a given bar.
+        /// </summary>
+        /// <param name="bar">The bar to create the floating-point variable in.</param>
+        /// <param name="initialValue">The initial value of the variable.</param>
+        /// <param name="def">An optional definition string for the new variable.</param>
+        public FloatVariable(Bar bar, Single initialValue = 0, String def = null)
+            : base(bar, InitFloatVariable, def)
+        {
+            setCallback = SetCallback;
+            getCallback = GetCallback;
+            Value = initialValue;
+        }
+
+        /// <summary>
+        /// Called by AntTweakBar when the user changes the variable's value.
+        /// </summary>
+        private readonly TW.SetVarCallback setCallback;
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             float tmp = *(float*)pointer;
@@ -72,6 +78,10 @@ namespace AntTweakBar
                 OnChanged(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Called by AntTweakBar when AntTweakBar needs the variable's value.
+        /// </summary>
+        private readonly TW.GetVarCallback getCallback;
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             *(float*)pointer = Value;
@@ -80,7 +90,7 @@ namespace AntTweakBar
         #region Customization
 
         /// <summary>
-        /// Gets or sets the minimum value of this variable.
+        /// Gets or sets this variable's minimum value.
         /// </summary>
         public Single Min
         {
@@ -93,7 +103,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the maximum value of this variable.
+        /// Gets or sets this variable's maximum value.
         /// </summary>
         public Single Max
         {
@@ -106,7 +116,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the step (increment) of this variable.
+        /// Gets or sets this variable's step (increment).
         /// </summary>
         public Single Step
         {
@@ -115,7 +125,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the precision of this variable.
+        /// Gets or sets this variable's precision.
         /// </summary>
         public Single Precision
         {
@@ -124,20 +134,24 @@ namespace AntTweakBar
         }
 
         #endregion
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[SingleVariable: Label={0}, Value={1}]", Label, Value);
+        }
+
+        #endregion
     }
 
     /// <summary>
-    /// A variable holding a double precision floating-point value.
+    /// An AntTweakBar variable which can hold a double-precision floating-point number.
     /// </summary>
     public class DoubleVariable : Variable
     {
-        #region Fields
-
-        private readonly TW.GetVarCallback getCallback;
-        private readonly TW.SetVarCallback setCallback;
-
         /// <summary>
-        /// Occurs when the user changes the variable.
+        /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
 
@@ -148,27 +162,6 @@ namespace AntTweakBar
         {
             if (Changed != null)
                 Changed(this, e);
-        }
-
-        private Double value;
-
-        #endregion
-
-        private static void InitVariable(Variable var, String id)
-        {
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.VariableType.TW_TYPE_DOUBLE,
-                        ((DoubleVariable)var).SetCallback,
-                        ((DoubleVariable)var).GetCallback,
-                        IntPtr.Zero);
-        }
-
-        public DoubleVariable(Bar bar, Double initialValue = 0, String def = null)
-            : base(bar, InitVariable, def)
-        {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
-            Value = initialValue;
         }
 
         /// <summary>
@@ -186,6 +179,38 @@ namespace AntTweakBar
             }
         }
 
+        private Double value;
+
+        /// <summary>
+        /// Initialization delegate, which creates the floating-point variable.
+        /// </summary>
+        private static void InitVariable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_DOUBLE,
+                        ((DoubleVariable)var).SetCallback,
+                        ((DoubleVariable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Creates a new double-precision floating-point variable in a given bar.
+        /// </summary>
+        /// <param name="bar">The bar to create the floating-point variable in.</param>
+        /// <param name="initialValue">The initial value of the variable.</param>
+        /// <param name="def">An optional definition string for the new variable.</param>
+        public DoubleVariable(Bar bar, Double initialValue = 0, String def = null)
+            : base(bar, InitVariable, def)
+        {
+            setCallback = SetCallback;
+            getCallback = GetCallback;
+            Value = initialValue;
+        }
+
+        /// <summary>
+        /// Called by AntTweakBar when the user changes the variable's value.
+        /// </summary>
+        private readonly TW.SetVarCallback setCallback;
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             double tmp = *(double*)pointer;
@@ -196,6 +221,10 @@ namespace AntTweakBar
                 OnChanged(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Called by AntTweakBar when AntTweakBar needs the variable's value.
+        /// </summary>
+        private readonly TW.GetVarCallback getCallback;
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             *(double*)pointer = Value;
@@ -204,7 +233,7 @@ namespace AntTweakBar
         #region Customization
 
         /// <summary>
-        /// Gets or sets the minimum value of this variable.
+        /// Gets or sets this variable's minimum value.
         /// </summary>
         public Double Min
         {
@@ -217,7 +246,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the maximum value of this variable.
+        /// Gets or sets this variable's maximum value.
         /// </summary>
         public Double Max
         {
@@ -230,7 +259,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the step (increment) of this variable.
+        /// Gets or sets this variable's step (increment).
         /// </summary>
         public Double Step
         {
@@ -239,7 +268,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the precision of this variable.
+        /// Gets or sets this variable's precision.
         /// </summary>
         public Double Precision
         {
@@ -248,6 +277,14 @@ namespace AntTweakBar
         }
 
         #endregion
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[DoubleVariable: Label={0}, Value={1}]", Label, Value);
+        }
+
+        #endregion
     }
 }
-

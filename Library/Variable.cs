@@ -37,6 +37,7 @@ namespace AntTweakBar
             
             TW.SetCurrentWindow(ParentBar.ParentContext.Identifier);
             initFunc(this, ID = Guid.NewGuid().ToString());
+            created = true; /* Variable now created. */
             if (initLabel) Label = UnnamedLabel;
             ParentBar.Add(this);
             SetDefinition(def);
@@ -152,7 +153,7 @@ namespace AntTweakBar
                     ParentBar.Remove(this);
                 }
 
-                if (ID != null) {
+                if (created) {
                     TW.RemoveVar(ParentBar.Pointer, ID);
                 }
 
@@ -161,6 +162,7 @@ namespace AntTweakBar
         }
 
         private bool disposed = false;
+        private bool created = false;
 
         #endregion
 
@@ -168,7 +170,7 @@ namespace AntTweakBar
 
         public override String ToString()
         {
-            return String.Format("[Variable: ParentBar={0}]", ParentBar);
+            return String.Format("[Variable: Label={0}]", Label);
         }
 
         #endregion

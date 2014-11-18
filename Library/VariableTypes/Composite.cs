@@ -132,17 +132,12 @@ namespace AntTweakBar
     }
 
     /// <summary>
-    /// A variable holding an RGB color value.
+    /// An AntTweakBar variable which can hold an RGB color value.
     /// </summary>
     public class ColorVariable : Variable
     {
-        #region Fields
-
-        private readonly TW.GetVarCallback getCallback;
-        private readonly TW.SetVarCallback setCallback;
-
         /// <summary>
-        /// Occurs when the user changes the variable.
+        /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
 
@@ -155,31 +150,8 @@ namespace AntTweakBar
                 Changed(this, e);
         }
 
-        private float r, g, b;
-
-        #endregion
-
-        private static void InitVariable(Variable var, String id)
-        {
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.VariableType.TW_TYPE_COLOR3F,
-                        ((ColorVariable)var).SetCallback,
-                        ((ColorVariable)var).GetCallback,
-                        IntPtr.Zero);
-        }
-
-        public ColorVariable(Bar bar, float r = 0, float g = 0, float b = 0, String def = null)
-            : base(bar, InitVariable, def)
-        {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
-            R = r;
-            G = g;
-            B = b;
-        }
-
         /// <summary>
-        /// Gets or sets the red channel component.
+        /// Gets or sets this color's red channel component.
         /// </summary>
         public float R
         {
@@ -194,7 +166,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the green channel component.
+        /// Gets or sets this color's green channel component.
         /// </summary>
         public float G
         {
@@ -209,7 +181,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the blue channel component.
+        /// Gets or sets this color's blue channel component.
         /// </summary>
         public float B
         {
@@ -223,6 +195,42 @@ namespace AntTweakBar
             }
         }
 
+        private float r, g, b;
+
+        /// <summary>
+        /// Initialization delegate, which creates the RGB color variable.
+        /// </summary>
+        private static void InitColorVariable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_COLOR3F,
+                        ((ColorVariable)var).SetCallback,
+                        ((ColorVariable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Creates a new RGB color variable in a given bar.
+        /// </summary>
+        /// <param name="bar">The bar to create the RGB color variable in.</param>
+        /// <param name="r">The initial red channel value of the variable.</param>
+        /// <param name="g">The initial green channel value of the variable.</param>
+        /// <param name="b">The initial blue channel value of the variable.</param>
+        /// <param name="def">An optional definition string for the new variable.</param>
+        public ColorVariable(Bar bar, float r = 0, float g = 0, float b = 0, String def = null)
+            : base(bar, InitColorVariable, def)
+        {
+            setCallback = SetCallback;
+            getCallback = GetCallback;
+            R = r;
+            G = g;
+            B = b;
+        }
+
+        /// <summary>
+        /// Called by AntTweakBar when the user changes the variable's value.
+        /// </summary>
+        private readonly TW.SetVarCallback setCallback;
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             float tr = ((float*)pointer)[0];
@@ -239,6 +247,10 @@ namespace AntTweakBar
                 OnChanged(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Called by AntTweakBar when AntTweakBar needs the variable's value.
+        /// </summary>
+        private readonly TW.GetVarCallback getCallback;
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             ((float*)pointer)[0] = R;
@@ -249,7 +261,7 @@ namespace AntTweakBar
         #region Customization
 
         /// <summary>
-        /// Gets or sets the color selection mode.
+        /// Gets or sets this variable's color selection mode.
         /// </summary>
         public ColorMode Mode
         {
@@ -282,20 +294,24 @@ namespace AntTweakBar
         }
 
         #endregion
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[ColorVariable: Label={0}, Value=({1}, {2}, {3})]", Label, R, G, B);
+        }
+
+        #endregion
     }
 
     /// <summary>
-    /// A variable holding an RGBA color value.
+    /// An AntTweakBar variable which can hold an RGBA color value.
     /// </summary>
     public class Color4Variable : Variable
     {
-        #region Fields
-
-        private readonly TW.GetVarCallback getCallback;
-        private readonly TW.SetVarCallback setCallback;
-
         /// <summary>
-        /// Occurs when the user changes the variable.
+        /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
 
@@ -308,32 +324,8 @@ namespace AntTweakBar
                 Changed(this, e);
         }
 
-        private float r, g, b, a;
-
-        #endregion
-
-        private static void InitVariable(Variable var, String id)
-        {
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.VariableType.TW_TYPE_COLOR4F,
-                        ((Color4Variable)var).SetCallback,
-                        ((Color4Variable)var).GetCallback,
-                        IntPtr.Zero);
-        }
-
-        public Color4Variable(Bar bar, float r = 0, float g = 0, float b = 0, float a = 0, String def = null)
-            : base(bar, InitVariable, def)
-        {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
-            R = r;
-            G = g;
-            B = b;
-            A = a;
-        }
-
         /// <summary>
-        /// Gets or sets the red channel component.
+        /// Gets or sets this color's red channel component.
         /// </summary>
         public float R
         {
@@ -348,7 +340,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the green channel component.
+        /// Gets or sets this color's green channel component.
         /// </summary>
         public float G
         {
@@ -363,7 +355,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the blue channel component.
+        /// Gets or sets this color's blue channel component.
         /// </summary>
         public float B
         {
@@ -378,7 +370,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the alpha channel component.
+        /// Gets or sets this color's alpha channel component.
         /// </summary>
         public float A
         {
@@ -392,6 +384,44 @@ namespace AntTweakBar
             }
         }
 
+        private float r, g, b, a;
+
+        /// <summary>
+        /// Initialization delegate, which creates the RGBA color variable.
+        /// </summary>
+        private static void InitColor4Variable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_COLOR4F,
+                        ((Color4Variable)var).SetCallback,
+                        ((Color4Variable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Creates a new RGBA color variable in a given bar.
+        /// </summary>
+        /// <param name="bar">The bar to create the RGBA color variable in.</param>
+        /// <param name="r">The initial red channel value of the variable.</param>
+        /// <param name="g">The initial green channel value of the variable.</param>
+        /// <param name="b">The initial blue channel value of the variable.</param>
+        /// <param name="a">The initial alpha channel value of the variable.</param>
+        /// <param name="def">An optional definition string for the new variable.</param>
+        public Color4Variable(Bar bar, float r = 0, float g = 0, float b = 0, float a = 0, String def = null)
+            : base(bar, InitColor4Variable, def)
+        {
+            setCallback = SetCallback;
+            getCallback = GetCallback;
+            R = r;
+            G = g;
+            B = b;
+            A = a;
+        }
+
+        /// <summary>
+        /// Called by AntTweakBar when the user changes the variable's value.
+        /// </summary>
+        private readonly TW.SetVarCallback setCallback;
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             float tr = ((float*)pointer)[0];
@@ -410,6 +440,10 @@ namespace AntTweakBar
                 OnChanged(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Called by AntTweakBar when AntTweakBar needs the variable's value.
+        /// </summary>
+        private readonly TW.GetVarCallback getCallback;
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             ((float*)pointer)[0] = R;
@@ -421,7 +455,7 @@ namespace AntTweakBar
         #region Customization
 
         /// <summary>
-        /// Gets or sets the color selection mode.
+        /// Gets or sets this variable's color selection mode.
         /// </summary>
         public ColorMode Mode
         {
@@ -454,20 +488,24 @@ namespace AntTweakBar
         }
 
         #endregion
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[Color4Variable: Label={0}, Value=({1}, {2}, {3}, {4})]", Label, R, G, B, A);
+        }
+
+        #endregion
     }
 
     /// <summary>
-    /// A variable holding a 3D vector variable.
+    /// An AntTweakBar variable which can hold a 3D vector.
     /// </summary>
     public sealed class VectorVariable : Variable
     {
-        #region Fields
-
-        private readonly TW.GetVarCallback getCallback;
-        private readonly TW.SetVarCallback setCallback;
-
         /// <summary>
-        /// Occurs when the user changes the variable.
+        /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
 
@@ -480,9 +518,25 @@ namespace AntTweakBar
                 Changed(this, e);
         }
 
-        #endregion
+        /// <summary>
+        /// Gets or sets this vector's X-component.
+        /// </summary>
+        public float X { get; set; }
 
-        private static void InitVariable(Variable var, String id)
+        /// <summary>
+        /// Gets or sets this vector's Y-component.
+        /// </summary>
+        public float Y { get; set; }
+
+        /// <summary>
+        /// Gets or sets this vector's Z-component.
+        /// </summary>
+        public float Z { get; set; }
+
+        /// <summary>
+        /// Initialization delegate, which creates the vector variable.
+        /// </summary>
+        private static void InitVectorVariable(Variable var, String id)
         {
             TW.AddVarCB(var.ParentBar.Pointer, id,
                         TW.VariableType.TW_TYPE_DIR3F,
@@ -491,8 +545,16 @@ namespace AntTweakBar
                         IntPtr.Zero);
         }
 
+        /// <summary>
+        /// Creates a new vector variable in a given bar.
+        /// </summary>
+        /// <param name="bar">The bar to create the vector variable in.</param>
+        /// <param name="x">The initial X-component value of the variable.</param>
+        /// <param name="y">The initial Y-component value of the variable.</param>
+        /// <param name="z">The initial Z-component value of the variable.</param>
+        /// <param name="def">An optional definition string for the new variable.</param>
         public VectorVariable(Bar bar, float x = 0, float y = 0, float z = 0, String def = null)
-            : base(bar, InitVariable, def)
+            : base(bar, InitVectorVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
@@ -502,20 +564,9 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the X-component.
+        /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
-        public float X { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Y-component.
-        /// </summary>
-        public float Y { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Z-component.
-        /// </summary>
-        public float Z { get; set; }
-
+        private readonly TW.SetVarCallback setCallback;
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             float tx = ((float*)pointer)[0];
@@ -532,6 +583,10 @@ namespace AntTweakBar
                 OnChanged(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Called by AntTweakBar when AntTweakBar needs the variable's value.
+        /// </summary>
+        private readonly TW.GetVarCallback getCallback;
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             ((float*)pointer)[0] = X;
@@ -542,7 +597,7 @@ namespace AntTweakBar
         #region Customization
 
         /// <summary>
-        /// Gets or sets the arrow color of this variable.
+        /// Gets or sets this variable's arrow color.
         /// </summary>
         public Color ArrowColor
         {
@@ -551,7 +606,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Shows or hides the numerical value of the vector.
+        /// Shows or hides this variable's numerical value.
         /// </summary>
         public Boolean ShowValue
         {
@@ -567,7 +622,7 @@ namespace AntTweakBar
                                  CoordinateSystem.Axis.PositiveZ);
 
         /// <summary>
-        /// Gets or sets the vector's coordinate system.
+        /// Gets or sets this variable's coordinate system.
         /// </summary>
         public CoordinateSystem Coordinates
         {
@@ -582,20 +637,24 @@ namespace AntTweakBar
         }
 
         #endregion
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[VectorVariable: Label={0}, Value=({1}, {2}, {3})]", Label, X, Y, Z);
+        }
+
+        #endregion
     }
 
     /// <summary>
-    /// A variable holding a quaternion variable.
+    /// An AntTweakBar variable which can hold a quaternion.
     /// </summary>
     public sealed class QuaternionVariable : Variable
     {
-        #region Fields
-
-        private readonly TW.GetVarCallback getCallback;
-        private readonly TW.SetVarCallback setCallback;
-
         /// <summary>
-        /// Occurs when the user changes the variable.
+        /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
 
@@ -608,9 +667,30 @@ namespace AntTweakBar
                 Changed(this, e);
         }
 
-        #endregion
+        /// <summary>
+        /// Gets or sets this quaternion's X-component.
+        /// </summary>
+        public float X { get; set; }
 
-        private static void InitVariable(Variable var, String id)
+        /// <summary>
+        /// Gets or sets this quaternion's Y-component.
+        /// </summary>
+        public float Y { get; set; }
+
+        /// <summary>
+        /// Gets or sets this quaternion's Z-component.
+        /// </summary>
+        public float Z { get; set; }
+
+        /// <summary>
+        /// Gets or sets the W-component.
+        /// </summary>
+        public float W { get; set; }
+
+        /// <summary>
+        /// Initialization delegate, which creates the quaternion variable.
+        /// </summary>
+        private static void InitQuaternionVariable(Variable var, String id)
         {
             TW.AddVarCB(var.ParentBar.Pointer, id,
                         TW.VariableType.TW_TYPE_QUAT4F,
@@ -619,8 +699,17 @@ namespace AntTweakBar
                         IntPtr.Zero);
         }
 
-        public QuaternionVariable(Bar bar, float x = 0, float y = 0, float z = 0, float w = 0, String def = null)
-            : base(bar, InitVariable, def)
+        /// <summary>
+        /// Creates a new quaternion variable in a given bar.
+        /// </summary>
+        /// <param name="bar">The bar to create the quaternion variable in.</param>
+        /// <param name="x">The initial X-component value of the variable.</param>
+        /// <param name="y">The initial Y-component value of the variable.</param>
+        /// <param name="z">The initial Z-component value of the variable.</param>
+        /// <param name="w">The initial W-component value of the variable.</param>
+        /// <param name="def">An optional definition string for the new variable.</param>
+        public QuaternionVariable(Bar bar, float x = 0, float y = 0, float z = 0, float w = 1, String def = null)
+            : base(bar, InitQuaternionVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
@@ -631,25 +720,9 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the X-component.
+        /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
-        public float X { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Y-component.
-        /// </summary>
-        public float Y { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Z-component.
-        /// </summary>
-        public float Z { get; set; }
-
-        /// <summary>
-        /// Gets or sets the W-component.
-        /// </summary>
-        public float W { get; set; }
-
+        private readonly TW.SetVarCallback setCallback;
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             float tx = ((float*)pointer)[0];
@@ -668,6 +741,10 @@ namespace AntTweakBar
                 OnChanged(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Called by AntTweakBar when AntTweakBar needs the variable's value.
+        /// </summary>
+        private readonly TW.GetVarCallback getCallback;
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             ((float*)pointer)[0] = X;
@@ -679,7 +756,7 @@ namespace AntTweakBar
         #region Customization
 
         /// <summary>
-        /// Gets or sets the arrow color of this variable.
+        /// Gets or sets this variable's arrow color.
         /// </summary>
         public Color ArrowColor
         {
@@ -688,7 +765,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Shows or hides the numerical value of the quaternion.
+        /// Shows or hides this variable's numerical value.
         /// </summary>
         public Boolean ShowValue
         {
@@ -702,7 +779,7 @@ namespace AntTweakBar
                                  CoordinateSystem.Axis.PositiveZ);
 
         /// <summary>
-        /// Gets or sets the quaternion's coordinate system.
+        /// Gets or sets this variable's coordinate system.
         /// </summary>
         public CoordinateSystem Coordinates
         {
@@ -714,6 +791,15 @@ namespace AntTweakBar
                 TW.SetParam(ParentBar.Pointer, ID, "axisz", value.GetAxis(2));
                 this.coordinates = value;
             }
+        }
+
+        #endregion
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[QuaternionVariable: Label={0}, Value=({1}, {2}, {3}, {4})]", Label, X, Y, Z, W);
         }
 
         #endregion

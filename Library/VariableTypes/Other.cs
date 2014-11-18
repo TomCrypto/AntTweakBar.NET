@@ -10,7 +10,7 @@ namespace AntTweakBar
     public class Button : Variable
     {
         /// <summary>
-        /// Occurs when the button is clicked by the user.
+        /// Occurs when this button is clicked by the user.
         /// </summary>
         public event EventHandler Clicked;
 
@@ -54,6 +54,15 @@ namespace AntTweakBar
         {
             OnClicked(EventArgs.Empty);
         }
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[Button: Label={0}]", Label);
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -79,22 +88,31 @@ namespace AntTweakBar
         {                                /* ^^^^^ */
             /* Special case: separators should have no labels. */
         }
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[Separator]");
+        }
+
+        #endregion
     }
 
     /// <summary>
-    /// An AntTweakBar variable which can hold a string value.
+    /// An AntTweakBar variable which can hold a string.
     /// </summary>
     public class StringVariable : Variable
     {
         /// <summary>
-        /// Occurs when the user changes the variable.
+        /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
 
         /// <summary>
         /// Raises the Changed event.
         /// </summary>
-        private void OnChanged(EventArgs e)
+        public void OnChanged(EventArgs e)
         {
             if (Changed != null)
                 Changed(this, e);
@@ -116,21 +134,6 @@ namespace AntTweakBar
         }
 
         private String value;
-
-        /// <summary>
-        /// A validation method for derived classes. Override this to provide custom
-        /// variables with arbitrary validation logic. If the user's input does not
-        /// pass validation, the variable's value reverts to its previous contents.
-        /// </summary>
-        /// <remarks>
-        /// The validation method is also invoked when setting the variable's value.
-        /// </remarks>
-        /// <param name="value">The value the variable will contain.</param>
-        /// <returns>Whether the variable is allowed to have this value.</returns>
-        protected virtual bool Validate(String value)
-        {
-            return true;
-        }
 
         /// <summary>
         /// Initialization delegate, which creates the string variable.
@@ -159,6 +162,21 @@ namespace AntTweakBar
         }
 
         /// <summary>
+        /// A validation method for derived classes. Override this to provide custom
+        /// variables with arbitrary validation logic. If the user's input does not
+        /// pass validation, the variable's value reverts to its previous contents.
+        /// </summary>
+        /// <remarks>
+        /// The validation method is also invoked when setting the variable's value.
+        /// </remarks>
+        /// <param name="value">The value the variable will contain.</param>
+        /// <returns>Whether the variable is allowed to have this value.</returns>
+        protected virtual bool Validate(String value)
+        {
+            return true;
+        }
+
+        /// <summary>
         /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
         private readonly TW.SetVarCallback setCallback;
@@ -182,5 +200,14 @@ namespace AntTweakBar
             Marshal.Copy(bytes, 0, pointer, bytes.Length);
             ((byte*)pointer)[bytes.Length] = 0;
         }
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[StringVariable: Label={0}, Value={1}]", Label, Value);
+        }
+
+        #endregion
     }
 }

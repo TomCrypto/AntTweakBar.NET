@@ -229,7 +229,7 @@ namespace AntTweakBar
 
         public override String ToString()
         {
-            return String.Format("[Context: {0} bars]", bars.Count);
+            return String.Format("[Context: {0} bar(s)]", bars.Count);
         }
 
         #endregion

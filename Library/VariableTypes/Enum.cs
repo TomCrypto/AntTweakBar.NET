@@ -6,32 +6,33 @@ using System.Linq;
 namespace AntTweakBar
 {
     /// <summary>
-    /// A variable holding a boolean value.
+    /// An AntTweakBar variable which can hold a boolean value.
     /// </summary>
     public sealed class BoolVariable : Variable
     {
-        #region Fields
-
-        private readonly TW.GetVarCallback getCallback;
-        private readonly TW.SetVarCallback setCallback;
-
         /// <summary>
-        /// Occurs when the user changes the variable.
+        /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
 
         /// <summary>
         /// Raises the Changed event.
         /// </summary>
-        private void OnChanged(EventArgs e)
+        public void OnChanged(EventArgs e)
         {
             if (Changed != null)
                 Changed(this, e);
         }
 
-        #endregion
+        /// <summary>
+        /// Gets or sets the value of this variable.
+        /// </summary>
+        public Boolean Value { get; set; }
 
-        private static void InitVariable(Variable var, String id)
+        /// <summary>
+        /// Initialization delegate, which creates the boolean variable.
+        /// </summary>
+        private static void InitBoolVariable(Variable var, String id)
         {
             TW.AddVarCB(var.ParentBar.Pointer, id,
                         TW.VariableType.TW_TYPE_BOOL8,
@@ -40,8 +41,14 @@ namespace AntTweakBar
                         IntPtr.Zero);
         }
 
+        /// <summary>
+        /// Creates a new boolean variable in a given bar.
+        /// </summary>
+        /// <param name="bar">The bar to create the boolean variable in.</param>
+        /// <param name="initialValue">The initial value of the variable.</param>
+        /// <param name="def">An optional definition string for the new variable.</param>
         public BoolVariable(Bar bar, Boolean initialValue = false, String def = null)
-            : base(bar, InitVariable, def)
+            : base(bar, InitBoolVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
@@ -49,10 +56,9 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the value of this variable.
+        /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
-        public Boolean Value { get; set; }
-
+        private readonly TW.SetVarCallback setCallback;
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             bool tmp = *(bool*)pointer;
@@ -63,6 +69,10 @@ namespace AntTweakBar
                 OnChanged(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Called by AntTweakBar when AntTweakBar needs the variable's value.
+        /// </summary>
+        private readonly TW.GetVarCallback getCallback;
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             *(bool*)pointer = Value;
@@ -89,58 +99,34 @@ namespace AntTweakBar
         }
 
         #endregion
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[BoolVariable: Label={0}, Value={1}]", Label, Value);
+        }
+
+        #endregion
     }
 
     /// <summary>
-    /// A variable holding an enumeration value.
+    /// An AntTweakBar variable which can hold an enum.
     /// </summary>
     public class EnumVariable<T> : Variable where T : struct
     {
-        #region Fields
-
-        private readonly TW.GetVarCallback getCallback;
-        private readonly TW.SetVarCallback setCallback;
-
         /// <summary>
-        /// Occurs when the user changes the variable.
+        /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
 
         /// <summary>
         /// Raises the Changed event.
         /// </summary>
-        private void OnChanged(EventArgs e)
+        public void OnChanged(EventArgs e)
         {
             if (Changed != null)
                 Changed(this, e);
-        }
-
-        private T value;
-
-        #endregion
-
-        private static void InitVariable(Variable var, String id)
-        {
-            if (!typeof(T).IsEnum)
-                throw new InvalidOperationException(String.Format("Type {0} is not an enumeration", typeof(T).FullName));
-
-            var enumNames = String.Join(",", typeof(T).GetEnumNames());
-
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.DefineEnumFromString(typeof(T).FullName, enumNames),
-                        ((EnumVariable<T>)var).SetCallback,
-                        ((EnumVariable<T>)var).GetCallback,
-                        IntPtr.Zero);
-
-            TW.SetParam(var.ParentBar.Pointer, var.ID, "enum", EnumString);
-        }
-
-        public EnumVariable(Bar bar, T initialValue, String def = null)
-            : base(bar, InitVariable, def)
-        {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
-            Value = initialValue;
         }
 
         /// <summary>
@@ -158,6 +144,45 @@ namespace AntTweakBar
             }
         }
 
+        private T value;
+
+        /// <summary>
+        /// Initialization delegate, which creates the enum variable.
+        /// </summary>
+        private static void InitEnumVariable(Variable var, String id)
+        {
+            if (!typeof(T).IsEnum)
+                throw new InvalidOperationException(String.Format("Type {0} is not an enumeration", typeof(T).FullName));
+
+            var enumNames = String.Join(",", typeof(T).GetEnumNames());
+
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.DefineEnumFromString(typeof(T).FullName, enumNames),
+                        ((EnumVariable<T>)var).SetCallback,
+                        ((EnumVariable<T>)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Creates a new enum variable in a given bar.
+        /// </summary>
+        /// <param name="bar">The bar to create the enum variable in.</param>
+        /// <param name="initialValue">The initial value of the variable.</param>
+        /// <param name="def">An optional definition string for the new variable.</param>
+        public EnumVariable(Bar bar, T initialValue, String def = null)
+            : base(bar, InitEnumVariable, def)
+        {
+            TW.SetParam(ParentBar.Pointer, ID, "enum", GetEnumString());
+
+            setCallback = SetCallback;
+            getCallback = GetCallback;
+            Value = initialValue;
+        }
+
+        /// <summary>
+        /// Called by AntTweakBar when the user changes the variable's value.
+        /// </summary>
+        private readonly TW.SetVarCallback setCallback;
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             int tmp = *(int*)pointer;
@@ -168,30 +193,40 @@ namespace AntTweakBar
                 OnChanged(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Called by AntTweakBar when AntTweakBar needs the variable's value.
+        /// </summary>
+        private readonly TW.GetVarCallback getCallback;
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             *(int*)pointer = (int)(Object)Value;
         }
 
         /// <summary>
-        /// Gets a formatted key-value representation of this enum.
+        /// Returns a formatted key-value representation of this enum.
         /// </summary>
-        private static String EnumString
+        private static String GetEnumString()
         {
-            get
+            IList<String> enumList = new List<String>();
+
+            foreach (var kv in ((int[])Enum.GetValues(typeof(T))).Zip(typeof(T).GetEnumNames(), (i, n) => new Tuple<int, string>(i, n)))
             {
-                IList<String> enumList = new List<String>();
-
-                foreach (var kv in ((int[])Enum.GetValues(typeof(T))).Zip(typeof(T).GetEnumNames(), (i, n) => new Tuple<int, string>(i, n)))
-                {
-                    var valueAttributes = typeof(T).GetMember(kv.Item2)[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
-                    string label = valueAttributes.Any() ? ((DescriptionAttribute)valueAttributes.First()).Description : kv.Item2;
-                    enumList.Add(String.Format("{0} {{{1}}}", kv.Item1, label)); // Follows the AntTweakBar enum string format.
-                }
-
-                return String.Join(",", enumList);
+                var valueAttributes = typeof(T).GetMember(kv.Item2)[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+                string label = valueAttributes.Any() ? ((DescriptionAttribute)valueAttributes.First()).Description : kv.Item2;
+                enumList.Add(String.Format("{0} {{{1}}}", kv.Item1, label)); // Follows the AntTweakBar enum string format.
             }
+
+            return String.Join(",", enumList);
         }
+
+        #region Misc.
+
+        public override String ToString()
+        {
+            return String.Format("[EnumVariable<{0}>: Label={1}, Value={2}]", typeof(T).Name, Label, Value);
+        }
+
+        #endregion
     }
 }
 

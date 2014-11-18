@@ -269,7 +269,7 @@ namespace AntTweakBar
 
         public override String ToString()
         {
-            return String.Format("[Bar: {0} variables, ParentContext={1}]", variables.Count, ParentContext);
+            return String.Format("[Bar: {0} variable(s), Label={1}]", variables.Count, Label);
         }
 
         #endregion
