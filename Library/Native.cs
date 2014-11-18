@@ -650,32 +650,22 @@ namespace AntTweakBar
         internal delegate void ErrorHandler(String message);
 
         /// <summary>
-        /// Sets an error handler for the AntTweakBar library.
-        /// </summary>
-        internal static void HandleErrors(ErrorHandler handler)
-        {
-            TwHandleErrors(handler);
-        }
-
-        /// <summary>
         /// Event arguments for an AntTweakBar error.
         /// </summary>
         public class ErrorEventArgs : EventArgs
         {
-            private readonly String error;
-
-            /// <summary>
-            /// Initializes new event arguments for an AntTweakBar error.
-            /// </summary>
-            public ErrorEventArgs(String error)
-            {
-                this.error = error;
-            }
-
             /// <summary>
             /// Gets the error string.
             /// </summary>
-            public String Error { get { return error; } }
+            public String Error { get; private set; }
+
+            /// <summary>
+            /// Initializes event arguments for an AntTweakBar error.
+            /// </summary>
+            public ErrorEventArgs(String error)
+            {
+                Error = error;
+            }
         }
 
         /// <summary>
@@ -688,7 +678,7 @@ namespace AntTweakBar
         /// </summary>
         static TW()
         {
-            HandleErrors(error =>
+            TwHandleErrors(error =>
             {
                 if (Error != null)
                     Error(null, new ErrorEventArgs(error));
