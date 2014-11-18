@@ -218,7 +218,7 @@ namespace AntTweakBar
 
         #region IEnumerable
 
-        private readonly ISet<Variable> variables = new HashSet<Variable>();
+        private readonly ICollection<Variable> variables = new HashSet<Variable>();
 
         internal void Add(Variable variable)
         {

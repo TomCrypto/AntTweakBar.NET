@@ -165,7 +165,7 @@ namespace AntTweakBar
 
         #region IEnumerable
 
-        private readonly ISet<Bar> bars = new HashSet<Bar>();
+        private readonly ICollection<Bar> bars = new HashSet<Bar>();
 
         internal void Add(Bar bar)
         {
