@@ -2,6 +2,9 @@
 [Bb]in/
 [Oo]bj/
 
+# Nuget Packaging Area
+AntTweakBar.NET.*
+
 # mstest test results
 TestResults
 test-results
