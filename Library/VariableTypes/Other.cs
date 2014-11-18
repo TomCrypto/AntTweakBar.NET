@@ -120,10 +120,10 @@ namespace AntTweakBar
             get { return value; }
             set
             {
-				if ((value == null) || !Validate (value))
-					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-				else
-					this.value = value;
+                if ((value == null) || !Validate (value))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                    this.value = value;
             }
         }
 
@@ -135,11 +135,11 @@ namespace AntTweakBar
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             string tmp = Marshal.PtrToStringAnsi(pointer);
-			bool changed = tmp != Value;
-			Value = tmp;
+            bool changed = tmp != Value;
+            Value = tmp;
 
-			if (changed)
-				OnChanged(EventArgs.Empty);
+            if (changed)
+                OnChanged(EventArgs.Empty);
         }
 
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)

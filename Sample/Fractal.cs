@@ -8,20 +8,20 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Sample
 {
-	public enum ShadingType
-	{
-		Standard,
-		Negative,
-		Flat
-	}
+    public enum ShadingType
+    {
+        Standard,
+        Negative,
+        Flat
+    }
 
-	public enum AAQuality
-	{
-		AAx1 = 1,
-		AAx4 = 2,
-		AAx9 = 3,
-		AAx16 = 4
-	}
+    public enum AAQuality
+    {
+        AAx1 = 1,
+        AAx4 = 2,
+        AAx9 = 3,
+        AAx16 = 4
+    }
 
     public class Fractal : IDisposable
     {
@@ -29,21 +29,21 @@ namespace Sample
 
         int vsHandle, fsHandle, shHandle;
 
-		private Vector2 offset;
+        private Vector2 offset;
         public Vector2 Offset
         {
             get { return offset; }
             set { GL.Uniform2(GL.GetUniformLocation(shHandle, "offset"), offset = value); }
         }
 
-		private float zoom;
+        private float zoom;
         public float Zoom
         {
             get { return zoom; }
             set { GL.Uniform1(GL.GetUniformLocation(shHandle, "zoom"), zoom = value); }
         }
 
-		private Size dimensions;
+        private Size dimensions;
         public Size Dimensions
         {
             get { return dimensions; }
@@ -54,14 +54,14 @@ namespace Sample
             }
         }
 
-		private int iterations;
+        private int iterations;
         public int Iterations
         {
             get { return iterations; }
             set { GL.Uniform1(GL.GetUniformLocation(shHandle, "iters"), (uint)(iterations = value)); }
         }
 
-		private Polynomial polynomial;
+        private Polynomial polynomial;
         public Polynomial Polynomial
         {
             get { return polynomial; }
@@ -72,36 +72,36 @@ namespace Sample
             }
         }
 
-		private Color4 palette;
+        private Color4 palette;
         public Color4 Palette
         {
             get { return palette; }
             set { GL.Uniform4(GL.GetUniformLocation(shHandle, "palette"), palette = value); }
         }
 
-		private ShadingType shading;
-		public ShadingType Shading
-		{
-			get { return shading; }
-			set
-			{
-				shading = value;
-				SetupShaders();
-			}
-		}
+        private ShadingType shading;
+        public ShadingType Shading
+        {
+            get { return shading; }
+            set
+            {
+                shading = value;
+                SetupShaders();
+            }
+        }
 
-		private AAQuality aa;
-		public AAQuality AA
-		{
-			get { return aa; }
-			set
-			{
-				aa = value;
-				SetupShaders();
-			}
-		}
+        private AAQuality aa;
+        public AAQuality AA
+        {
+            get { return aa; }
+            set
+            {
+                aa = value;
+                SetupShaders();
+            }
+        }
 
-		private Complex aCoeff;
+        private Complex aCoeff;
         public Complex ACoeff
         {
             get { return aCoeff; }
@@ -112,7 +112,7 @@ namespace Sample
             }
         }
 
-		private Complex kCoeff;
+        private Complex kCoeff;
         public Complex KCoeff
         {
             get { return kCoeff; }
@@ -123,7 +123,7 @@ namespace Sample
             }
         }
 
-		private float intensity;
+        private float intensity;
         public float Intensity
         {
             get { return intensity; }
@@ -189,15 +189,15 @@ namespace Sample
 
             String log;
 
-			Console.WriteLine("====  COMPILATION LOG FOR VERTEX SHADER  ====\n");
-			GL.GetShaderInfoLog(vsHandle, out log);
-			if (log == "") Console.WriteLine ("(empty)\n");
-			else Console.WriteLine(log + "\n");
+            Console.WriteLine("====  COMPILATION LOG FOR VERTEX SHADER  ====\n");
+            GL.GetShaderInfoLog(vsHandle, out log);
+            if (log == "") Console.WriteLine ("(empty)\n");
+            else Console.WriteLine(log + "\n");
 
-			Console.WriteLine("==== COMPILATION LOG FOR FRAGMENT SHADER ====\n");
-			GL.GetShaderInfoLog(fsHandle, out log);
-			if (log == "") Console.WriteLine ("(empty)\n");
-			else Console.WriteLine(log + "\n");
+            Console.WriteLine("==== COMPILATION LOG FOR FRAGMENT SHADER ====\n");
+            GL.GetShaderInfoLog(fsHandle, out log);
+            if (log == "") Console.WriteLine ("(empty)\n");
+            else Console.WriteLine(log + "\n");
         }
 
         private void CreateProgram()
@@ -209,13 +209,13 @@ namespace Sample
 
             GL.LinkProgram(shHandle);
 
-			String log;
+            String log;
 
-			Console.WriteLine("====   LINKAGE LOG FOR FRACTAL PROGRAM   ====\n");
-			GL.GetShaderInfoLog(shHandle, out log);
-			if (log == "") Console.WriteLine ("(empty)\n");
-			else Console.WriteLine(log + "\n");
-			Console.WriteLine("====");
+            Console.WriteLine("====   LINKAGE LOG FOR FRACTAL PROGRAM   ====\n");
+            GL.GetShaderInfoLog(shHandle, out log);
+            if (log == "") Console.WriteLine ("(empty)\n");
+            else Console.WriteLine(log + "\n");
+            Console.WriteLine("====");
         }
 
         private void SetupOptions()
@@ -225,11 +225,11 @@ namespace Sample
             iterations = 128;
             aCoeff = Complex.One;
             kCoeff = Complex.Zero;
-			aa = AAQuality.AAx1;
+            aa = AAQuality.AAx1;
 
             intensity = 1;
             palette = Color4.Red;
-			shading = ShadingType.Standard;
+            shading = ShadingType.Standard;
 
             polynomial = Polynomial.Parse(DefaultPolynomial);
         }

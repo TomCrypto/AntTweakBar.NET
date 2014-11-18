@@ -490,12 +490,12 @@ namespace Tests
         [Test()]
         public void Value()
         {
-			Variable.R = 0.5f;
-			Variable.G = 0.3f;
-			Variable.B = 0.1f;
+            Variable.R = 0.5f;
+            Variable.G = 0.3f;
+            Variable.B = 0.1f;
             Assert.AreEqual(0.5f, Variable.R);
-			Assert.AreEqual(0.3f, Variable.G);
-			Assert.AreEqual(0.1f, Variable.B);
+            Assert.AreEqual(0.3f, Variable.G);
+            Assert.AreEqual(0.1f, Variable.B);
         }
 
         [Test()]
@@ -515,13 +515,13 @@ namespace Tests
         [Test()]
         public void Value()
         {
-			Variable.X = 0.5f;
-			Variable.Y = 0.2f;
-			Variable.Z = 0.3f;
+            Variable.X = 0.5f;
+            Variable.Y = 0.2f;
+            Variable.Z = 0.3f;
 
             Assert.AreEqual(0.5f, Variable.X);
-			Assert.AreEqual(0.2f, Variable.Y);
-			Assert.AreEqual(0.3f, Variable.Z);
+            Assert.AreEqual(0.2f, Variable.Y);
+            Assert.AreEqual(0.3f, Variable.Z);
         }
 
         [Test()]
@@ -581,15 +581,15 @@ namespace Tests
         [Test()]
         public void Value()
         {
-			Variable.X = 0.5f;
-			Variable.Y = 0.2f;
-			Variable.Z = 0.3f;
-			Variable.W = -0.9f;
+            Variable.X = 0.5f;
+            Variable.Y = 0.2f;
+            Variable.Z = 0.3f;
+            Variable.W = -0.9f;
 
-			Assert.AreEqual(0.5f, Variable.X);
-			Assert.AreEqual(0.2f, Variable.Y);
-			Assert.AreEqual(0.3f, Variable.Z);
-			Assert.AreEqual(-0.9f, Variable.W);
+            Assert.AreEqual(0.5f, Variable.X);
+            Assert.AreEqual(0.2f, Variable.Y);
+            Assert.AreEqual(0.3f, Variable.Z);
+            Assert.AreEqual(-0.9f, Variable.W);
         }
 
         [Test()]

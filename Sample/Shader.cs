@@ -19,7 +19,7 @@ namespace Sample
             str.AppendLine("#version 130");
             str.AppendLine();
             str.AppendLine("in vec3 vertexPosition;");
-			str.AppendLine("out vec2 uv;");
+            str.AppendLine("out vec2 uv;");
             str.AppendLine();
             str.AppendLine("void main(void)");
             str.AppendLine("{");
@@ -46,7 +46,7 @@ namespace Sample
                 FragIterate(),
                 FragColorize(type),
                 FragShade(),
-				FragMainSampler(aa)
+                FragMainSampler(aa)
             });
 
             WriteToFile("shader.fs", shader);
@@ -163,9 +163,9 @@ namespace Sample
                     str.AppendLine("    vec3 retval = (sin(vec3(r.x) * palette.xyz) + sin(vec3(r.y) * palette.xyz) + 2) / speed;");
                     str.AppendLine("    return retval / (retval + vec3(1));");
                     break;
-				case ShadingType.Flat:
-					str.AppendLine("    return (sin(vec3(r.x) * palette.xyz) + sin(vec3(r.y) * palette.xyz) + 2) * t * 2;");
-					break;
+                case ShadingType.Flat:
+                    str.AppendLine("    return (sin(vec3(r.x) * palette.xyz) + sin(vec3(r.y) * palette.xyz) + 2) * t * 2;");
+                    break;
                 default:
                     str.AppendLine("    return vec3(0.87, 0, 1);");
                     break;
@@ -193,19 +193,19 @@ namespace Sample
             return str.ToString();
         }
 
-		private static String FragMainSampler(AAQuality aa)
+        private static String FragMainSampler(AAQuality aa)
         {
             var str = new StringBuilder();
 
             str.AppendLine("uniform vec2 offset;");
             str.AppendLine("uniform float zoom;");
             str.AppendLine("uniform vec2 dims;");
-			str.AppendLine("in vec2 uv;");
+            str.AppendLine("in vec2 uv;");
             str.AppendLine();
             str.AppendLine("vec3 plot_fractal(vec2 z)");
             str.AppendLine("{");
 
-			int samples = (int)aa;
+            int samples = (int)aa;
 
             if (samples == 1)
                 str.AppendLine("    return shade(z);");

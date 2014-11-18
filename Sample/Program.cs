@@ -38,12 +38,12 @@ namespace Sample
         /// <summary>
         /// Gets the polynomial entered by the user.
         /// </summary>
-		public Polynomial Polynomial
+        public Polynomial Polynomial
         {
-			get
-			{
-				return Polynomial.Parse(Value);
-			}
+            get
+            {
+                return Polynomial.Parse(Value);
+            }
         }
 
         protected override bool Validate(String value)
@@ -52,10 +52,10 @@ namespace Sample
         }
     }
 
-	/// <summary>
-	/// Not a real variable (just contains two variables for the
-	/// real/imaginary parts and puts them in a single group).
-	/// </summary>
+    /// <summary>
+    /// Not a real variable (just contains two variables for the
+    /// real/imaginary parts and puts them in a single group).
+    /// </summary>
     class ComplexVariable : IDisposable
     {
         private readonly DoubleVariable re, im;
@@ -312,79 +312,79 @@ namespace Sample
 
             /* Add AntTweakBar variables and events */
 
-			var configsBar = new Bar(context);
-			configsBar.Label = "Configuration";
-			configsBar.Contained = true;
+            var configsBar = new Bar(context);
+            configsBar.Label = "Configuration";
+            configsBar.Contained = true;
 
-			var itersVar = new IntVariable(configsBar, fractal.Iterations);
-			itersVar.Changed += delegate { fractal.Iterations = itersVar.Value; };
-			itersVar.Label = "Iterations";
-			itersVar.Max = 256;
-			itersVar.Min = 16;
+            var itersVar = new IntVariable(configsBar, fractal.Iterations);
+            itersVar.Changed += delegate { fractal.Iterations = itersVar.Value; };
+            itersVar.Label = "Iterations";
+            itersVar.Max = 256;
+            itersVar.Min = 16;
 
-			var aaVar = new EnumVariable<AAQuality>(configsBar, fractal.AA);
-			aaVar.Changed += delegate { fractal.AA = aaVar.Value; };
-			aaVar.Label = "AA";
+            var aaVar = new EnumVariable<AAQuality>(configsBar, fractal.AA);
+            aaVar.Changed += delegate { fractal.AA = aaVar.Value; };
+            aaVar.Label = "AA";
 
             new Separator(configsBar);
 
-			var paletteVar = new Color4Variable(configsBar, fractal.Palette.R, fractal.Palette.G, fractal.Palette.B, fractal.Palette.A);
-			paletteVar.Changed += delegate { fractal.Palette = new Color4(paletteVar.R, paletteVar.G, paletteVar.B, paletteVar.A); };
-			paletteVar.Label = "Palette";
+            var paletteVar = new Color4Variable(configsBar, fractal.Palette.R, fractal.Palette.G, fractal.Palette.B, fractal.Palette.A);
+            paletteVar.Changed += delegate { fractal.Palette = new Color4(paletteVar.R, paletteVar.G, paletteVar.B, paletteVar.A); };
+            paletteVar.Label = "Palette";
 
-			var shadingVar = new EnumVariable<ShadingType>(configsBar, fractal.Shading);
-			shadingVar.Changed += delegate { fractal.Shading = shadingVar.Value; };
-			shadingVar.Label = "Shading";
+            var shadingVar = new EnumVariable<ShadingType>(configsBar, fractal.Shading);
+            shadingVar.Changed += delegate { fractal.Shading = shadingVar.Value; };
+            shadingVar.Label = "Shading";
 
-			var intensityVar = new FloatVariable(configsBar, fractal.Intensity);
-			intensityVar.Changed += delegate { fractal.Intensity = intensityVar.Value; };
-			intensityVar.SetDefinition("min=0 max=3 step=0.01 precision=3)");
-			intensityVar.Label = "Intensity";
+            var intensityVar = new FloatVariable(configsBar, fractal.Intensity);
+            intensityVar.Changed += delegate { fractal.Intensity = intensityVar.Value; };
+            intensityVar.SetDefinition("min=0 max=3 step=0.01 precision=3)");
+            intensityVar.Label = "Intensity";
 
-			var aCoeffVar = new ComplexVariable(configsBar, fractal.ACoeff);
-			aCoeffVar.Changed += delegate { fractal.ACoeff = aCoeffVar.Value; };
-			aCoeffVar.Label = "Relaxation Coeff.";
-			aCoeffVar.Step = 0.002;
-			aCoeffVar.Precision = 3;
+            var aCoeffVar = new ComplexVariable(configsBar, fractal.ACoeff);
+            aCoeffVar.Changed += delegate { fractal.ACoeff = aCoeffVar.Value; };
+            aCoeffVar.Label = "Relaxation Coeff.";
+            aCoeffVar.Step = 0.002;
+            aCoeffVar.Precision = 3;
 
-			var kcoeff = new ComplexVariable(configsBar, fractal.KCoeff);
-			kcoeff.Changed += delegate { fractal.KCoeff = kcoeff.Value; };
-			kcoeff.Label = "Nova Coeff.";
+            var kcoeff = new ComplexVariable(configsBar, fractal.KCoeff);
+            kcoeff.Changed += delegate { fractal.KCoeff = kcoeff.Value; };
+            kcoeff.Label = "Nova Coeff.";
             kcoeff.Step = 0.002;
             kcoeff.Precision = 3;
 
-			/* Set up a bar for the user to play with the equation */
+            /* Set up a bar for the user to play with the equation */
 
-			var fractalBar = new Bar(context, "label='Fractal Equation' valueswidth=400");
-			fractalBar.Contained = true;
-			fractalBar.Position = new Point(Width - 500 - 20, 20);
-			fractalBar.Size = new Size(500, 50);
+            var fractalBar = new Bar(context, "label='Fractal Equation' valueswidth=400");
+            fractalBar.Contained = true;
+            fractalBar.Position = new Point(Width - 500 - 20, 20);
+            fractalBar.Size = new Size(500, 50);
 
-			var poly = new PolynomialVariable(fractalBar, "z^3 - 1");
-			var preset = new EnumVariable<FractalPreset>(fractalBar, FractalPreset.Cubic);
-			poly.Changed += delegate { fractal.Polynomial = poly.Polynomial; };
-			poly.Label = "Equation";
-			preset.Label = "Presets";
-			preset.Changed += delegate
-			{
-				switch (preset.Value)
-				{
-					case FractalPreset.Cubic:
-						poly.Value = "z^3 - 1";
-						break;
-					case FractalPreset.OtherCubic:
-						poly.Value = "z^3 - 2z + 2";
-						break;
-					case FractalPreset.SineTaylor:
-						poly.Value = "z - 1/6z^3 + 1/120z^5 - 1/5040z^7 + 1/362880z^9";
-						break;
-					case FractalPreset.ExpIz:
-						poly.Value = "1 + iz - 1/2z^2 + (1/6i)z^3";
-						break;
-				}
+            var poly = new PolynomialVariable(fractalBar, "z^3 - 1");
+            var preset = new EnumVariable<FractalPreset>(fractalBar, FractalPreset.Cubic);
+            poly.Changed += delegate { fractal.Polynomial = poly.Polynomial; };
+            poly.Label = "Equation";
+            preset.Label = "Presets";
+            preset.Changed += delegate
+            {
+                switch (preset.Value)
+                {
+                    case FractalPreset.Cubic:
+                        poly.Value = "z^3 - 1";
+                        break;
+                    case FractalPreset.OtherCubic:
+                        poly.Value = "z^3 - 2z + 2";
+                        break;
+                    case FractalPreset.SineTaylor:
+                        poly.Value = "z - 1/6z^3 + 1/120z^5 - 1/5040z^7 + 1/362880z^9";
+                        break;
+                    case FractalPreset.ExpIz:
+                        poly.Value = "1 + iz - 1/2z^2 + (1/6i)z^3";
+                        break;
+                }
 
-				fractal.Polynomial = poly.Polynomial;
-			};
+                fractal.Polynomial = poly.Polynomial;
+            };
         }
 
         private enum FractalPreset

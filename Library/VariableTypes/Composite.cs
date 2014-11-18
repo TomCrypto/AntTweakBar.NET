@@ -157,7 +157,7 @@ namespace AntTweakBar
                 Changed(this, e);
         }
 
-		private float r, g, b;
+        private float r, g, b;
 
         #endregion
 
@@ -175,70 +175,70 @@ namespace AntTweakBar
             Label = "undef";
             if (def != null)
                 SetDefinition(def);
-			R = r;
-			G = g;
-			B = b;
+            R = r;
+            G = g;
+            B = b;
         }
 
-		/// <summary>
-		/// Gets or sets the red channel component.
-		/// </summary>
-		public float R
-		{
-			get { return r; }
-			set
-			{
-				if (!(0 <= value && value <= 1))
-					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-				else
-					r = value;
-			}
-		}
+        /// <summary>
+        /// Gets or sets the red channel component.
+        /// </summary>
+        public float R
+        {
+            get { return r; }
+            set
+            {
+                if (!(0 <= value && value <= 1))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                    r = value;
+            }
+        }
 
-		/// <summary>
-		/// Gets or sets the green channel component.
-		/// </summary>
-		public float G
-		{
-			get { return g; }
-			set
-			{
-				if (!(0 <= value && value <= 1))
-					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-				else
-					g = value;
-			}
-		}
+        /// <summary>
+        /// Gets or sets the green channel component.
+        /// </summary>
+        public float G
+        {
+            get { return g; }
+            set
+            {
+                if (!(0 <= value && value <= 1))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                    g = value;
+            }
+        }
 
-		/// <summary>
-		/// Gets or sets the blue channel component.
-		/// </summary>
-		public float B
-		{
-			get { return b; }
-			set
-			{
-				if (!(0 <= value && value <= 1))
-					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-				else
-					b = value;
-			}
-		}
+        /// <summary>
+        /// Gets or sets the blue channel component.
+        /// </summary>
+        public float B
+        {
+            get { return b; }
+            set
+            {
+                if (!(0 <= value && value <= 1))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                    b = value;
+            }
+        }
 
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-			float tr = ((float*)pointer)[0];
-			float tg = ((float*)pointer)[1];
-			float tb = ((float*)pointer)[2];
+            float tr = ((float*)pointer)[0];
+            float tg = ((float*)pointer)[1];
+            float tb = ((float*)pointer)[2];
 
-			bool changed = (tr != R) || (tg != G) || (tb != B);
+            bool changed = (tr != R) || (tg != G) || (tb != B);
 
-			R = tr;
-			G = tg;
-			B = tb;
+            R = tr;
+            G = tg;
+            B = tb;
 
-			if (changed)
-				OnChanged(EventArgs.Empty);
+            if (changed)
+                OnChanged(EventArgs.Empty);
         }
 
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
@@ -328,88 +328,88 @@ namespace AntTweakBar
             Label = "undef";
             if (def != null)
                 SetDefinition(def);
-			R = r;
-			G = g;
-			B = b;
-			A = a;
+            R = r;
+            G = g;
+            B = b;
+            A = a;
         }
 
-		/// <summary>
-		/// Gets or sets the red channel component.
-		/// </summary>
-		public float R
-		{
-			get { return r; }
-			set
-			{
-				if (!(0 <= value && value <= 1))
-					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-				else
-					r = value;
-			}
-		}
+        /// <summary>
+        /// Gets or sets the red channel component.
+        /// </summary>
+        public float R
+        {
+            get { return r; }
+            set
+            {
+                if (!(0 <= value && value <= 1))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                    r = value;
+            }
+        }
 
-		/// <summary>
-		/// Gets or sets the green channel component.
-		/// </summary>
-		public float G
-		{
-			get { return g; }
-			set
-			{
-				if (!(0 <= value && value <= 1))
-					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-				else
-					g = value;
-			}
-		}
+        /// <summary>
+        /// Gets or sets the green channel component.
+        /// </summary>
+        public float G
+        {
+            get { return g; }
+            set
+            {
+                if (!(0 <= value && value <= 1))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                    g = value;
+            }
+        }
 
-		/// <summary>
-		/// Gets or sets the blue channel component.
-		/// </summary>
-		public float B
-		{
-			get { return b; }
-			set
-			{
-				if (!(0 <= value && value <= 1))
-					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-				else
-					b = value;
-			}
-		}
+        /// <summary>
+        /// Gets or sets the blue channel component.
+        /// </summary>
+        public float B
+        {
+            get { return b; }
+            set
+            {
+                if (!(0 <= value && value <= 1))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                    b = value;
+            }
+        }
 
-		/// <summary>
-		/// Gets or sets the alpha channel component.
-		/// </summary>
-		public float A
-		{
-			get { return a; }
-			set
-			{
-				if (!(0 <= value && value <= 1))
-					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-				else
-					a = value;
-			}
-		}
+        /// <summary>
+        /// Gets or sets the alpha channel component.
+        /// </summary>
+        public float A
+        {
+            get { return a; }
+            set
+            {
+                if (!(0 <= value && value <= 1))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                    a = value;
+            }
+        }
 
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-			float tr = ((float*)pointer)[0];
-			float tg = ((float*)pointer)[1];
-			float tb = ((float*)pointer)[2];
-			float ta = ((float*)pointer)[3];
+            float tr = ((float*)pointer)[0];
+            float tg = ((float*)pointer)[1];
+            float tb = ((float*)pointer)[2];
+            float ta = ((float*)pointer)[3];
 
-			bool changed = (tr != R) || (tg != G) || (tb != B) || (ta != A);
+            bool changed = (tr != R) || (tg != G) || (tb != B) || (ta != A);
 
-			R = tr;
-			G = tg;
-			B = tb;
-			A = ta;
+            R = tr;
+            G = tg;
+            B = tb;
+            A = ta;
 
-			if (changed)
-				OnChanged(EventArgs.Empty);
+            if (changed)
+                OnChanged(EventArgs.Empty);
         }
 
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
@@ -498,40 +498,40 @@ namespace AntTweakBar
             Label = "undef";
             if (def != null)
                 SetDefinition(def);
-			X = x;
-			Y = y;
-			Z = z;
+            X = x;
+            Y = y;
+            Z = z;
         }
 
-		/// <summary>
-		/// Gets or sets the X-component.
-		/// </summary>
-		public float X { get; set; }
+        /// <summary>
+        /// Gets or sets the X-component.
+        /// </summary>
+        public float X { get; set; }
 
-		/// <summary>
-		/// Gets or sets the Y-component.
-		/// </summary>
-		public float Y { get; set; }
+        /// <summary>
+        /// Gets or sets the Y-component.
+        /// </summary>
+        public float Y { get; set; }
 
-		/// <summary>
-		/// Gets or sets the Z-component.
-		/// </summary>
-		public float Z { get; set; }
+        /// <summary>
+        /// Gets or sets the Z-component.
+        /// </summary>
+        public float Z { get; set; }
 
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-			float tx = ((float*)pointer)[0];
-			float ty = ((float*)pointer)[1];
-			float tz = ((float*)pointer)[2];
+            float tx = ((float*)pointer)[0];
+            float ty = ((float*)pointer)[1];
+            float tz = ((float*)pointer)[2];
 
-			bool changed = (tx != X) || (ty != Y) || (tz != Z);
+            bool changed = (tx != X) || (ty != Y) || (tz != Z);
 
-			X = tx;
-			Y = ty;
-			Z = tz;
+            X = tx;
+            Y = ty;
+            Z = tz;
 
-			if (changed)
-            	OnChanged(EventArgs.Empty);
+            if (changed)
+                OnChanged(EventArgs.Empty);
         }
 
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
@@ -626,48 +626,48 @@ namespace AntTweakBar
             Label = "undef";
             if (def != null)
                 SetDefinition(def);
-			X = x;
-			Y = y;
-			Z = z;
-			W = w;
+            X = x;
+            Y = y;
+            Z = z;
+            W = w;
         }
 
-		/// <summary>
-		/// Gets or sets the X-component.
-		/// </summary>
-		public float X { get; set; }
+        /// <summary>
+        /// Gets or sets the X-component.
+        /// </summary>
+        public float X { get; set; }
 
-		/// <summary>
-		/// Gets or sets the Y-component.
-		/// </summary>
-		public float Y { get; set; }
+        /// <summary>
+        /// Gets or sets the Y-component.
+        /// </summary>
+        public float Y { get; set; }
 
-		/// <summary>
-		/// Gets or sets the Z-component.
-		/// </summary>
-		public float Z { get; set; }
+        /// <summary>
+        /// Gets or sets the Z-component.
+        /// </summary>
+        public float Z { get; set; }
 
-		/// <summary>
-		/// Gets or sets the W-component.
-		/// </summary>
-		public float W { get; set; }
+        /// <summary>
+        /// Gets or sets the W-component.
+        /// </summary>
+        public float W { get; set; }
 
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-			float tx = ((float*)pointer)[0];
-			float ty = ((float*)pointer)[1];
-			float tz = ((float*)pointer)[2];
-			float tw = ((float*)pointer)[3];
+            float tx = ((float*)pointer)[0];
+            float ty = ((float*)pointer)[1];
+            float tz = ((float*)pointer)[2];
+            float tw = ((float*)pointer)[3];
 
-			bool changed = (tx != X) || (ty != Y) || (tz != Z) || (tw != W);
+            bool changed = (tx != X) || (ty != Y) || (tz != Z) || (tw != W);
 
-			X = tx;
-			Y = ty;
-			Z = tz;
-			W = tw;
+            X = tx;
+            Y = ty;
+            Z = tz;
+            W = tw;
 
-			if (changed)
-				OnChanged(EventArgs.Empty);
+            if (changed)
+                OnChanged(EventArgs.Empty);
         }
 
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)

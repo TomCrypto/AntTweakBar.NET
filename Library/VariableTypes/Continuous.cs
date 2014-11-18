@@ -58,21 +58,21 @@ namespace AntTweakBar
             get { return value; }
             set
             {
-				if (!((Min <= value) && (value <= Max)))
-					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-				else
-					this.value = value;
+                if (!((Min <= value) && (value <= Max)))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                    this.value = value;
             }
         }
 
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             float tmp = *(float*)pointer;
-			bool changed = tmp != Value;
-			Value = tmp;
+            bool changed = tmp != Value;
+            Value = tmp;
 
-			if (changed)
-				OnChanged(EventArgs.Empty);
+            if (changed)
+                OnChanged(EventArgs.Empty);
         }
 
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
@@ -182,21 +182,21 @@ namespace AntTweakBar
             get { return value; }
             set
             {
-				if (!((Min <= value) && (value <= Max)))
-					throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-				else
-					this.value = value;
+                if (!((Min <= value) && (value <= Max)))
+                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
+                else
+                    this.value = value;
             }
         }
 
         private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-			double tmp = *(double*)pointer;
-			bool changed = tmp != Value;
-			Value = tmp;
+            double tmp = *(double*)pointer;
+            bool changed = tmp != Value;
+            Value = tmp;
 
-			if (changed)
-				OnChanged(EventArgs.Empty);
+            if (changed)
+                OnChanged(EventArgs.Empty);
         }
 
         private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
