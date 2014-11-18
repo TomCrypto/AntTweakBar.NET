@@ -32,11 +32,15 @@ namespace Tutorial
                 /*========================== CONTEXTS ===========================*/
 
                 /* First you need to create a context. A given context conceptually
-                 * represents a window (following the AntTweakBar API), and as such
+                 * attaches to a window (following the AntTweakBar API) and as such
                  * every context has its own separate bars and variables. You can't
                  * share bars across contexts. For the first context, you must give
                  * the graphics API you are going to use (OpenGL or DirectX) - this
                  * is not necessary for subsequent contexts and is just ignored. */
+
+                /* Note that if using DirectX you must pass a pointer to the device
+                 * from whatever DirectX wrapper you are using (e.g. SharpDX). This
+                 * is not necessary if using OpenGL, as shown in the code below. */
 
                 using (var context = new Context(TW.GraphicsAPI.OpenGL))
                 {
@@ -149,8 +153,8 @@ namespace Tutorial
 
                     /* In principle every AntTweakBar error should be translated to
                      * an exception by AntTweakBar.NET, however, you may still wish
-                     * to intercept errors to log them somewhere, this will let you
-                     * do it: subscribe your favorite logger to the Error event. */
+                     * to intercept errors to log them. To do so, just subscribe to
+                     * the Error event, which is invoked with an error string.   */
 
                     TW.Error += (sender, e) => Debug.WriteLine(e.Error, "GUI/ATB");
 
@@ -164,23 +168,25 @@ namespace Tutorial
                      * to handle the event yourself. There are handlers for popular
                      * window managers, such as SFML, SDL, Winforms, etc... You may
                      * also handle them manually, by calling the Handle* methods as
-                     * needed, but beware you will need to do some translation.  */
+                     * needed, but beware you will need to do some translation. One
+                     * example of translation is given in the Sample, where we need
+                     * to translate OpenTK keyboard/mouse events - check it out! */
 
                     // [hook up context to event loop]
 
                     /* For AntTweakBar to be able to draw into your window, it must
                      * know its size. For most window managers, the event loop will
                      * automatically handle this, but for some others, you must set
-                     * the initial window size manually, through this method - note
-                     * you only have to call it once each time the size changes. */
+                     * the window size manually, through this method. Note you only
+                     * should call it once each time the window size changes.    */
 
-                    context.HandleResize(new Size(1280, 800));
+                    context.HandleResize(new Size(1280, 800)); // for instance
 
                     /* Finally, right before displaying your frame, call the method
                      * below to tell AntTweakBar to draw every bar in a context, on
                      * top of whatever has been rendered (if anything). Enjoy!   */
 
-                    /* context.Draw(); */
+                    /* context.Draw(); */ // Commented out since we have no window
 
                     // [display frame to screen]
                 }
