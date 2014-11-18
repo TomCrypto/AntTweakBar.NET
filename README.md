@@ -10,7 +10,7 @@ First of all, install AntTweakBar on your system. For Linux, this means compilin
 
 A solution file is provided which can be used to compile the managed library wrapper, `AntTweakBar.NET.dll`, just add it as a reference to your project and you're good to go! See the tutorial provided to find out how to use it (it's really short) and refer to the FAQ below if you encounter a problem or have a specific question. If the FAQ does not help, feel free to post an issue and I'll take a look at it.
 
-Now on [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/0.3.9)! Search for "AntTweakBar.NET" in the NuGet package manager to find it.
+Now on [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/)! Search for "AntTweakBar.NET" in the NuGet package manager to find it.
 
 Status
 ------
