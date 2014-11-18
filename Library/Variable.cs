@@ -48,7 +48,7 @@ namespace AntTweakBar
                 throw new ArgumentNullException("def");
             else
             {
-                TW.SetCurrentWindow(Owner.Owner.WindowIndex); // ??
+                TW.SetCurrentWindow(Owner.Owner.Identifier); // ??
                 TW.Define(String.Format("{0}/{1} {2}", Owner.ID, ID, def));
             }
         }

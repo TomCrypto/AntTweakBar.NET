@@ -39,7 +39,7 @@ namespace AntTweakBar
             setCallback = SetCallback;
             getCallback = GetCallback;
 
-            TW.SetCurrentWindow(bar.Owner.WindowIndex);
+            TW.SetCurrentWindow(bar.Owner.Identifier);
             TW.AddVarCB(Owner, ID, TW.VariableType.TW_TYPE_INT32,
                         setCallback, getCallback, IntPtr.Zero);
 

@@ -47,7 +47,7 @@ namespace AntTweakBar
                 throw new ArgumentNullException("context");
             else
             {
-                TW.SetCurrentWindow(context.WindowIndex);
+                TW.SetCurrentWindow(context.Identifier);
                 id = Guid.NewGuid().ToString();
                 pointer = TW.NewBar(id);
 
@@ -70,7 +70,7 @@ namespace AntTweakBar
                 throw new ArgumentNullException("def");
             else
             {
-                TW.SetCurrentWindow(Owner.WindowIndex);
+                TW.SetCurrentWindow(Owner.Identifier);
                 TW.Define(String.Format("{0} {1}", ID, def));
             }
         }
@@ -80,7 +80,7 @@ namespace AntTweakBar
         /// </summary>
         public void ShowGroup(String name, Boolean visible)
         {
-            TW.SetCurrentWindow(Owner.WindowIndex);
+            TW.SetCurrentWindow(Owner.Identifier);
             TW.Define(String.Format("{0}/{1} visible={2}", id, name, visible ? "true" : "false"));
         }
 
@@ -89,7 +89,7 @@ namespace AntTweakBar
         /// </summary>
         public void ExpandGroup(String name, Boolean expand)
         {
-            TW.SetCurrentWindow(Owner.WindowIndex);
+            TW.SetCurrentWindow(Owner.Identifier);
             TW.Define(String.Format("{0}/{1} opened={2}", id, name, expand ? "true" : "false"));
         }
 
@@ -268,7 +268,7 @@ namespace AntTweakBar
 
             if (Owner.Contains(this))
             {
-                TW.SetCurrentWindow(Owner.WindowIndex);
+                TW.SetCurrentWindow(Owner.Identifier);
                 TW.DeleteBar(pointer);
                 Owner.Remove(this);
             }

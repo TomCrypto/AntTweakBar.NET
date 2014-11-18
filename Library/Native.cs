@@ -289,16 +289,14 @@ namespace AntTweakBar
             return Marshal.PtrToStringAuto(TwGetLastError());
         }
 
-        internal static void Init(GraphicsAPI graphicsAPI, IntPtr device)
+        internal static bool Init(GraphicsAPI graphicsAPI, IntPtr device)
         {
-            if (TwInit(graphicsAPI, device) == 0)
-                throw new AntTweakBarException("TwInit failed");
+            return !(TwInit(graphicsAPI, device) == 0);
         }
 
         internal static void Terminate()
         {
-            if (TwTerminate() == 0)
-                throw new AntTweakBarException("TwTerminate failed");
+            TwTerminate(); /* We cannot meaningfully handle TwTerminate errors anyway. */
         }
 
         internal static void Draw()
