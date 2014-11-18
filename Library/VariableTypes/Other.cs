@@ -33,17 +33,18 @@ namespace AntTweakBar
                 Clicked(this, e);
         }
 
-        public Button(Bar bar, EventHandler clicked = null, String def = null) : base(bar)
+        private static void InitVariable(Variable var, String id)
         {
-            Clicked += clicked;
+            TW.AddButton(var.ParentBar.Pointer, id,
+                         ((Button)var).Callback,
+                         IntPtr.Zero);
+        }
+
+        public Button(Bar bar, EventHandler clicked = null, String def = null)
+            : base(bar, InitVariable, def)
+        {
             callback = Callback;
-
-            TW.AddButton(ParentBar.Pointer, ID, callback, IntPtr.Zero);
-
-            ParentBar.Add(this);
-            Label = "undef";
-
-            SetDefinition(def);
+            Clicked += clicked;
         }
     }
 
@@ -52,13 +53,15 @@ namespace AntTweakBar
     /// </summary>
     public class Separator : Variable
     {
-        public Separator(Bar bar, String def = null) : base(bar)
+        private static void InitVariable(Variable var, String id)
         {
-            TW.AddSeparator(ParentBar.Pointer, ID);
+            TW.AddSeparator(var.ParentBar.Pointer, id);
+        }
 
-            ParentBar.Add(this);
+        public Separator(Bar bar, String def = null)
+            : base(bar, InitVariable, def)
+        {
 
-            SetDefinition(def);
         }
     }
 
@@ -90,19 +93,20 @@ namespace AntTweakBar
 
         #endregion
 
+        private static void InitVariable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_CSSTRING,
+                        ((StringVariable)var).SetCallback,
+                        ((StringVariable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
         public StringVariable(Bar bar, String initialValue = "", String def = null)
-            : base(bar)
+            : base(bar, InitVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
-
-            TW.SetCurrentWindow(bar.ParentContext.Identifier);
-            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_CSSTRING,
-                        setCallback, getCallback, IntPtr.Zero);
-
-            ParentBar.Add(this);
-            Label = "undef";
-            SetDefinition(def);
             Value = initialValue;
         }
 

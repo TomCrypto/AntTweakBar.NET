@@ -31,19 +31,20 @@ namespace AntTweakBar
 
         #endregion
 
+        private static void InitVariable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_BOOL8,
+                        ((BoolVariable)var).SetCallback,
+                        ((BoolVariable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
         public BoolVariable(Bar bar, Boolean initialValue = false, String def = null)
-            : base(bar)
+            : base(bar, InitVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
-
-            TW.SetCurrentWindow(bar.ParentContext.Identifier);
-            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_BOOL8,
-                        setCallback, getCallback, IntPtr.Zero);
-
-            ParentBar.Add(this);
-            Label = Variable.UnnamedLabel;
-            SetDefinition(def);
             Value = initialValue;
         }
 
@@ -118,23 +119,27 @@ namespace AntTweakBar
 
         #endregion
 
-        public EnumVariable(Bar bar, T initialValue, String def = null)
-            : base(bar)
+        private static void InitVariable(Variable var, String id)
         {
             if (!typeof(T).IsEnum)
-                throw new InvalidOperationException(String.Format("Type {0} is not an enumeration", typeof(T).Name));
+                throw new InvalidOperationException(String.Format("Type {0} is not an enumeration", typeof(T).FullName));
 
+            var enumNames = String.Join(",", typeof(T).GetEnumNames());
+
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.DefineEnumFromString(typeof(T).FullName, enumNames),
+                        ((EnumVariable<T>)var).SetCallback,
+                        ((EnumVariable<T>)var).GetCallback,
+                        IntPtr.Zero);
+
+            TW.SetParam(var.ParentBar.Pointer, var.ID, "enum", EnumString);
+        }
+
+        public EnumVariable(Bar bar, T initialValue, String def = null)
+            : base(bar, InitVariable, def)
+        {
             setCallback = SetCallback;
             getCallback = GetCallback;
-
-            var variableType = TW.DefineEnumFromString(typeof(T).Name, String.Join(",", typeof(T).GetEnumNames()));
-
-            TW.AddVarCB(ParentBar.Pointer, ID, variableType, setCallback, getCallback, IntPtr.Zero);
-            TW.SetParam(ParentBar.Pointer, ID, "enum", EnumString);
-
-            ParentBar.Add(this);
-            Label = "undef";
-            SetDefinition(def);
             Value = initialValue;
         }
 

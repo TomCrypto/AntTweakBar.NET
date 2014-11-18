@@ -159,19 +159,20 @@ namespace AntTweakBar
 
         #endregion
 
+        private static void InitVariable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_COLOR3F,
+                        ((ColorVariable)var).SetCallback,
+                        ((ColorVariable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
         public ColorVariable(Bar bar, float r = 0, float g = 0, float b = 0, String def = null)
-            : base(bar)
+            : base(bar, InitVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
-
-            TW.SetCurrentWindow(bar.ParentContext.Identifier);
-            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_COLOR3F,
-                        setCallback, getCallback, IntPtr.Zero);
-
-            ParentBar.Add(this);
-            Label = "undef";
-            SetDefinition(def);
             R = r;
             G = g;
             B = b;
@@ -311,19 +312,20 @@ namespace AntTweakBar
 
         #endregion
 
+        private static void InitVariable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_COLOR4F,
+                        ((Color4Variable)var).SetCallback,
+                        ((Color4Variable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
         public Color4Variable(Bar bar, float r = 0, float g = 0, float b = 0, float a = 0, String def = null)
-            : base(bar)
+            : base(bar, InitVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
-
-            TW.SetCurrentWindow(bar.ParentContext.Identifier);
-            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_COLOR4F,
-                        setCallback, getCallback, IntPtr.Zero);
-
-            ParentBar.Add(this);
-            Label = "undef";
-            SetDefinition(def);
             R = r;
             G = g;
             B = b;
@@ -480,19 +482,20 @@ namespace AntTweakBar
 
         #endregion
 
+        private static void InitVariable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_DIR3F,
+                        ((VectorVariable)var).SetCallback,
+                        ((VectorVariable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
         public VectorVariable(Bar bar, float x = 0, float y = 0, float z = 0, String def = null)
-            : base(bar)
+            : base(bar, InitVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
-
-            TW.SetCurrentWindow(bar.ParentContext.Identifier);
-            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_DIR3F,
-                        setCallback, getCallback, IntPtr.Zero);
-
-            ParentBar.Add(this);
-            Label = "undef";
-            SetDefinition(def);
             X = x;
             Y = y;
             Z = z;
@@ -607,19 +610,20 @@ namespace AntTweakBar
 
         #endregion
 
+        private static void InitVariable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_QUAT4F,
+                        ((QuaternionVariable)var).SetCallback,
+                        ((QuaternionVariable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
         public QuaternionVariable(Bar bar, float x = 0, float y = 0, float z = 0, float w = 0, String def = null)
-            : base(bar)
+            : base(bar, InitVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
-
-            TW.SetCurrentWindow(bar.ParentContext.Identifier);
-            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_QUAT4F,
-                        setCallback, getCallback, IntPtr.Zero);
-
-            ParentBar.Add(this);
-            Label = "undef";
-            SetDefinition(def);
             X = x;
             Y = y;
             Z = z;

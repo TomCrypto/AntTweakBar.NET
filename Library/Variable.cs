@@ -11,7 +11,7 @@ namespace AntTweakBar
         /// <summary>
         /// The default label for unnamed variables.
         /// </summary>
-        protected const String UnnamedLabel = "<unnamed>";
+        private const String UnnamedLabel = "<unnamed>";
 
         /// <summary>
         /// Gets this variable's context-dependent unique identifier.
@@ -27,12 +27,18 @@ namespace AntTweakBar
         /// Creates a new variable in a given AntTweakBar bar.
         /// </summary>
         /// <param name="parent">The bar the variable should be created in.</param>
-        protected Variable(Bar parent)
+        /// <param name="initFunc">A delegate which will initialize the variable.</param>
+        /// <param name="def">An optional definition string for the new variable.</param>
+        protected Variable(Bar parent, Action<Variable, String> initFunc, String def = null)
         {
             if ((ParentBar = parent) == null)
                 throw new ArgumentNullException("parent");
             
-            ID = Guid.NewGuid().ToString();
+            TW.SetCurrentWindow(ParentBar.ParentContext.Identifier);
+            initFunc(this, ID = Guid.NewGuid().ToString());
+            Label = UnnamedLabel;
+            ParentBar.Add(this);
+            SetDefinition(def);
         }
 
         /// <summary>

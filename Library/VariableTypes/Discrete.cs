@@ -30,19 +30,20 @@ namespace AntTweakBar
 
         #endregion
 
+        private static void InitVariable(Variable var, String id)
+        {
+            TW.AddVarCB(var.ParentBar.Pointer, id,
+                        TW.VariableType.TW_TYPE_INT32,
+                        ((IntVariable)var).SetCallback,
+                        ((IntVariable)var).GetCallback,
+                        IntPtr.Zero);
+        }
+
         public IntVariable(Bar bar, Int32 initialValue = 0, String def = null)
-            : base(bar)
+            : base(bar, InitVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
-
-            TW.SetCurrentWindow(bar.ParentContext.Identifier);
-            TW.AddVarCB(ParentBar.Pointer, ID, TW.VariableType.TW_TYPE_INT32,
-                        setCallback, getCallback, IntPtr.Zero);
-
-            ParentBar.Add(this);
-            Label = "undef";
-            SetDefinition(def);
             Value = initialValue;
         }
 

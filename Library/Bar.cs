@@ -41,9 +41,8 @@ namespace AntTweakBar
             if ((ParentContext = parent) == null)
                 throw new ArgumentNullException("parent");
             
-            TW.SetCurrentWindow(parent.Identifier);
-            ID = Guid.NewGuid().ToString();
-            Pointer = TW.NewBar(ID);
+            TW.SetCurrentWindow(ParentContext.Identifier); // per context
+            Pointer = TW.NewBar(ID = Guid.NewGuid().ToString());
             ParentContext.Add(this);
             Label = UnnamedLabel;
             SetDefinition(def);
