@@ -37,9 +37,7 @@ Global
 		{10199F3D-2E04-45FB-8318-ED54FA455BCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
+	    StartupItem = Sample\Sample.csproj
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Tutorial\Tutorial.csproj
 	EndGlobalSection
 EndGlobal

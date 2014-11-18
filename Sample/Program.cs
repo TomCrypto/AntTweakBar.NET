@@ -278,7 +278,7 @@ namespace Sample
         private readonly Context context;
         private readonly Fractal fractal;
 
-        public Program() : base(1024, 768, GraphicsMode.Default, "AntTweakBar.NET")
+        public Program() : base(1024, 768, GraphicsMode.Default, "AntTweakBar.NET Sample")
         {
             context = new Context(TW.GraphicsAPI.OpenGLCore);
             fractal = new Fractal();

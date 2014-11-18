@@ -3,7 +3,7 @@
 [Oo]bj/
 
 # Nuget Packaging Area
-AntTweakBar.NET.*
+.packaging
 
 # mstest test results
 TestResults
