@@ -41,8 +41,8 @@ namespace AntTweakBar
             if ((ParentContext = parent) == null)
                 throw new ArgumentNullException("parent");
             
-            TW.SetCurrentWindow(ParentContext.Identifier); // per context
-            Pointer = TW.NewBar(ID = Guid.NewGuid().ToString());
+            Tw.SetCurrentWindow(ParentContext.Identifier); // per context
+            Pointer = Tw.NewBar(ID = Guid.NewGuid().ToString());
             ParentContext.Add(this);
             Label = UnnamedLabel;
             SetDefinition(def);
@@ -56,8 +56,8 @@ namespace AntTweakBar
         {
             if (def != null)
             {
-                TW.SetCurrentWindow(ParentContext.Identifier);
-                TW.Define(String.Format("{0} {1}", ID, def));
+                Tw.SetCurrentWindow(ParentContext.Identifier);
+                Tw.Define(String.Format("{0} {1}", ID, def));
             }
         }
 
@@ -70,8 +70,8 @@ namespace AntTweakBar
         /// <param name="visible">Whether the group should be visible.</param>
         public void ShowGroup(String groupName, Boolean visible)
         {
-            TW.SetCurrentWindow(ParentContext.Identifier);
-            TW.Define(String.Format("{0}/{1} visible={2}", ID, groupName, visible ? "true" : "false"));
+            Tw.SetCurrentWindow(ParentContext.Identifier);
+            Tw.Define(String.Format("{0}/{1} visible={2}", ID, groupName, visible ? "true" : "false"));
         }
 
         /// <summary>
@@ -81,8 +81,8 @@ namespace AntTweakBar
         /// <param name="opened">Whether the group should be open.</param>
         public void OpenGroup(String groupName, Boolean opened)
         {
-            TW.SetCurrentWindow(ParentContext.Identifier);
-            TW.Define(String.Format("{0}/{1} opened={2}", ID, groupName, opened ? "true" : "false"));
+            Tw.SetCurrentWindow(ParentContext.Identifier);
+            Tw.Define(String.Format("{0}/{1} opened={2}", ID, groupName, opened ? "true" : "false"));
         }
 
         /// <summary>
@@ -90,8 +90,8 @@ namespace AntTweakBar
         /// </summary>
         public String Label
         {
-            get { return TW.GetStringParam(Pointer, null, "label"); }
-            set { TW.SetParam(Pointer, null, "label", value); }
+            get { return Tw.GetStringParam(Pointer, null, "label"); }
+            set { Tw.SetParam(Pointer, null, "label", value); }
         }
 
         /// <summary>
@@ -99,8 +99,8 @@ namespace AntTweakBar
         /// </summary>
         public String Help
         {
-            get { return TW.GetStringParam(Pointer, null, "help"); }
-            set { TW.SetParam(Pointer, null, "help", value); }
+            get { return Tw.GetStringParam(Pointer, null, "help"); }
+            set { Tw.SetParam(Pointer, null, "help", value); }
         }
 
         /// <summary>
@@ -108,8 +108,8 @@ namespace AntTweakBar
         /// </summary>
         public Color Color
         {
-            get { return TW.GetColorParam(Pointer, null, "color"); }
-            set { TW.SetParam(Pointer, null, "color", value); }
+            get { return Tw.GetColorParam(Pointer, null, "color"); }
+            set { Tw.SetParam(Pointer, null, "color", value); }
         }
 
         /// <summary>
@@ -117,8 +117,8 @@ namespace AntTweakBar
         /// </summary>
         public byte Alpha
         {
-            get { return (byte)TW.GetIntParam(Pointer, null, "alpha")[0]; }
-            set { TW.SetParam(Pointer, null, "alpha", value); }
+            get { return (byte)Tw.GetIntParam(Pointer, null, "alpha")[0]; }
+            set { Tw.SetParam(Pointer, null, "alpha", value); }
         }
 
         /// <summary>
@@ -126,8 +126,8 @@ namespace AntTweakBar
         /// </summary>
         public Point Position
         {
-            get { return TW.GetPointParam(Pointer, null, "position"); }
-            set { TW.SetParam(Pointer, null, "position", value); }
+            get { return Tw.GetPointParam(Pointer, null, "position"); }
+            set { Tw.SetParam(Pointer, null, "position", value); }
         }
 
         /// <summary>
@@ -135,8 +135,8 @@ namespace AntTweakBar
         /// </summary>
         public Size Size
         {
-            get { return TW.GetSizeParam(Pointer, null, "size"); }
-            set { TW.SetParam(Pointer, null, "size", value); }
+            get { return Tw.GetSizeParam(Pointer, null, "size"); }
+            set { Tw.SetParam(Pointer, null, "size", value); }
         }
 
         /// <summary>
@@ -144,8 +144,8 @@ namespace AntTweakBar
         /// </summary>
         public Boolean Iconifiable
         {
-            get { return TW.GetBooleanParam(Pointer, null, "iconifiable"); }
-            set { TW.SetParam(Pointer, null, "iconifiable", value); }
+            get { return Tw.GetBooleanParam(Pointer, null, "iconifiable"); }
+            set { Tw.SetParam(Pointer, null, "iconifiable", value); }
         }
 
         /// <summary>
@@ -153,8 +153,8 @@ namespace AntTweakBar
         /// </summary>
         public Boolean Movable
         {
-            get { return TW.GetBooleanParam(Pointer, null, "movable"); }
-            set { TW.SetParam(Pointer, null, "movable", value); }
+            get { return Tw.GetBooleanParam(Pointer, null, "movable"); }
+            set { Tw.SetParam(Pointer, null, "movable", value); }
         }
 
         /// <summary>
@@ -162,8 +162,8 @@ namespace AntTweakBar
         /// </summary>
         public Boolean Resizable
         {
-            get { return TW.GetBooleanParam(Pointer, null, "resizable"); }
-            set { TW.SetParam(Pointer, null, "resizable", value); }
+            get { return Tw.GetBooleanParam(Pointer, null, "resizable"); }
+            set { Tw.SetParam(Pointer, null, "resizable", value); }
         }
 
         /// <summary>
@@ -171,8 +171,8 @@ namespace AntTweakBar
         /// </summary>
         public Boolean Contained
         {
-            get { return TW.GetBooleanParam(Pointer, null, "contained"); }
-            set { TW.SetParam(Pointer, null, "contained", value); }
+            get { return Tw.GetBooleanParam(Pointer, null, "contained"); }
+            set { Tw.SetParam(Pointer, null, "contained", value); }
         }
 
         /// <summary>
@@ -180,8 +180,8 @@ namespace AntTweakBar
         /// </summary>
         public Boolean Visible
         {
-            get { return TW.GetBooleanParam(Pointer, null, "visible"); }
-            set { TW.SetParam(Pointer, null, "visible", value); }
+            get { return Tw.GetBooleanParam(Pointer, null, "visible"); }
+            set { Tw.SetParam(Pointer, null, "visible", value); }
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace AntTweakBar
         /// </summary>
         public void BringToFront()
         {
-            TW.SetTopBar(Pointer);
+            Tw.SetTopBar(Pointer);
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace AntTweakBar
         /// </summary>
         public void SendToBack()
         {
-            TW.SetBottomBar(Pointer);
+            Tw.SetBottomBar(Pointer);
         }
 
         #endregion
@@ -254,7 +254,7 @@ namespace AntTweakBar
                 }
                 
                 if (Pointer != null) {
-                    TW.DeleteBar(Pointer);
+                    Tw.DeleteBar(Pointer);
                 }
 
                 disposed = true;

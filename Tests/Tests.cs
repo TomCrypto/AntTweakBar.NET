@@ -32,7 +32,7 @@ namespace Tests
         [SetUp]
         public void Init()
         {
-            context = new Context(TW.GraphicsAPI.OpenGL);
+            context = new Context(Tw.GraphicsAPI.OpenGL);
             bar = new Bar(context);
         }
 

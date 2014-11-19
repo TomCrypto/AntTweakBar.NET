@@ -89,8 +89,8 @@ namespace AntTweakBar
         /// </summary>
         private static void InitColor4Variable(Variable var, String id)
         {
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.VariableType.Color4F,
+            Tw.AddVarCB(var.ParentBar.Pointer, id,
+                        Tw.VariableType.Color4F,
                         ((Color4Variable)var).SetCallback,
                         ((Color4Variable)var).GetCallback,
                         IntPtr.Zero, null);
@@ -119,7 +119,7 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
-        private readonly TW.SetVarCallback setCallback;
+        private readonly Tw.SetVarCallback setCallback;
         private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             float[] data = new float[4]; /* R, G, B, A */
@@ -142,7 +142,7 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs the variable's value.
         /// </summary>
-        private readonly TW.GetVarCallback getCallback;
+        private readonly Tw.GetVarCallback getCallback;
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             float[] data = new float[] { R, G, B, A };
@@ -158,7 +158,7 @@ namespace AntTweakBar
         {
             get
             {
-                switch (TW.GetStringParam(ParentBar.Pointer, ID, "colormode"))
+                switch (Tw.GetStringParam(ParentBar.Pointer, ID, "colormode"))
                 {
                     case "rgb":
                         return ColorMode.RGB;
@@ -173,10 +173,10 @@ namespace AntTweakBar
                 switch (value)
                 {
                     case ColorMode.RGB:
-                        TW.SetParam(ParentBar.Pointer, ID, "colormode", "rgb");
+                        Tw.SetParam(ParentBar.Pointer, ID, "colormode", "rgb");
                         break;
                     case ColorMode.HLS:
-                        TW.SetParam(ParentBar.Pointer, ID, "colormode", "hls");
+                        Tw.SetParam(ParentBar.Pointer, ID, "colormode", "hls");
                         break;
                     default:
                         throw new ArgumentException("Invalid color mode.");

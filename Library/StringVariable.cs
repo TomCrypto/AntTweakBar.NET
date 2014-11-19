@@ -46,8 +46,8 @@ namespace AntTweakBar
         /// </summary>
         private static void InitStringVariable(Variable var, String id)
         {
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.VariableType.CSString,
+            Tw.AddVarCB(var.ParentBar.Pointer, id,
+                        Tw.VariableType.CSString,
                         ((StringVariable)var).SetCallback,
                         ((StringVariable)var).GetCallback,
                         IntPtr.Zero, null);
@@ -88,7 +88,7 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
-        private readonly TW.SetVarCallback setCallback;
+        private readonly Tw.SetVarCallback setCallback;
         private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             var strBytes = new List<byte>();
@@ -111,7 +111,7 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs the variable's value.
         /// </summary>
-        private readonly TW.GetVarCallback getCallback;
+        private readonly Tw.GetVarCallback getCallback;
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             var bytes = new List<byte>(Encoding.UTF8.GetBytes(Value));

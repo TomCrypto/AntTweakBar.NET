@@ -12,7 +12,7 @@ namespace AntTweakBar
         /// </summary>
         private static void InitSeparator(Variable var, String id)
         {
-            TW.AddSeparator(var.ParentBar.Pointer, id, null);
+            Tw.AddSeparator(var.ParentBar.Pointer, id, null);
         }
 
         /// <summary>

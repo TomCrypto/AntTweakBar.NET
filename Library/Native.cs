@@ -18,7 +18,7 @@ namespace AntTweakBar
 
         [DllImport(DLLName, EntryPoint = "TwInit")]
         public static extern Boolean TwInit(
-            [In] TW.GraphicsAPI graphicsAPI,
+            [In] Tw.GraphicsAPI graphicsAPI,
             [In] IntPtr device);
 
         [DllImport(DLLName, EntryPoint = "TwTerminate")]
@@ -29,7 +29,7 @@ namespace AntTweakBar
 
         [DllImport(DLLName, EntryPoint = "TwHandleErrors")]
         public static extern void TwHandleErrors(
-            [In] TW.ErrorHandler handler);
+            [In] Tw.ErrorHandler handler);
 
         [DllImport(DLLName, EntryPoint = "TwWindowSize")]
         public static extern Boolean TwWindowSize(
@@ -47,13 +47,13 @@ namespace AntTweakBar
 
         [DllImport(DLLName, EntryPoint = "TwMouseButton")]
         public static extern Boolean TwMouseButton(
-            [In] TW.MouseAction action,
-            [In] TW.MouseButton button);
+            [In] Tw.MouseAction action,
+            [In] Tw.MouseButton button);
 
         [DllImport(DLLName, EntryPoint = "TwKeyPressed")]
         public static extern Boolean TwKeyPressed(
             [In] Int32 key,
-            [In] TW.KeyModifier modifiers);
+            [In] Tw.KeyModifier modifiers);
 
         [DllImport(DLLName, EntryPoint = "TwEventSFML")]
         public static extern Boolean TwEventSFML(
@@ -114,7 +114,7 @@ namespace AntTweakBar
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
             [In, MarshalAs(UnmanagedType.LPStr)] String paramName,
-            [In] TW.ParamValueType type,
+            [In] Tw.ParamValueType type,
             [In] uint reserved,
             [In, MarshalAs(UnmanagedType.LPStr)] String param);
 
@@ -123,7 +123,7 @@ namespace AntTweakBar
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
             [In, MarshalAs(UnmanagedType.LPStr)] String paramName,
-            [In] TW.ParamValueType type,
+            [In] Tw.ParamValueType type,
             [In] uint elemCount,
             [In] Int32[] param);
 
@@ -132,7 +132,7 @@ namespace AntTweakBar
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
             [In, MarshalAs(UnmanagedType.LPStr)] String paramName,
-            [In] TW.ParamValueType type,
+            [In] Tw.ParamValueType type,
             [In] uint elemCount,
             [In] Single[] param);
 
@@ -141,7 +141,7 @@ namespace AntTweakBar
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
             [In, MarshalAs(UnmanagedType.LPStr)] String paramName,
-            [In] TW.ParamValueType type,
+            [In] Tw.ParamValueType type,
             [In] uint elemCount,
             [In] Double[] param);
 
@@ -150,7 +150,7 @@ namespace AntTweakBar
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
             [In, MarshalAs(UnmanagedType.LPStr)] String paramName,
-            [In] TW.ParamValueType type,
+            [In] Tw.ParamValueType type,
             [In] uint maxStrLength,
             [Out, MarshalAs(UnmanagedType.LPStr)] StringBuilder param);
 
@@ -159,7 +159,7 @@ namespace AntTweakBar
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
             [In, MarshalAs(UnmanagedType.LPStr)] String paramName,
-            [In] TW.ParamValueType type,
+            [In] Tw.ParamValueType type,
             [In] uint maxElemCount,
             [Out] Int32[] param);
 
@@ -168,7 +168,7 @@ namespace AntTweakBar
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
             [In, MarshalAs(UnmanagedType.LPStr)] String paramName,
-            [In] TW.ParamValueType type,
+            [In] Tw.ParamValueType type,
             [In] uint maxElemCount,
             [Out] Single[] param);
 
@@ -177,7 +177,7 @@ namespace AntTweakBar
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
             [In, MarshalAs(UnmanagedType.LPStr)] String paramName,
-            [In] TW.ParamValueType type,
+            [In] Tw.ParamValueType type,
             [In] uint maxElemCount,
             [Out] Double[] param);
 
@@ -185,7 +185,7 @@ namespace AntTweakBar
         public static extern Boolean TwAddVarRO(
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String name,
-            [In] TW.VariableType type,
+            [In] Tw.VariableType type,
             [In] IntPtr var,
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
@@ -193,7 +193,7 @@ namespace AntTweakBar
         public static extern Boolean TwAddVarRW(
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String name,
-            [In] TW.VariableType type,
+            [In] Tw.VariableType type,
             [In] IntPtr var,
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
@@ -201,9 +201,9 @@ namespace AntTweakBar
         public static extern Boolean TwAddVarCB(
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String name,
-            [In] TW.VariableType type,
-            [In] TW.SetVarCallback setCallback,
-            [In] TW.GetVarCallback getCallback,
+            [In] Tw.VariableType type,
+            [In] Tw.SetVarCallback setCallback,
+            [In] Tw.GetVarCallback getCallback,
             [In] IntPtr clientData,
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
@@ -217,12 +217,12 @@ namespace AntTweakBar
         public static extern Boolean TwAddButton(
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String name,
-            [In] TW.ButtonCallback callback,
+            [In] Tw.ButtonCallback callback,
             [In] IntPtr clientData,
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
         [DllImport(DLLName, EntryPoint = "TwDefineEnumFromString", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
-        public static extern TW.VariableType TwDefineEnumFromString(
+        public static extern Tw.VariableType TwDefineEnumFromString(
             [In, MarshalAs(UnmanagedType.LPStr)] String name,
             [In, MarshalAs(UnmanagedType.LPStr)] String enumString);
 
@@ -235,7 +235,7 @@ namespace AntTweakBar
     /// <summary>
     /// A low-level wrapper to the AntTweakBar API.
     /// </summary>
-    public static partial class TW
+    public static partial class Tw
     {
         /// <summary>
         /// Returns the last error that has occured during a previous AntTweakBar function call.
@@ -313,8 +313,8 @@ namespace AntTweakBar
         /// <summary>
         /// Call this function to inform AntTweakBar that a mouse button is pressed.
         /// </summary>
-        /// <param name="action">Tells if the button is pressed or released. It is one of the <see cref="AntTweakBar.TW.MouseAction"/> constants.</param>
-        /// <param name="button">Tells which button is pressed. It is one of the <see cref="AntTweakBar.TW.MouseButton"/> constants.</param>
+        /// <param name="action">Tells if the button is pressed or released. It is one of the <see cref="AntTweakBar.Tw.MouseAction"/> constants.</param>
+        /// <param name="button">Tells which button is pressed. It is one of the <see cref="AntTweakBar.Tw.MouseButton"/> constants.</param>
         /// <returns>Whether the mouse event has been handled by AntTweakBar.</returns>
         public static bool MouseClick(MouseAction action, MouseButton button)
         {
@@ -324,8 +324,8 @@ namespace AntTweakBar
         /// <summary>
         /// Call this function to inform AntTweakBar when a keyboard event occurs.
         /// </summary>
-        /// <param name="key">The ASCII code of the pressed key, or one of the <see cref="AntTweakBar.TW.SpecialKey"/> codes.</param>
-        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.TW.KeyModifier"/> constants.</param>
+        /// <param name="key">The ASCII code of the pressed key, or one of the <see cref="AntTweakBar.Tw.SpecialKey"/> codes.</param>
+        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifier"/> constants.</param>
         /// <returns>Whether the key event has been handled by AntTweakBar.</returns>
         public static bool KeyPressed(int key, KeyModifier modifiers)
         {
@@ -371,7 +371,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Returns the current window context identifier previously set by <see cref="AntTweakBar.TW.SetCurrentWindow"/>.
+        /// Returns the current window context identifier previously set by <see cref="AntTweakBar.Tw.SetCurrentWindow"/>.
         /// </summary>
         /// <returns>The current window context identifier.</returns>
         public static int GetCurrentWindow()
@@ -380,7 +380,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Check if a window context associated to the identifier windowID exists. A window context exists if it has previously been created by <see cref="AntTweakBar.TW.SetCurrentWindow"/>.
+        /// Check if a window context associated to the identifier windowID exists. A window context exists if it has previously been created by <see cref="AntTweakBar.Tw.SetCurrentWindow"/>.
         /// </summary>
         /// <param name="windowID">Window context identifier.</param>
         /// <returns>Whether the window context exists.</returns>
@@ -406,7 +406,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// This function deletes a tweak bar previously created by <see cref="AntTweakBar.TW.NewBar"/>.
+        /// This function deletes a tweak bar previously created by <see cref="AntTweakBar.Tw.NewBar"/>.
         /// </summary>
         /// <param name="bar">Identifier to the tweak bar to delete.</param>
         public static void DeleteBar(IntPtr bar)
@@ -439,7 +439,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Forces bar content to be updated. By default bar content is periodically refreshed when <see cref="AntTweakBar.TW.Draw"/> is called (the update frequency is defined by the bar parameter refresh).
+        /// Forces bar content to be updated. By default bar content is periodically refreshed when <see cref="AntTweakBar.Tw.Draw"/> is called (the update frequency is defined by the bar parameter refresh).
         /// </summary>
         /// <param name="bar">Bar identifier.</param>
         public static void RefreshBar(IntPtr bar)
@@ -682,7 +682,7 @@ namespace AntTweakBar
         /// </summary>
         /// <param name="bar">The tweak bar to which adding a new variable.</param>
         /// <param name="name">The name of the variable. It will be displayed in the tweak bar if no label is specified for this variable. It will also be used to refer to this variable in other functions.</param>
-        /// <param name="type">Type of the variable. It must be one of the <see cref="AntTweakBar.TW.VariableType"/> constants or a user defined type.</param>
+        /// <param name="type">Type of the variable. It must be one of the <see cref="AntTweakBar.Tw.VariableType"/> constants or a user defined type.</param>
         /// <param name="var">Pointer to the variable linked to this entry.</param>
         /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddVarRO(IntPtr bar, String name, VariableType type, IntPtr var, String def)
@@ -697,7 +697,7 @@ namespace AntTweakBar
         /// </summary>
         /// <param name="bar">The tweak bar to which adding a new variable.</param>
         /// <param name="name">The name of the variable. It will be displayed in the tweak bar if no label is specified for this variable. It will also be used to refer to this variable in other functions.</param>
-        /// <param name="type">Type of the variable. It must be one of the <see cref="AntTweakBar.TW.VariableType"/> constants or a user defined type.</param>
+        /// <param name="type">Type of the variable. It must be one of the <see cref="AntTweakBar.Tw.VariableType"/> constants or a user defined type.</param>
         /// <param name="var">Pointer to the variable linked to this entry.</param>
         /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddVarRW(IntPtr bar, String name, VariableType type, IntPtr var, String def)
@@ -712,7 +712,7 @@ namespace AntTweakBar
         /// </summary>
         /// <param name="bar">The tweak bar to which adding a new variable.</param>
         /// <param name="name">The name of the variable. It will be displayed in the tweak bar if no label is specified for this variable. It will also be used to refer to this variable in other functions.</param>
-        /// <param name="type">Type of the variable. It must be one of the <see cref="AntTweakBar.TW.VariableType"/> constants or a user defined type.</param>
+        /// <param name="type">Type of the variable. It must be one of the <see cref="AntTweakBar.Tw.VariableType"/> constants or a user defined type.</param>
         /// <param name="setCallback">The callback function that will be called by AntTweakBar to change the variable’s value.</param>
         /// <param name="getCallback">The callback function that will be called by AntTweakBar to get the variable’s value.</param>
         /// <param name="clientData">For your convenience, this is a supplementary pointer that will be passed to the callback functions when they are called.</param>

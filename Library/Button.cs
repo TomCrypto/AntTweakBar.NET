@@ -26,7 +26,7 @@ namespace AntTweakBar
         /// </summary>
         private static void InitButton(Variable var, String id)
         {
-            TW.AddButton(var.ParentBar.Pointer, id,
+            Tw.AddButton(var.ParentBar.Pointer, id,
                          ((Button)var).Callback,
                          IntPtr.Zero, null);
         }
@@ -47,7 +47,7 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user clicks on the button.
         /// </summary>
-        private readonly TW.ButtonCallback callback;
+        private readonly Tw.ButtonCallback callback;
         private void Callback(IntPtr clientData)
         {
             OnClicked(EventArgs.Empty);

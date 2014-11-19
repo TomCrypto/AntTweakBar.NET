@@ -18,14 +18,14 @@ namespace AntTweakBar
         /// <param name="message">A descriptive error message.</param>
         public AntTweakBarException(String message) : base(message)
         {
-            Details = TW.GetLastError();
+            Details = Tw.GetLastError();
         }
     }
 
     /// <summary>
     /// A low-level wrapper to the AntTweakBar API.
     /// </summary>
-    public static partial class TW
+    public static partial class Tw
     {
         /// <summary>
         /// Event arguments for an AntTweakBar error.
@@ -54,7 +54,7 @@ namespace AntTweakBar
         /// <summary>
         /// Initializes the AntTweakBar.NET wrapper.
         /// </summary>
-        static TW()
+        static Tw()
         {
             NativeMethods.TwHandleErrors(error =>
             {

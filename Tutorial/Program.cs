@@ -42,7 +42,7 @@ namespace Tutorial
                  * from whatever DirectX wrapper you are using (e.g. SharpDX). This
                  * is not necessary if using OpenGL, as shown in the code below. */
 
-                using (var context = new Context(TW.GraphicsAPI.OpenGL))
+                using (var context = new Context(Tw.GraphicsAPI.OpenGL))
                 {
                     /*=========================== BARS ==========================*/
 
@@ -156,7 +156,7 @@ namespace Tutorial
                      * to intercept errors to log them. To do so, just subscribe to
                      * the Error event, which is invoked with an error string.   */
 
-                    TW.Error += (sender, e) => Debug.WriteLine(e.Error, "GUI/ATB");
+                    Tw.Error += (sender, e) => Debug.WriteLine(e.Error, "GUI/ATB");
 
                     /*================= EVENT/WINDOW INTEGRATION ================*/
 

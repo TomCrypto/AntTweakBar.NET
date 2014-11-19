@@ -48,8 +48,8 @@ namespace AntTweakBar
         /// </summary>
         private static void InitQuaternionVariable(Variable var, String id)
         {
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.VariableType.Quat4F,
+            Tw.AddVarCB(var.ParentBar.Pointer, id,
+                        Tw.VariableType.Quat4F,
                         ((QuaternionVariable)var).SetCallback,
                         ((QuaternionVariable)var).GetCallback,
                         IntPtr.Zero, null);
@@ -78,7 +78,7 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
-        private readonly TW.SetVarCallback setCallback;
+        private readonly Tw.SetVarCallback setCallback;
         private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             float[] data = new float[4]; /* X, Y, Z, W */
@@ -101,7 +101,7 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs the variable's value.
         /// </summary>
-        private readonly TW.GetVarCallback getCallback;
+        private readonly Tw.GetVarCallback getCallback;
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             float[] data = new float[] { X, Y, Z, W };
@@ -115,8 +115,8 @@ namespace AntTweakBar
         /// </summary>
         public Color ArrowColor
         {
-            get { return TW.GetColorParam(ParentBar.Pointer, ID, "arrowcolor"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "arrowcolor", value); }
+            get { return Tw.GetColorParam(ParentBar.Pointer, ID, "arrowcolor"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "arrowcolor", value); }
         }
 
         /// <summary>
@@ -124,8 +124,8 @@ namespace AntTweakBar
         /// </summary>
         public Boolean ShowValue
         {
-            get { return TW.GetBooleanParam(ParentBar.Pointer, ID, "showval"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "showval", value); }
+            get { return Tw.GetBooleanParam(ParentBar.Pointer, ID, "showval"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "showval", value); }
         }
 
         private CoordinateSystem coordinates =
@@ -141,9 +141,9 @@ namespace AntTweakBar
             get { return coordinates; }
             set
             {
-                TW.SetParam(ParentBar.Pointer, ID, "axisx", value.GetAxis(0));
-                TW.SetParam(ParentBar.Pointer, ID, "axisy", value.GetAxis(1));
-                TW.SetParam(ParentBar.Pointer, ID, "axisz", value.GetAxis(2));
+                Tw.SetParam(ParentBar.Pointer, ID, "axisx", value.GetAxis(0));
+                Tw.SetParam(ParentBar.Pointer, ID, "axisy", value.GetAxis(1));
+                Tw.SetParam(ParentBar.Pointer, ID, "axisz", value.GetAxis(2));
                 this.coordinates = value;
             }
         }

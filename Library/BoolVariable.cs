@@ -32,8 +32,8 @@ namespace AntTweakBar
         /// </summary>
         private static void InitBoolVariable(Variable var, String id)
         {
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.VariableType.Bool8,
+            Tw.AddVarCB(var.ParentBar.Pointer, id,
+                        Tw.VariableType.Bool8,
                         ((BoolVariable)var).SetCallback,
                         ((BoolVariable)var).GetCallback,
                         IntPtr.Zero, null);
@@ -56,7 +56,7 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
-        private readonly TW.SetVarCallback setCallback;
+        private readonly Tw.SetVarCallback setCallback;
         private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             bool data = Convert.ToBoolean(Marshal.ReadByte(pointer));
@@ -70,7 +70,7 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs the variable's value.
         /// </summary>
-        private readonly TW.GetVarCallback getCallback;
+        private readonly Tw.GetVarCallback getCallback;
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             Marshal.WriteByte(pointer, Convert.ToByte(Value));
@@ -83,8 +83,8 @@ namespace AntTweakBar
         /// </summary>
         public String LabelTrue
         {
-            get { return TW.GetStringParam(ParentBar.Pointer, ID, "true"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "true", value); }
+            get { return Tw.GetStringParam(ParentBar.Pointer, ID, "true"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "true", value); }
         }
 
         /// <summary>
@@ -92,8 +92,8 @@ namespace AntTweakBar
         /// </summary>
         public String LabelFalse
         {
-            get { return TW.GetStringParam(ParentBar.Pointer, ID, "false"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "false", value); }
+            get { return Tw.GetStringParam(ParentBar.Pointer, ID, "false"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "false", value); }
         }
 
         #endregion

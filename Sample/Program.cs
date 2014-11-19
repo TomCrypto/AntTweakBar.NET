@@ -206,16 +206,16 @@ namespace Sample
 
         private static bool HandleMouseClick(Context context, MouseButtonEventArgs e)
         {
-            var action = e.IsPressed ? TW.MouseAction.Pressed : TW.MouseAction.Released;
+            var action = e.IsPressed ? Tw.MouseAction.Pressed : Tw.MouseAction.Released;
 
             switch (e.Button)
             {
                 case MouseButton.Left:
-                    return context.HandleMouseClick(action, TW.MouseButton.Left);
+                    return context.HandleMouseClick(action, Tw.MouseButton.Left);
                 case MouseButton.Right:
-                    return context.HandleMouseClick(action, TW.MouseButton.Right);
+                    return context.HandleMouseClick(action, Tw.MouseButton.Right);
                 case MouseButton.Middle:
-                    return context.HandleMouseClick(action, TW.MouseButton.Middle);
+                    return context.HandleMouseClick(action, Tw.MouseButton.Middle);
             }
 
             return false;
@@ -223,48 +223,48 @@ namespace Sample
 
         private static bool HandleKeyPress(Context context, KeyboardKeyEventArgs e)
         {
-            var modifier = TW.KeyModifier.None;
+            var modifier = Tw.KeyModifier.None;
             if (e.Modifiers.HasFlag(KeyModifiers.Alt))
-                modifier |= TW.KeyModifier.Alt;
+                modifier |= Tw.KeyModifier.Alt;
             if (e.Modifiers.HasFlag(KeyModifiers.Shift))
-                modifier |= TW.KeyModifier.Shift;
+                modifier |= Tw.KeyModifier.Shift;
             if (e.Modifiers.HasFlag(KeyModifiers.Control))
-                modifier |= TW.KeyModifier.Ctrl;
+                modifier |= Tw.KeyModifier.Ctrl;
 
-            var mapping = new Dictionary<Key, TW.SpecialKey>()
+            var mapping = new Dictionary<Key, Tw.SpecialKey>()
             {
-                { Key.Back,          TW.SpecialKey.Backspace },
-                { Key.Tab,           TW.SpecialKey.Tab },
-                { Key.Clear,         TW.SpecialKey.Clear },
-                { Key.Enter,         TW.SpecialKey.Return },
-                { Key.Pause,         TW.SpecialKey.Pause },
-                { Key.Escape,        TW.SpecialKey.Escape },
+                { Key.Back,          Tw.SpecialKey.Backspace },
+                { Key.Tab,           Tw.SpecialKey.Tab },
+                { Key.Clear,         Tw.SpecialKey.Clear },
+                { Key.Enter,         Tw.SpecialKey.Return },
+                { Key.Pause,         Tw.SpecialKey.Pause },
+                { Key.Escape,        Tw.SpecialKey.Escape },
                 //{ Key.Space,         TW.SpecialKey.Space }, // already handled by KeyPress
-                { Key.Delete,        TW.SpecialKey.Delete },
-                { Key.Up,            TW.SpecialKey.Up },
-                { Key.Left,          TW.SpecialKey.Left },
-                { Key.Down,          TW.SpecialKey.Down },
-                { Key.Right,         TW.SpecialKey.Right },
-                { Key.Insert,        TW.SpecialKey.Insert },
-                { Key.Home,          TW.SpecialKey.Home },
-                { Key.End,           TW.SpecialKey.End },
-                { Key.PageUp,        TW.SpecialKey.PageUp },
-                { Key.PageDown,      TW.SpecialKey.PageDown },
-                { Key.F1,            TW.SpecialKey.F1 },
-                { Key.F2,            TW.SpecialKey.F2 },
-                { Key.F3,            TW.SpecialKey.F3 },
-                { Key.F4,            TW.SpecialKey.F4 },
-                { Key.F5,            TW.SpecialKey.F5 },
-                { Key.F6,            TW.SpecialKey.F6 },
-                { Key.F7,            TW.SpecialKey.F7 },
-                { Key.F8,            TW.SpecialKey.F8 },
-                { Key.F9,            TW.SpecialKey.F9 },
-                { Key.F10,           TW.SpecialKey.F10 },
-                { Key.F11,           TW.SpecialKey.F11 },
-                { Key.F12,           TW.SpecialKey.F12 },
-                { Key.F13,           TW.SpecialKey.F13 },
-                { Key.F14,           TW.SpecialKey.F14 },
-                { Key.F15,           TW.SpecialKey.F15 },
+                { Key.Delete,        Tw.SpecialKey.Delete },
+                { Key.Up,            Tw.SpecialKey.Up },
+                { Key.Left,          Tw.SpecialKey.Left },
+                { Key.Down,          Tw.SpecialKey.Down },
+                { Key.Right,         Tw.SpecialKey.Right },
+                { Key.Insert,        Tw.SpecialKey.Insert },
+                { Key.Home,          Tw.SpecialKey.Home },
+                { Key.End,           Tw.SpecialKey.End },
+                { Key.PageUp,        Tw.SpecialKey.PageUp },
+                { Key.PageDown,      Tw.SpecialKey.PageDown },
+                { Key.F1,            Tw.SpecialKey.F1 },
+                { Key.F2,            Tw.SpecialKey.F2 },
+                { Key.F3,            Tw.SpecialKey.F3 },
+                { Key.F4,            Tw.SpecialKey.F4 },
+                { Key.F5,            Tw.SpecialKey.F5 },
+                { Key.F6,            Tw.SpecialKey.F6 },
+                { Key.F7,            Tw.SpecialKey.F7 },
+                { Key.F8,            Tw.SpecialKey.F8 },
+                { Key.F9,            Tw.SpecialKey.F9 },
+                { Key.F10,           Tw.SpecialKey.F10 },
+                { Key.F11,           Tw.SpecialKey.F11 },
+                { Key.F12,           Tw.SpecialKey.F12 },
+                { Key.F13,           Tw.SpecialKey.F13 },
+                { Key.F14,           Tw.SpecialKey.F14 },
+                { Key.F15,           Tw.SpecialKey.F15 },
             };
 
             if (mapping.ContainsKey(e.Key))
@@ -287,7 +287,7 @@ namespace Sample
         {
             base.OnLoad(_);
 
-            context = new Context(TW.GraphicsAPI.OpenGLCore);
+            context = new Context(Tw.GraphicsAPI.OpenGLCore);
             fractal = new Fractal();
 
             /* Hook up the different events to the AntTweakBar.NET context, and

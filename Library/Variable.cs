@@ -35,7 +35,7 @@ namespace AntTweakBar
             if ((ParentBar = parent) == null)
                 throw new ArgumentNullException("parent");
             
-            TW.SetCurrentWindow(ParentBar.ParentContext.Identifier);
+            Tw.SetCurrentWindow(ParentBar.ParentContext.Identifier);
             initFunc(this, ID = Guid.NewGuid().ToString());
             created = true; /* Variable now created. */
             if (initLabel) Label = UnnamedLabel;
@@ -51,8 +51,8 @@ namespace AntTweakBar
         {
             if (def != null)
             {
-                TW.SetCurrentWindow(ParentBar.ParentContext.Identifier);
-                TW.Define(String.Format("{0}/{1} {2}", ParentBar.ID, ID, def));
+                Tw.SetCurrentWindow(ParentBar.ParentContext.Identifier);
+                Tw.Define(String.Format("{0}/{1} {2}", ParentBar.ID, ID, def));
             }
         }
 
@@ -63,8 +63,8 @@ namespace AntTweakBar
         /// </summary>
         public String Label
         {
-            get { return TW.GetStringParam(ParentBar.Pointer, ID, "label"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "label", value); }
+            get { return Tw.GetStringParam(ParentBar.Pointer, ID, "label"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "label", value); }
         }
 
         /// <summary>
@@ -72,8 +72,8 @@ namespace AntTweakBar
         /// </summary>
         public String Help
         {
-            get { return TW.GetStringParam(ParentBar.Pointer, ID, "help"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "help", value); }
+            get { return Tw.GetStringParam(ParentBar.Pointer, ID, "help"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "help", value); }
         }
 
         /// <summary>
@@ -81,8 +81,8 @@ namespace AntTweakBar
         /// </summary>
         public String Group
         {
-            get { return TW.GetStringParam(ParentBar.Pointer, ID, "group"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "group", value); }
+            get { return Tw.GetStringParam(ParentBar.Pointer, ID, "group"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "group", value); }
         }
 
         /// <summary>
@@ -90,8 +90,8 @@ namespace AntTweakBar
         /// </summary>
         public Boolean Visible
         {
-            get { return TW.GetBooleanParam(ParentBar.Pointer, ID, "visible"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "visible", value); }
+            get { return Tw.GetBooleanParam(ParentBar.Pointer, ID, "visible"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "visible", value); }
         }
 
         /// <summary>
@@ -99,8 +99,8 @@ namespace AntTweakBar
         /// </summary>
         public Boolean ReadOnly
         {
-            get { return TW.GetBooleanParam(ParentBar.Pointer, ID, "readonly"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "readonly", value); }
+            get { return Tw.GetBooleanParam(ParentBar.Pointer, ID, "readonly"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "readonly", value); }
         }
 
         /// <summary>
@@ -108,8 +108,8 @@ namespace AntTweakBar
         /// </summary>
         public String KeyShortcut
         {
-            get { return TW.GetStringParam(ParentBar.Pointer, ID, "key"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "key", value); }
+            get { return Tw.GetStringParam(ParentBar.Pointer, ID, "key"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "key", value); }
         }
 
         /// <summary>
@@ -117,8 +117,8 @@ namespace AntTweakBar
         /// </summary>
         public String KeyIncrementShortcut
         {
-            get { return TW.GetStringParam(ParentBar.Pointer, ID, "keyincr"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "keyincr", value); }
+            get { return Tw.GetStringParam(ParentBar.Pointer, ID, "keyincr"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "keyincr", value); }
         }
 
         /// <summary>
@@ -126,8 +126,8 @@ namespace AntTweakBar
         /// </summary>
         public String KeyDecrementShortcut
         {
-            get { return TW.GetStringParam(ParentBar.Pointer, ID, "keydecr"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "keydecr", value); }
+            get { return Tw.GetStringParam(ParentBar.Pointer, ID, "keydecr"); }
+            set { Tw.SetParam(ParentBar.Pointer, ID, "keydecr", value); }
         }
 
         #endregion
@@ -154,7 +154,7 @@ namespace AntTweakBar
                 }
 
                 if (created) {
-                    TW.RemoveVar(ParentBar.Pointer, ID);
+                    Tw.RemoveVar(ParentBar.Pointer, ID);
                 }
 
                 disposed = true;

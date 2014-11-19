@@ -52,7 +52,7 @@ namespace AntTweakBar
     /// <summary>
     /// A low-level wrapper to the AntTweakBar API.
     /// </summary>
-    public static partial class TW
+    public static partial class Tw
     {
         /// <summary>
         /// Called by AntTweakBar when the user changes a variable's value.

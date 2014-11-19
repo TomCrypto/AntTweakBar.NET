@@ -24,11 +24,11 @@ namespace AntTweakBar
         /// </summary>
         /// <param name="graphicsAPI">The graphics API you need to share with AntTweakBar.</param>
         /// <param name="device">For Direct3D interop only, a pointer to the D3D device.</param>
-        public Context(TW.GraphicsAPI graphicsAPI = TW.GraphicsAPI.Unspecified, IntPtr device = default(IntPtr))
+        public Context(Tw.GraphicsAPI graphicsAPI = Tw.GraphicsAPI.Unspecified, IntPtr device = default(IntPtr))
         {
             lock (lk)
             {
-                if (graphicsAPI == TW.GraphicsAPI.D3D9 || graphicsAPI == TW.GraphicsAPI.D3D10 || graphicsAPI == TW.GraphicsAPI.D3D11) {
+                if (graphicsAPI == Tw.GraphicsAPI.D3D9 || graphicsAPI == Tw.GraphicsAPI.D3D10 || graphicsAPI == Tw.GraphicsAPI.D3D11) {
                     if (device == IntPtr.Zero) {
                         throw new ArgumentException("A valid device pointer is required for Direct3D interop.");
                     }
@@ -36,11 +36,11 @@ namespace AntTweakBar
 
                 if (contextCounter == 0)
                 {
-                    if (graphicsAPI == TW.GraphicsAPI.Unspecified) {
+                    if (graphicsAPI == Tw.GraphicsAPI.Unspecified) {
                         throw new ArgumentException("A graphics API must be specified for the initial context.");
                     }
 
-                    TW.Init(graphicsAPI, device);
+                    Tw.Init(graphicsAPI, device);
                 }
 
                 Identifier = contextCounter++;
@@ -52,8 +52,8 @@ namespace AntTweakBar
         /// </summary>
         public void Draw()
         {
-            TW.SetCurrentWindow(Identifier);
-            TW.Draw(); // Applies to all bars
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Draw(); // Applies to all bars
         }
 
         #region Event Handlers
@@ -64,8 +64,8 @@ namespace AntTweakBar
         /// <param name="size">The new window size.</param>
         public void HandleResize(Size size)
         {
-            TW.SetCurrentWindow(Identifier);
-            TW.WindowSize(size.Width, size.Height);
+            Tw.SetCurrentWindow(Identifier);
+            Tw.WindowSize(size.Width, size.Height);
         }
 
         /// <summary>
@@ -74,8 +74,8 @@ namespace AntTweakBar
         /// <param name="point">The new cursor location.</param>
         public bool HandleMouseMove(Point point)
         {
-            TW.SetCurrentWindow(Identifier);
-            return TW.MouseMotion(point.X, point.Y);
+            Tw.SetCurrentWindow(Identifier);
+            return Tw.MouseMotion(point.X, point.Y);
         }
 
         /// <summary>
@@ -84,8 +84,8 @@ namespace AntTweakBar
         /// <param name="pos">The new mouse wheel position.</param>
         public bool HandleMouseWheel(int pos)
         {
-            TW.SetCurrentWindow(Identifier);
-            return TW.MouseWheel(pos);
+            Tw.SetCurrentWindow(Identifier);
+            return Tw.MouseWheel(pos);
         }
 
         /// <summary>
@@ -93,10 +93,10 @@ namespace AntTweakBar
         /// </summary>
         /// <param name="action">The kind of mouse action.</param>
         /// <param name="button">The mouse button pressed.</param>
-        public bool HandleMouseClick(TW.MouseAction action, TW.MouseButton button)
+        public bool HandleMouseClick(Tw.MouseAction action, Tw.MouseButton button)
         {
-            TW.SetCurrentWindow(Identifier);
-            return TW.MouseClick(action, button);
+            Tw.SetCurrentWindow(Identifier);
+            return Tw.MouseClick(action, button);
         }
 
         /// <summary>
@@ -105,8 +105,8 @@ namespace AntTweakBar
         /// <param name="key">The key character pressed.</param>
         public bool HandleKeyPress(char key)
         {
-            TW.SetCurrentWindow(Identifier);
-            return TW.KeyPressed((int)key, TW.KeyModifier.None);
+            Tw.SetCurrentWindow(Identifier);
+            return Tw.KeyPressed((int)key, Tw.KeyModifier.None);
         }
 
         /// <summary>
@@ -114,10 +114,10 @@ namespace AntTweakBar
         /// </summary>
         /// <param name="key">The key pressed.</param>
         /// <param name="modifiers">The key modifiers pressed.</param>
-        public bool HandleKeyPress(TW.SpecialKey key, TW.KeyModifier modifiers)
+        public bool HandleKeyPress(Tw.SpecialKey key, Tw.KeyModifier modifiers)
         {
-            TW.SetCurrentWindow(Identifier);
-            return TW.KeyPressed((int)key, modifiers);
+            Tw.SetCurrentWindow(Identifier);
+            return Tw.KeyPressed((int)key, modifiers);
         }
 
         /// <summary>
@@ -125,8 +125,8 @@ namespace AntTweakBar
         /// </summary>
         public bool EventHandlerSFML(IntPtr sfmlEvent, byte majorVersion, byte minorVersion)
         {
-            TW.SetCurrentWindow(Identifier);
-            return TW.EventSFML(sfmlEvent, majorVersion, minorVersion);
+            Tw.SetCurrentWindow(Identifier);
+            return Tw.EventSFML(sfmlEvent, majorVersion, minorVersion);
         }
 
         /// <summary>
@@ -134,8 +134,8 @@ namespace AntTweakBar
         /// </summary>
         public bool EventHandlerSDL(IntPtr sdlEvent, byte majorVersion, byte minorVersion)
         {
-            TW.SetCurrentWindow(Identifier);
-            return TW.EventSDL(sdlEvent, majorVersion, minorVersion);
+            Tw.SetCurrentWindow(Identifier);
+            return Tw.EventSDL(sdlEvent, majorVersion, minorVersion);
         }
 
         /// <summary>
@@ -143,8 +143,8 @@ namespace AntTweakBar
         /// </summary>
         public bool EventHandlerWin(IntPtr wnd, int msg, IntPtr wParam, IntPtr lParam)
         {
-            TW.SetCurrentWindow(Identifier);
-            return TW.EventWin(wnd, msg, wParam, lParam);
+            Tw.SetCurrentWindow(Identifier);
+            return Tw.EventWin(wnd, msg, wParam, lParam);
         }
 
         #endregion
@@ -157,8 +157,8 @@ namespace AntTweakBar
         /// <param name="visible">Whether the help bar should be visible.</param>
         public void ShowHelpBar(Boolean visible)
         {
-            TW.SetCurrentWindow(Identifier); // one help bar per context
-            TW.Define("TW_HELP visible=" + (visible ? "true" : "false"));
+            Tw.SetCurrentWindow(Identifier); // one help bar per context
+            Tw.Define("TW_HELP visible=" + (visible ? "true" : "false"));
         }
 
         #endregion
@@ -213,7 +213,7 @@ namespace AntTweakBar
                 lock (lk)
                 {
                     if (--contextCounter == 0) {
-                        TW.Terminate();
+                        Tw.Terminate();
                     }
                 }
 

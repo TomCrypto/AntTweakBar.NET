@@ -52,8 +52,8 @@ namespace AntTweakBar
 
             var enumNames = String.Join(",", typeof(T).GetEnumNames());
 
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.DefineEnumFromString(typeof(T).FullName, enumNames),
+            Tw.AddVarCB(var.ParentBar.Pointer, id,
+                        Tw.DefineEnumFromString(typeof(T).FullName, enumNames),
                         ((EnumVariable<T>)var).SetCallback,
                         ((EnumVariable<T>)var).GetCallback,
                         IntPtr.Zero, null);
@@ -68,7 +68,7 @@ namespace AntTweakBar
         public EnumVariable(Bar bar, T initialValue, String def = null)
             : base(bar, InitEnumVariable, def)
         {
-            TW.SetParam(ParentBar.Pointer, ID, "enum", GetEnumString());
+            Tw.SetParam(ParentBar.Pointer, ID, "enum", GetEnumString());
 
             setCallback = SetCallback;
             getCallback = GetCallback;
@@ -78,7 +78,7 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
-        private readonly TW.SetVarCallback setCallback;
+        private readonly Tw.SetVarCallback setCallback;
         private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             int data = Marshal.ReadInt32(pointer);
@@ -92,7 +92,7 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs the variable's value.
         /// </summary>
-        private readonly TW.GetVarCallback getCallback;
+        private readonly Tw.GetVarCallback getCallback;
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             Marshal.WriteInt32(pointer, (int)(object)Value);
