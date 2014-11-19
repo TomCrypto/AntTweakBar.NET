@@ -25,6 +25,7 @@ The wrapper is functional, but not every feature AntTweakBar provides is impleme
 - check it works on OS X
 - consider implementing custom struct type (perhaps through reflection, looking for FieldOffset attributes?)
 - automatic nested groups? (not sure if it is meaningful since you can't easily move variables around anyway)
+- complete this readme with advanced usage notes
 - ...
 
 FAQ
@@ -84,7 +85,7 @@ Changelog
 19 November 2014 (v0.4.0)
 
  - major refactoring, improvements and bug fixes
- - a few public changes, mostly renaming
+ - a few public changes, mostly renaming and moving things around
  - made the low-level wrapper API accessible to users in addition to the high-level classes
  - removed all unsafe code
 
