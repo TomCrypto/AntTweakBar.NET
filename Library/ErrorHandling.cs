@@ -77,8 +77,9 @@ namespace AntTweakBar
             {
                 var handler = Error;
 
-                if (handler != null)
+                if (handler != null) {
                     handler(null, new ErrorEventArgs(error));
+                }
             });
         }
     }
