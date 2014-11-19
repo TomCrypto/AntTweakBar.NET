@@ -237,11 +237,20 @@ namespace AntTweakBar
     /// </summary>
     public static partial class TW
     {
+        /// <summary>
+        /// Returns the last error that has occured during a previous AntTweakBar function call.
+        /// </summary>
+        /// <returns>A constant string that describes the error.</returns>
         public static String GetLastError()
         {
             return Marshal.PtrToStringAnsi(NativeMethods.TwGetLastError());
         }
 
+        /// <summary>
+        /// This function initializes the AntTweakBar library. It must be called once at the beginning of the program, just after graphic mode is initialized.
+        /// </summary>
+        /// <param name="graphicsAPI">This parameter specifies which graphic API is used: OpenGL, OpenGL core profile (3.2 and higher), Direct3D 9, Direct3D 10 or Direct3D 11.</param>
+        /// <param name="device">Pointer to the Direct3D device, or IntPtr.Zero for OpenGL.</param>
         public static void Init(GraphicsAPI graphicsAPI, IntPtr device)
         {
              if (!NativeMethods.TwInit(graphicsAPI, device)) {
@@ -249,6 +258,9 @@ namespace AntTweakBar
              }
         }
 
+        /// <summary>
+        /// Uninitialize the AntTweakBar API. Must be called at the end of the program, before terminating the graphics API.
+        /// </summary>
         public static void Terminate()
         {
             if (!NativeMethods.TwTerminate()) {
@@ -256,6 +268,9 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// Draws all the created tweak bars. This function must be called once per frame, after all the other drawing calls and just before the application presents (swaps) the frame buffer.
+        /// </summary>
         public static void Draw()
         {
             if (!NativeMethods.TwDraw()) {
@@ -263,47 +278,91 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// Call this function to inform AntTweakBar of the size of the application graphics window, or to restore AntTweakBar graphics resources (after a fullscreen switch for instance).
+        /// </summary>
+        /// <param name="width">Width of the graphics window.</param>
+        /// <param name="height">Height of the graphics window.</param>
         public static void WindowSize(int width, int height)
         {
             if (!NativeMethods.TwWindowSize(width, height))
                 throw new AntTweakBarException("TwWindowSize failed.");
         }
 
+        /// <summary>
+        /// Call this function to inform AntTweakBar that the mouse has moved.
+        /// </summary>
+        /// <param name="mouseX">The new X position of the mouse, relative to the left border of the graphics window.</param>
+        /// <param name="mouseY">The new Y position of the mouse, relative to the top border of the graphics window.</param>
+        /// <returns>Whether the mouse event has been handled by AntTweakBar.</returns>
         public static bool MouseMotion(int mouseX, int mouseY)
         {
             return NativeMethods.TwMouseMotion(mouseX, mouseY);
         }
 
+        /// <summary>
+        /// Call this function to inform AntTweakBar that the mouse wheel has been used.
+        /// </summary>
+        /// <param name="pos">The new position of the wheel.</param>
+        /// <returns>Whether the mouse wheel event has been handled by AntTweakBar.</returns>
         public static bool MouseWheel(int pos)
         {
             return NativeMethods.TwMouseWheel(pos);
         }
 
+        /// <summary>
+        /// Call this function to inform AntTweakBar that a mouse button is pressed.
+        /// </summary>
+        /// <param name="action">Tells if the button is pressed or released. It is one of the <see cref="AntTweakBar.TW.MouseAction"/> constants.</param>
+        /// <param name="button">Tells which button is pressed. It is one of the <see cref="AntTweakBar.TW.MouseButton"/> constants.</param>
+        /// <returns>Whether the mouse event has been handled by AntTweakBar.</returns>
         public static bool MouseClick(MouseAction action, MouseButton button)
         {
             return NativeMethods.TwMouseButton(action, button);
         }
 
+        /// <summary>
+        /// Call this function to inform AntTweakBar when a keyboard event occurs.
+        /// </summary>
+        /// <param name="key">The ASCII code of the pressed key, or one of the <see cref="AntTweakBar.TW.SpecialKey"/> codes.</param>
+        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.TW.KeyModifier"/> constants.</param>
+        /// <returns>Whether the key event has been handled by AntTweakBar.</returns>
         public static bool KeyPressed(int key, KeyModifier modifiers)
         {
             return NativeMethods.TwKeyPressed(key, modifiers);
         }
 
+        /// <summary>
+        /// The SFML event handler.
+        /// </summary>
+        /// <returns>Whether the event has been handled by AntTweakBar.</returns>
         public static bool EventSFML(IntPtr sfmlEvent, byte majorVersion, byte minorVersion)
         {
             return NativeMethods.TwEventSFML(sfmlEvent, majorVersion, minorVersion);
         }
 
+        /// <summary>
+        /// The SDL event handler.
+        /// </summary>
+        /// <returns>Whether the event has been handled by AntTweakBar.</returns>
         public static bool EventSDL(IntPtr sdlEvent, byte majorVersion, byte minorVersion)
         {
             return NativeMethods.TwEventSDL(sdlEvent, majorVersion, minorVersion);
         }
 
+        /// <summary>
+        /// The Windows event handler.
+        /// </summary>
+        /// <returns>Whether the event has been handled by AntTweakBar.</returns>
         public static bool EventWin(IntPtr wnd, int msg, IntPtr wParam, IntPtr lParam)
         {
             return NativeMethods.TwEventWin(wnd, msg, wParam, lParam);
         }
 
+        /// <summary>
+        /// This function is intended to be used by applications with multiple graphical windows. It tells AntTweakBar to switch its current context to the context associated to the identifier windowID.
+        /// </summary>
+        /// <param name="windowID">Window context identifier. This identifier could be any integer.</param>
         public static void SetCurrentWindow(int windowID)
         {
             if (!NativeMethods.TwSetCurrentWindow(windowID)) {
@@ -311,16 +370,30 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// Returns the current window context identifier previously set by <see cref="AntTweakBar.TW.SetCurrentWindow"/>.
+        /// </summary>
+        /// <returns>The current window context identifier.</returns>
         public static int GetCurrentWindow()
         {
             return NativeMethods.TwGetCurrentWindow();
         }
 
+        /// <summary>
+        /// Check if a window context associated to the identifier windowID exists. A window context exists if it has previously been created by <see cref="AntTweakBar.TW.SetCurrentWindow"/>.
+        /// </summary>
+        /// <param name="windowID">Window context identifier.</param>
+        /// <returns>Whether the window context exists.</returns>
         public static bool WindowExists(int windowID)
         {
             return NativeMethods.TwWindowExists(windowID);
         }
 
+        /// <summary>
+        /// Creates a new tweak bar.
+        /// </summary>
+        /// <param name="barName">Name of the new tweak bar.</param>
+        /// <returns>Tweak bar identifier. It is a pointer to an internal TwBar structure.</returns>
         public static IntPtr NewBar(string barName)
         {
             IntPtr bar;
@@ -332,13 +405,21 @@ namespace AntTweakBar
             return bar;
         }
 
+        /// <summary>
+        /// This function deletes a tweak bar previously created by <see cref="AntTweakBar.TW.NewBar"/>.
+        /// </summary>
+        /// <param name="bar">Identifier to the tweak bar to delete.</param>
         public static void DeleteBar(IntPtr bar)
         {
             if (!NativeMethods.TwDeleteBar(bar)) {
                 throw new AntTweakBarException("TwDeleteBar failed.");
             }
         }
-
+        
+        /// <summary>
+        /// Set the specified bar as the foreground bar. It will be displayed on top of the other bars.
+        /// </summary>
+        /// <param name="bar">Bar identifier.</param>
         public static void SetTopBar(IntPtr bar)
         {
             if (!NativeMethods.TwSetTopBar(bar)) {
@@ -346,6 +427,10 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// Set the specified bar as the background bar. It will be displayed behind the other bars.
+        /// </summary>
+        /// <param name="bar">Bar identifier.</param>
         public static void SetBottomBar(IntPtr bar)
         {
             if (!NativeMethods.TwSetBottomBar(bar)) {
@@ -353,6 +438,10 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// Forces bar content to be updated. By default bar content is periodically refreshed when <see cref="AntTweakBar.TW.Draw"/> is called (the update frequency is defined by the bar parameter refresh).
+        /// </summary>
+        /// <param name="bar">Bar identifier.</param>
         public static void RefreshBar(IntPtr bar)
         {
             if (!NativeMethods.TwRefreshBar(bar)) {
@@ -360,6 +449,10 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function defines optional parameters for tweak bars and variables. For instance, it allows you to change the color of a tweak bar, to set a min and a max value for a variable, to add an help message that inform users of the meaning of a variable, and so on...
+        /// </summary>
+        /// <param name="def">A string containing one or more parameter assignments (separated by newlines).</param>
         public static void Define(String def)
         {
             if (!NativeMethods.TwDefine(def)) {
@@ -367,6 +460,9 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function modifies the value(s) of a bar or variable parameter.
+        /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, String value)
         {
             if (!NativeMethods.TwSetParamStr(bar, varName, paramName, ParamValueType.CString, 1, value)) {
@@ -374,6 +470,9 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function modifies the value(s) of a bar or variable parameter.
+        /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, params Int32[] values)
         {
             if (!NativeMethods.TwSetParamInt(bar, varName, paramName, ParamValueType.Int32, (uint)values.Length, values)) {
@@ -381,6 +480,9 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function modifies the value(s) of a bar or variable parameter.
+        /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, params Single[] values)
         {
             if (!NativeMethods.TwSetParamSingle(bar, varName, paramName, ParamValueType.Float, (uint)values.Length, values)) {
@@ -388,6 +490,9 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function modifies the value(s) of a bar or variable parameter.
+        /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, params Double[] values)
         {
             if (!NativeMethods.TwSetParamDouble(bar, varName, paramName, ParamValueType.Double, (uint)values.Length, values)) {
@@ -395,26 +500,41 @@ namespace AntTweakBar
             }
         }
         
+        /// <summary>
+        /// This function modifies the value(s) of a bar or variable parameter.
+        /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, Color color)
         {
             SetParam(bar, varName, paramName, color.R, color.G, color.B);
         }
 
+        /// <summary>
+        /// This function modifies the value(s) of a bar or variable parameter.
+        /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, Boolean boolean)
         {
             SetParam(bar, varName, paramName, boolean ? "true" : "false");
         }
 
+        /// <summary>
+        /// This function modifies the value(s) of a bar or variable parameter.
+        /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, Point point)
         {
             SetParam(bar, varName, paramName, point.X, point.Y);
         }
 
+        /// <summary>
+        /// This function modifies the value(s) of a bar or variable parameter.
+        /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, Size size)
         {
             SetParam(bar, varName, paramName, size.Width, size.Height);
         }
 
+        /// <summary>
+        /// This function returns the current value of a bar or variable parameter.
+        /// </summary>
         public static String GetStringParam(IntPtr bar, String varName, String paramName)
         {
             var buffer = new StringBuilder(MaxStringLength);
@@ -426,6 +546,9 @@ namespace AntTweakBar
             return buffer.ToString();
         }
 
+        /// <summary>
+        /// This function returns the current value of a bar or variable parameter.
+        /// </summary>
         public static Int32[] GetIntParam(IntPtr bar, String varName, String paramName, int paramCount = 0)
         {
             var buffer = new Int32[paramCount == 0 ? 32 : paramCount];
@@ -442,6 +565,9 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function returns the current value of a bar or variable parameter.
+        /// </summary>
         public static Single[] GetSingleParam(IntPtr bar, String varName, String paramName, int paramCount = 0)
         {
             var buffer = new Single[paramCount == 0 ? 32 : paramCount];
@@ -458,6 +584,9 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function returns the current value of a bar or variable parameter.
+        /// </summary>
         public static Double[] GetDoubleParam(IntPtr bar, String varName, String paramName, int paramCount = 0)
         {
             var buffer = new Double[paramCount == 0 ? 32 : paramCount];
@@ -474,6 +603,9 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function returns the current value of a bar or variable parameter.
+        /// </summary>
         public static Color GetColorParam(IntPtr bar, String varName, String paramName)
         {
             var components = GetIntParam(bar, varName, paramName);
@@ -491,6 +623,9 @@ namespace AntTweakBar
             return Color.FromArgb(components[0], components[1], components[2]);
         }
 
+        /// <summary>
+        /// This function returns the current value of a bar or variable parameter.
+        /// </summary>
         public static Boolean GetBooleanParam(IntPtr bar, String varName, String paramName)
         {
             switch (GetStringParam(bar, varName, paramName))
@@ -508,6 +643,9 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function returns the current value of a bar or variable parameter.
+        /// </summary>
         public static Point GetPointParam(IntPtr bar, String varName, String paramName)
         {
             var components = GetIntParam(bar, varName, paramName);
@@ -519,6 +657,9 @@ namespace AntTweakBar
             return new Point(components[0], components[1]);
         }
 
+        /// <summary>
+        /// This function returns the current value of a bar or variable parameter.
+        /// </summary>
         public static Size GetSizeParam(IntPtr bar, String varName, String paramName)
         {
             var components = GetIntParam(bar, varName, paramName);
@@ -536,6 +677,14 @@ namespace AntTweakBar
             return new Size(components[0], components[1]);
         }
 
+        /// <summary>
+        /// This function adds a new variable to a tweak bar by specifying the variable’s pointer. The variable is declared Read-Only (RO), so it could not be modified interactively by the user.
+        /// </summary>
+        /// <param name="bar">The tweak bar to which adding a new variable.</param>
+        /// <param name="name">The name of the variable. It will be displayed in the tweak bar if no label is specified for this variable. It will also be used to refer to this variable in other functions.</param>
+        /// <param name="type">Type of the variable. It must be one of the <see cref="AntTweakBar.TW.VariableType"/> constants or a user defined type.</param>
+        /// <param name="var">Pointer to the variable linked to this entry.</param>
+        /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddVarRO(IntPtr bar, String name, VariableType type, IntPtr var, String def)
         {
             if (!NativeMethods.TwAddVarRO(bar, name, type, var, def)) {
@@ -543,6 +692,14 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function adds a new variable to a tweak bar by specifying the variable’s pointer. The variable is declared Read-Write (RW), so it could be modified interactively by the user.
+        /// </summary>
+        /// <param name="bar">The tweak bar to which adding a new variable.</param>
+        /// <param name="name">The name of the variable. It will be displayed in the tweak bar if no label is specified for this variable. It will also be used to refer to this variable in other functions.</param>
+        /// <param name="type">Type of the variable. It must be one of the <see cref="AntTweakBar.TW.VariableType"/> constants or a user defined type.</param>
+        /// <param name="var">Pointer to the variable linked to this entry.</param>
+        /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddVarRW(IntPtr bar, String name, VariableType type, IntPtr var, String def)
         {
             if (!NativeMethods.TwAddVarRW(bar, name, type, var, def)) {
@@ -550,6 +707,16 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function adds a new variable to a tweak bar by providing CallBack (CB) functions to access it.
+        /// </summary>
+        /// <param name="bar">The tweak bar to which adding a new variable.</param>
+        /// <param name="name">The name of the variable. It will be displayed in the tweak bar if no label is specified for this variable. It will also be used to refer to this variable in other functions.</param>
+        /// <param name="type">Type of the variable. It must be one of the <see cref="AntTweakBar.TW.VariableType"/> constants or a user defined type.</param>
+        /// <param name="setCallback">The callback function that will be called by AntTweakBar to change the variable’s value.</param>
+        /// <param name="getCallback">The callback function that will be called by AntTweakBar to get the variable’s value.</param>
+        /// <param name="clientData">For your convenience, this is a supplementary pointer that will be passed to the callback functions when they are called.</param>
+        /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddVarCB(IntPtr bar, String name, VariableType type, SetVarCallback setCallback, GetVarCallback getCallback, IntPtr clientData, String def)
         {
             if (!NativeMethods.TwAddVarCB(bar, name, type, setCallback, getCallback, clientData, def)) {
@@ -557,6 +724,12 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function adds a horizontal separator line to a tweak bar. It may be useful if one wants to separate several sets of variables inside a same group.
+        /// </summary>
+        /// <param name="bar">The tweak bar to which adding the separator.</param>
+        /// <param name="name">The name of the separator. It is optional, this parameter can be set to NULL.</param>
+        /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddSeparator(IntPtr bar, String name, String def)
         {
             if (!NativeMethods.TwAddSeparator(bar, name, def)) {
@@ -564,6 +737,14 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function adds a button entry to a tweak bar. When the button is clicked by a user, the callback function provided to this function is called.
+        /// </summary>
+        /// <param name="bar">The tweak bar to which adding a new variable.</param>
+        /// <param name="name">The name of the button. It will be displayed in the tweak bar if no label is specified for this button. It will also be used to refer to this button in other functions.</param>
+        /// <param name="callback">The callback function that will be called by AntTweakBar when the button is clicked.</param>
+        /// <param name="clientData">For your convenience, this is a supplementary pointer that will be passed to the callback function when it is called.</param>
+        /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddButton(IntPtr bar, String name, ButtonCallback callback, IntPtr clientData, String def)
         {
             if (!NativeMethods.TwAddButton(bar, name, callback, clientData, def)) {
@@ -571,6 +752,12 @@ namespace AntTweakBar
             }
         }
 
+        /// <summary>
+        /// This function creates a new variable type corresponding to an enum.
+        /// </summary>
+        /// <param name="name">Specify a name for the enum type (must be unique).</param>
+        /// <param name="enumString">Comma-separated list of labels.</param>
+        /// <returns></returns>
         public static VariableType DefineEnumFromString(String name, String enumString)
         {
             VariableType enumType;
@@ -582,6 +769,11 @@ namespace AntTweakBar
             return enumType;
         }
 
+        /// <summary>
+        /// This function removes a variable, button or separator from a tweak bar.
+        /// </summary>
+        /// <param name="bar">The tweak bar from which to remove a variable.</param>
+        /// <param name="name">The name of the variable.</param>
         public static void RemoveVar(IntPtr bar, String name)
         {
             if (!NativeMethods.TwRemoveVar(bar, name)) {
