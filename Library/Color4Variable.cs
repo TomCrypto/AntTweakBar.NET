@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace AntTweakBar
@@ -82,7 +83,14 @@ namespace AntTweakBar
             }
         }
 
-        private float r, g, b, a;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private float r;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private float g;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private float b;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private float a;
 
         /// <summary>
         /// Initialization delegate, which creates the RGBA color variable.

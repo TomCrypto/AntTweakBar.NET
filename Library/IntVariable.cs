@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace AntTweakBar
@@ -37,6 +38,7 @@ namespace AntTweakBar
             }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Int32 value;
 
         /// <summary>
