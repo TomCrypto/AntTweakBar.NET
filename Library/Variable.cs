@@ -104,7 +104,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the key shortcut for this variable.
+        /// Gets or sets the key shortcut for this variable (if applicable).
         /// </summary>
         public String KeyShortcut
         {
@@ -113,7 +113,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the increment key shortcut for this variable.
+        /// Gets or sets the increment key shortcut for this variable (if applicable).
         /// </summary>
         public String KeyIncrementShortcut
         {
@@ -122,7 +122,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets the decrement key shortcut for this variable.
+        /// Gets or sets the decrement key shortcut for this variable (if applicable).
         /// </summary>
         public String KeyDecrementShortcut
         {
