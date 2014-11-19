@@ -26,7 +26,7 @@ The wrapper is functional, but not every feature AntTweakBar provides is impleme
 - consider implementing custom struct type (perhaps through reflection, looking for FieldOffset attributes?)
 - automatic nested groups? (not sure if it is meaningful since you can't easily move variables around anyway)
 - complete this readme with advanced usage notes
-- add null checks in low-level wrapper
+- add extensions (in a separate assembly) to help interoperate with popular frameworks? (maybe)
 - ...
 
 FAQ
