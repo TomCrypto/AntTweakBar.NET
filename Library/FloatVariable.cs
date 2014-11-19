@@ -1,11 +1,12 @@
-using System;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace AntTweakBar
 {
     /// <summary>
-    /// An AntTweakBar variable which can hold an integer.
+    /// An AntTweakBar variable which can hold a single-precision floating-point number.
     /// </summary>
-    public class IntVariable : Variable
+    public class FloatVariable : Variable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.
@@ -15,7 +16,7 @@ namespace AntTweakBar
         /// <summary>
         /// Raises the Changed event.
         /// </summary>
-        public void OnChanged(EventArgs e)
+        private void OnChanged(EventArgs e)
         {
             if (Changed != null)
                 Changed(this, e);
@@ -24,7 +25,7 @@ namespace AntTweakBar
         /// <summary>
         /// Gets or sets the value of this variable.
         /// </summary>
-        public Int32 Value
+        public Single Value
         {
             get { return value; }
             set
@@ -36,28 +37,28 @@ namespace AntTweakBar
             }
         }
 
-        private Int32 value;
+        private Single value;
 
         /// <summary>
-        /// Initialization delegate, which creates the integer variable.
+        /// Initialization delegate, which creates the floating-point variable.
         /// </summary>
-        private static void InitIntVariable(Variable var, String id)
+        private static void InitFloatVariable(Variable var, String id)
         {
             TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.VariableType.TW_TYPE_INT32,
-                        ((IntVariable)var).SetCallback,
-                        ((IntVariable)var).GetCallback,
-                        IntPtr.Zero);
+                        TW.VariableType.Float,
+                        ((FloatVariable)var).SetCallback,
+                        ((FloatVariable)var).GetCallback,
+                        IntPtr.Zero, null);
         }
 
         /// <summary>
-        /// Creates a new integer variable in a given bar.
+        /// Creates a new single-precision floating-point variable in a given bar.
         /// </summary>
-        /// <param name="bar">The bar to create the integer variable in.</param>
+        /// <param name="bar">The bar to create the floating-point variable in.</param>
         /// <param name="initialValue">The initial value of the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
-        public IntVariable(Bar bar, Int32 initialValue = 0, String def = null)
-            : base(bar, InitIntVariable, def)
+        public FloatVariable(Bar bar, Single initialValue = 0, String def = null)
+            : base(bar, InitFloatVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
@@ -68,11 +69,14 @@ namespace AntTweakBar
         /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
         private readonly TW.SetVarCallback setCallback;
-        private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
+        private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-            int tmp = *(int*)pointer;
-            bool changed = tmp != Value;
-            Value = tmp;
+            float[] data = new float[1]; /* Value */
+            Marshal.Copy(pointer, data, 0, data.Length);
+
+            bool changed = (data[0] != Value);
+
+            Value = data[0];
 
             if (changed)
                 OnChanged(EventArgs.Empty);
@@ -82,9 +86,10 @@ namespace AntTweakBar
         /// Called by AntTweakBar when AntTweakBar needs the variable's value.
         /// </summary>
         private readonly TW.GetVarCallback getCallback;
-        private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
+        private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
-            *(int*)pointer = Value;
+            float[] data = new float[] { Value };
+            Marshal.Copy(data, 0, pointer, data.Length);
         }
 
         #region Customization
@@ -92,9 +97,9 @@ namespace AntTweakBar
         /// <summary>
         /// Gets or sets this variable's minimum value.
         /// </summary>
-        public Int32 Min
+        public Single Min
         {
-            get { return TW.GetIntParam(ParentBar.Pointer, ID, "min")[0]; }
+            get { return TW.GetSingleParam(ParentBar.Pointer, ID, "min")[0]; }
             set
             {
                 TW.SetParam(ParentBar.Pointer, ID, "min", value);
@@ -105,9 +110,9 @@ namespace AntTweakBar
         /// <summary>
         /// Gets or sets this variable's maximum value.
         /// </summary>
-        public Int32 Max
+        public Single Max
         {
-            get { return TW.GetIntParam(ParentBar.Pointer, ID, "max")[0]; }
+            get { return TW.GetSingleParam(ParentBar.Pointer, ID, "max")[0]; }
             set
             {
                 TW.SetParam(ParentBar.Pointer, ID, "max", value);
@@ -116,33 +121,28 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Gets or sets whether this variable should display in hexadecimal.
-        /// </summary>
-        public Boolean Hexadecimal
-        {
-            get { return TW.GetBooleanParam(ParentBar.Pointer, ID, "hexa"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "hexa", value); }
-        }
-
-        /// <summary>
         /// Gets or sets this variable's step (increment).
         /// </summary>
-        public Int32 Step
+        public Single Step
         {
-            get { return TW.GetIntParam(ParentBar.Pointer, ID, "step")[0]; }
+            get { return TW.GetSingleParam(ParentBar.Pointer, ID, "step")[0]; }
             set { TW.SetParam(ParentBar.Pointer, ID, "step", value); }
         }
 
-        #endregion
-
-        #region Misc.
-
-        public override String ToString()
+        /// <summary>
+        /// Gets or sets this variable's precision.
+        /// </summary>
+        public Single Precision
         {
-            return String.Format("[IntVariable: Label={0}, Value={1}]", Label, Value);
+            get { return TW.GetSingleParam(ParentBar.Pointer, ID, "precision")[0]; }
+            set { TW.SetParam(ParentBar.Pointer, ID, "precision", value); }
         }
 
         #endregion
+
+        public override String ToString()
+        {
+            return String.Format("[SingleVariable: Label={0}, Value={1}]", Label, Value);
+        }
     }
 }
-

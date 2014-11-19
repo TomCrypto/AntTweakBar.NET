@@ -110,6 +110,16 @@ namespace AntTweakBar
             return Equals((CoordinateSystem)obj);
         }
 
+        public static bool operator ==(CoordinateSystem a, CoordinateSystem b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(CoordinateSystem a, CoordinateSystem b)
+        {
+            return !(a == b);
+        }
+
         public override int GetHashCode()
         {
             int hash = 17;

@@ -183,15 +183,15 @@ namespace Sample
             }
             catch (AntTweakBarException e)
             {
-                Console.WriteLine("AntTweakBar error: " + e.Message + ".");
-                Console.WriteLine("Exception details: " + e.Details + ".");
-                Console.WriteLine("\n========== STACK TRACE ==========\n");
+                Console.WriteLine("AntTweakBar error: " + e.Message);
+                Console.WriteLine("Exception details: " + e.Details);
+                Console.WriteLine("\n======= STACK TRACE =======\n");
                 Console.WriteLine(e.StackTrace); return EXIT_FAILURE;
             }
             catch (Exception e)
             {
-                Console.WriteLine("An error occurred: " + e.Message + ".");
-                Console.WriteLine("\n========== STACK TRACE ==========\n");
+                Console.WriteLine("An error occurred: " + e.Message);
+                Console.WriteLine("\n======= STACK TRACE =======\n");
                 Console.WriteLine(e.StackTrace); return EXIT_FAILURE;
             }
         }

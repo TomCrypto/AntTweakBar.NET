@@ -62,6 +62,10 @@ FAQ
 
 **A**. You probably have an older or newer incompatible version of OpenTK installed on your system (for instance, the `libopentk-cil-dev` package on Ubuntu and/or Debian). NuGet dependencies, here OpenTK, are not included in the repository. If for some reason they are not automatically downloaded upon building the sample, for whatever reason the OpenTK reference will map to the one you have installed on your system, causing the errors. To fix this, perform a package restore (by right-clicking on the sample project and clicking "restore NuGet packages") and close/restart the IDE, the reference should now map to the correct one. If you know how to prevent this, please issue a pull request!
 
+**Q**. *I am getting an AccessViolationError on the TwTerminate call (or on Context.Dispose).*
+
+**A**. As specified in the AntTweakBar documentation, you must terminate the AntTweakBar library *before* releasing your graphics device, or the results are undefined. In the wrapper the library is terminated when the last active context is disposed, so make sure you dispose said context in time (for instance, in most cases the graphics device is released as the window is closed). 
+
 Compatibility
 -------------
 
@@ -81,6 +85,8 @@ Changelog
 
  - major refactoring, improvements and bug fixes
  - a few public changes, mostly renaming
+ - made the low-level wrapper API accessible to users in addition to the high-level classes
+ - removed all unsafe code
 
 18 November 2014 (v0.3.9)
 

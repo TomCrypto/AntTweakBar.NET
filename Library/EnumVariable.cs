@@ -1,115 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Linq;
 
 namespace AntTweakBar
 {
-    /// <summary>
-    /// An AntTweakBar variable which can hold a boolean value.
-    /// </summary>
-    public sealed class BoolVariable : Variable
-    {
-        /// <summary>
-        /// Occurs when the user changes this variable's value.
-        /// </summary>
-        public event EventHandler Changed;
-
-        /// <summary>
-        /// Raises the Changed event.
-        /// </summary>
-        public void OnChanged(EventArgs e)
-        {
-            if (Changed != null)
-                Changed(this, e);
-        }
-
-        /// <summary>
-        /// Gets or sets the value of this variable.
-        /// </summary>
-        public Boolean Value { get; set; }
-
-        /// <summary>
-        /// Initialization delegate, which creates the boolean variable.
-        /// </summary>
-        private static void InitBoolVariable(Variable var, String id)
-        {
-            TW.AddVarCB(var.ParentBar.Pointer, id,
-                        TW.VariableType.TW_TYPE_BOOL8,
-                        ((BoolVariable)var).SetCallback,
-                        ((BoolVariable)var).GetCallback,
-                        IntPtr.Zero);
-        }
-
-        /// <summary>
-        /// Creates a new boolean variable in a given bar.
-        /// </summary>
-        /// <param name="bar">The bar to create the boolean variable in.</param>
-        /// <param name="initialValue">The initial value of the variable.</param>
-        /// <param name="def">An optional definition string for the new variable.</param>
-        public BoolVariable(Bar bar, Boolean initialValue = false, String def = null)
-            : base(bar, InitBoolVariable, def)
-        {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
-            Value = initialValue;
-        }
-
-        /// <summary>
-        /// Called by AntTweakBar when the user changes the variable's value.
-        /// </summary>
-        private readonly TW.SetVarCallback setCallback;
-        private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
-        {
-            bool tmp = *(bool*)pointer;
-            bool changed = tmp != Value;
-            Value = tmp;
-
-            if (changed)
-                OnChanged(EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Called by AntTweakBar when AntTweakBar needs the variable's value.
-        /// </summary>
-        private readonly TW.GetVarCallback getCallback;
-        private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
-        {
-            *(bool*)pointer = Value;
-        }
-
-        #region Customization
-
-        /// <summary>
-        /// Gets or sets the "true" label for this variable.
-        /// </summary>
-        public String LabelTrue
-        {
-            get { return TW.GetStringParam(ParentBar.Pointer, ID, "true"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "true", value); }
-        }
-
-        /// <summary>
-        /// Gets or sets the "false" label for this variable.
-        /// </summary>
-        public String LabelFalse
-        {
-            get { return TW.GetStringParam(ParentBar.Pointer, ID, "false"); }
-            set { TW.SetParam(ParentBar.Pointer, ID, "false", value); }
-        }
-
-        #endregion
-
-        #region Misc.
-
-        public override String ToString()
-        {
-            return String.Format("[BoolVariable: Label={0}, Value={1}]", Label, Value);
-        }
-
-        #endregion
-    }
-
     /// <summary>
     /// An AntTweakBar variable which can hold an enum.
     /// </summary>
@@ -160,7 +56,7 @@ namespace AntTweakBar
                         TW.DefineEnumFromString(typeof(T).FullName, enumNames),
                         ((EnumVariable<T>)var).SetCallback,
                         ((EnumVariable<T>)var).GetCallback,
-                        IntPtr.Zero);
+                        IntPtr.Zero, null);
         }
 
         /// <summary>
@@ -183,11 +79,11 @@ namespace AntTweakBar
         /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
         private readonly TW.SetVarCallback setCallback;
-        private unsafe void SetCallback(IntPtr pointer, IntPtr clientData)
+        private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-            int tmp = *(int*)pointer;
-            bool changed = tmp != (int)(Object)Value;
-            Value = (T)(Object)tmp;
+            int data = Marshal.ReadInt32(pointer);
+            bool changed = (data != (int)(object)Value);
+            Value = (T)(object)data;
 
             if (changed)
                 OnChanged(EventArgs.Empty);
@@ -197,9 +93,9 @@ namespace AntTweakBar
         /// Called by AntTweakBar when AntTweakBar needs the variable's value.
         /// </summary>
         private readonly TW.GetVarCallback getCallback;
-        private unsafe void GetCallback(IntPtr pointer, IntPtr clientData)
+        private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
-            *(int*)pointer = (int)(Object)Value;
+            Marshal.WriteInt32(pointer, (int)(object)Value);
         }
 
         /// <summary>
@@ -219,14 +115,9 @@ namespace AntTweakBar
             return String.Join(",", enumList);
         }
 
-        #region Misc.
-
         public override String ToString()
         {
             return String.Format("[EnumVariable<{0}>: Label={1}, Value={2}]", typeof(T).Name, Label, Value);
         }
-
-        #endregion
     }
 }
-

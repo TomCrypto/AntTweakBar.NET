@@ -265,13 +265,9 @@ namespace AntTweakBar
 
         #endregion
 
-        #region Misc.
-
         public override String ToString()
         {
             return String.Format("[Bar: {0} variable(s), Label={1}]", variables.Count, Label);
         }
-
-        #endregion
     }
 }
