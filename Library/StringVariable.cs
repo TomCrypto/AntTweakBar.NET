@@ -44,12 +44,11 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the string variable.
         /// </summary>
-        private static void InitStringVariable(Variable var, String id, bool readOnly)
+        private static void InitStringVariable(Variable var, String id)
         {
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.CSString,
-                        readOnly ? (Tw.SetVarCallback)null
-                        : ((StringVariable)var).SetCallback,
+                        ((StringVariable)var).SetCallback,
                         ((StringVariable)var).GetCallback,
                         IntPtr.Zero, null);
         }
@@ -60,9 +59,8 @@ namespace AntTweakBar
         /// <param name="bar">The bar to create the string variable in.</param>
         /// <param name="initialValue">The initial value of the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
-        /// <param name="readOnly">Whether the variable can be modified by the user.</param>
-        public StringVariable(Bar bar, String initialValue = "", String def = null, bool readOnly = false)
-            : base(bar, InitStringVariable, def, readOnly)
+        public StringVariable(Bar bar, String initialValue = "", String def = null)
+            : base(bar, InitStringVariable, def)
         {
             if (initialValue == null)
                 throw new ArgumentNullException(initialValue);

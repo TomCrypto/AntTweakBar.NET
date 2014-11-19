@@ -24,7 +24,7 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the button.
         /// </summary>
-        private static void InitButton(Variable var, String id, bool readOnly)
+        private static void InitButton(Variable var, String id)
         {
             Tw.AddButton(var.ParentBar.Pointer, id,
                          ((Button)var).Callback,

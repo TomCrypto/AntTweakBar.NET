@@ -42,12 +42,11 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the floating-point variable.
         /// </summary>
-        private static void InitVariable(Variable var, String id, bool readOnly)
+        private static void InitVariable(Variable var, String id)
         {
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Double,
-                        readOnly ? (Tw.SetVarCallback)null
-                        : ((DoubleVariable)var).SetCallback,
+                        ((DoubleVariable)var).SetCallback,
                         ((DoubleVariable)var).GetCallback,
                         IntPtr.Zero, null);
         }
@@ -58,9 +57,8 @@ namespace AntTweakBar
         /// <param name="bar">The bar to create the floating-point variable in.</param>
         /// <param name="initialValue">The initial value of the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
-        /// <param name="readOnly">Whether the variable can be modified by the user.</param>
-        public DoubleVariable(Bar bar, Double initialValue = 0, String def = null, bool readOnly = false)
-            : base(bar, InitVariable, def, readOnly)
+        public DoubleVariable(Bar bar, Double initialValue = 0, String def = null)
+            : base(bar, InitVariable, def)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
