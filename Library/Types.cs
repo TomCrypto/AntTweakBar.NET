@@ -19,6 +19,37 @@ namespace AntTweakBar
     }
 
     /// <summary>
+    /// Specifies the possible (axis-aligned) axis orientations.
+    /// </summary>
+    public enum AxisOrientation
+    {
+        /// <summary>
+        /// Right axis.
+        /// </summary>
+        PositiveX,
+        /// <summary>
+        /// Left axis.
+        /// </summary>
+        NegativeX,
+        /// <summary>
+        /// Upwards axis.
+        /// </summary>
+        PositiveY,
+        /// <summary>
+        /// Downwards axis.
+        /// </summary>
+        NegativeY,
+        /// <summary>
+        /// Front axis (towards the viewer).
+        /// </summary>
+        PositiveZ,
+        /// <summary>
+        /// Back axis (into the screen).
+        /// </summary>
+        NegativeZ,
+    }
+
+    /// <summary>
     /// A low-level wrapper to the AntTweakBar API.
     /// </summary>
     public static partial class TW

@@ -129,9 +129,9 @@ namespace AntTweakBar
         }
 
         private CoordinateSystem coordinates =
-            new CoordinateSystem(CoordinateSystem.Axis.PositiveX,
-                                 CoordinateSystem.Axis.PositiveY,
-                                 CoordinateSystem.Axis.PositiveZ);
+            new CoordinateSystem(AxisOrientation.PositiveX,
+                                 AxisOrientation.PositiveY,
+                                 AxisOrientation.PositiveZ);
 
         /// <summary>
         /// Gets or sets this variable's coordinate system.

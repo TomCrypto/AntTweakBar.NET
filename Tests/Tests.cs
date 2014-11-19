@@ -541,9 +541,9 @@ namespace Tests
         [Test()]
         public void Coordinates()
         {
-            var coords = new CoordinateSystem(CoordinateSystem.Axis.PositiveX,
-                                              CoordinateSystem.Axis.NegativeZ,
-                                              CoordinateSystem.Axis.NegativeY);
+            var coords = new CoordinateSystem(AxisOrientation.PositiveX,
+                                              AxisOrientation.NegativeZ,
+                                              AxisOrientation.NegativeY);
 
             Variable.Coordinates = coords;
             Assert.AreEqual(coords, Variable.Coordinates);
@@ -552,9 +552,9 @@ namespace Tests
         [Test()]
         public void Coordinates2()
         {
-            var coords = new CoordinateSystem(CoordinateSystem.Axis.NegativeY,
-                                              CoordinateSystem.Axis.PositiveZ,
-                                              CoordinateSystem.Axis.PositiveX);
+            var coords = new CoordinateSystem(AxisOrientation.NegativeY,
+                                              AxisOrientation.PositiveZ,
+                                              AxisOrientation.PositiveX);
 
             Variable.Coordinates = coords;
             Assert.AreEqual(coords, Variable.Coordinates);
@@ -564,9 +564,9 @@ namespace Tests
         [ExpectedException(typeof(ArgumentException))]
         public void BadCoordinates()
         {
-            var coords = new CoordinateSystem(CoordinateSystem.Axis.NegativeY,
-                                              CoordinateSystem.Axis.NegativeZ,
-                                              CoordinateSystem.Axis.PositiveZ);
+            var coords = new CoordinateSystem(AxisOrientation.NegativeY,
+                                              AxisOrientation.NegativeZ,
+                                              AxisOrientation.PositiveZ);
 
             Variable.Coordinates = coords;
         }
@@ -609,9 +609,9 @@ namespace Tests
         [Test()]
         public void Coordinates()
         {
-            var coords = new CoordinateSystem(CoordinateSystem.Axis.PositiveX,
-                                              CoordinateSystem.Axis.NegativeZ,
-                                              CoordinateSystem.Axis.NegativeY);
+            var coords = new CoordinateSystem(AxisOrientation.PositiveX,
+                                              AxisOrientation.NegativeZ,
+                                              AxisOrientation.NegativeY);
 
             Variable.Coordinates = coords;
             Assert.AreEqual(coords, Variable.Coordinates);
@@ -620,9 +620,9 @@ namespace Tests
         [Test()]
         public void Coordinates2()
         {
-            var coords = new CoordinateSystem(CoordinateSystem.Axis.NegativeY,
-                                              CoordinateSystem.Axis.PositiveZ,
-                                              CoordinateSystem.Axis.PositiveX);
+            var coords = new CoordinateSystem(AxisOrientation.NegativeY,
+                                              AxisOrientation.PositiveZ,
+                                              AxisOrientation.PositiveX);
 
             Variable.Coordinates = coords;
             Assert.AreEqual(coords, Variable.Coordinates);
@@ -632,9 +632,9 @@ namespace Tests
         [ExpectedException(typeof(ArgumentException))]
         public void BadCoordinates()
         {
-            var coords = new CoordinateSystem(CoordinateSystem.Axis.NegativeY,
-                                              CoordinateSystem.Axis.NegativeZ,
-                                              CoordinateSystem.Axis.PositiveZ);
+            var coords = new CoordinateSystem(AxisOrientation.NegativeY,
+                                              AxisOrientation.NegativeZ,
+                                              AxisOrientation.PositiveZ);
 
             Variable.Coordinates = coords;
         }

@@ -122,9 +122,9 @@ namespace AntTweakBar
         // For whatever reason SetParam doesn't appear to work
         // with axisx/axisy/axisz, so we cache the value here.
         private CoordinateSystem coordinates = 
-            new CoordinateSystem(CoordinateSystem.Axis.PositiveX,
-                                 CoordinateSystem.Axis.PositiveY,
-                                 CoordinateSystem.Axis.PositiveZ);
+            new CoordinateSystem(AxisOrientation.PositiveX,
+                                 AxisOrientation.PositiveY,
+                                 AxisOrientation.PositiveZ);
 
         /// <summary>
         /// Gets or sets this variable's coordinate system.
