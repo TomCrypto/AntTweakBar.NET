@@ -29,14 +29,15 @@ namespace AntTweakBar
         /// <param name="parent">The bar the variable should be created in.</param>
         /// <param name="initFunc">A delegate which will initialize the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
+        /// <param name="readOnly">Whether the variable can be modified by the user.</param>
         /// <param name="initLabel">Whether to initialize the variable's label to default.</param>
-        protected Variable(Bar parent, Action<Variable, String> initFunc, String def = null, bool initLabel = true)
+        protected Variable(Bar parent, Action<Variable, String, Boolean> initFunc, String def = null, bool readOnly = false, bool initLabel = true)
         {
             if ((ParentBar = parent) == null)
                 throw new ArgumentNullException("parent");
             
             Tw.SetCurrentWindow(ParentBar.ParentContext.Identifier);
-            initFunc(this, ID = Guid.NewGuid().ToString());
+            initFunc(this, ID = Guid.NewGuid().ToString(), readOnly);
             created = true; /* Variable now created. */
             if (initLabel) Label = UnnamedLabel;
             ParentBar.Add(this);

@@ -30,11 +30,12 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the boolean variable.
         /// </summary>
-        private static void InitBoolVariable(Variable var, String id)
+        private static void InitBoolVariable(Variable var, String id, bool readOnly)
         {
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Bool8,
-                        ((BoolVariable)var).SetCallback,
+                        readOnly ? (Tw.SetVarCallback)null
+                        : ((BoolVariable)var).SetCallback,
                         ((BoolVariable)var).GetCallback,
                         IntPtr.Zero, null);
         }
@@ -45,8 +46,9 @@ namespace AntTweakBar
         /// <param name="bar">The bar to create the boolean variable in.</param>
         /// <param name="initialValue">The initial value of the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
-        public BoolVariable(Bar bar, Boolean initialValue = false, String def = null)
-            : base(bar, InitBoolVariable, def)
+        /// <param name="readOnly">Whether the variable can be modified by the user.</param>
+        public BoolVariable(Bar bar, Boolean initialValue = false, String def = null, bool readOnly = false)
+            : base(bar, InitBoolVariable, def, readOnly)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;

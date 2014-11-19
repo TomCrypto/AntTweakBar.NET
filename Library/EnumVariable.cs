@@ -45,7 +45,7 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the enum variable.
         /// </summary>
-        private static void InitEnumVariable(Variable var, String id)
+        private static void InitEnumVariable(Variable var, String id, bool readOnly)
         {
             if (!typeof(T).IsEnum)
                 throw new InvalidOperationException(String.Format("Type {0} is not an enumeration", typeof(T).FullName));
@@ -54,7 +54,8 @@ namespace AntTweakBar
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.DefineEnumFromString(typeof(T).FullName, enumNames),
-                        ((EnumVariable<T>)var).SetCallback,
+                        readOnly ? (Tw.SetVarCallback)null
+                        : ((EnumVariable<T>)var).SetCallback,
                         ((EnumVariable<T>)var).GetCallback,
                         IntPtr.Zero, null);
         }
@@ -65,8 +66,9 @@ namespace AntTweakBar
         /// <param name="bar">The bar to create the enum variable in.</param>
         /// <param name="initialValue">The initial value of the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
-        public EnumVariable(Bar bar, T initialValue, String def = null)
-            : base(bar, InitEnumVariable, def)
+        /// <param name="readOnly">Whether the variable can be modified by the user.</param>
+        public EnumVariable(Bar bar, T initialValue, String def = null, bool readOnly = false)
+            : base(bar, InitEnumVariable, def, readOnly)
         {
             Tw.SetParam(ParentBar.Pointer, ID, "enum", GetEnumString());
 

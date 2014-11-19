@@ -46,11 +46,12 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the quaternion variable.
         /// </summary>
-        private static void InitQuaternionVariable(Variable var, String id)
+        private static void InitQuaternionVariable(Variable var, String id, bool readOnly)
         {
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Quat4F,
-                        ((QuaternionVariable)var).SetCallback,
+                        readOnly ? (Tw.SetVarCallback)null
+                        : ((QuaternionVariable)var).SetCallback,
                         ((QuaternionVariable)var).GetCallback,
                         IntPtr.Zero, null);
         }
@@ -64,8 +65,9 @@ namespace AntTweakBar
         /// <param name="z">The initial Z-component value of the variable.</param>
         /// <param name="w">The initial W-component value of the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
-        public QuaternionVariable(Bar bar, float x = 0, float y = 0, float z = 0, float w = 1, String def = null)
-            : base(bar, InitQuaternionVariable, def)
+        /// <param name="readOnly">Whether the variable can be modified by the user.</param>
+        public QuaternionVariable(Bar bar, float x = 0, float y = 0, float z = 0, float w = 1, String def = null, bool readOnly = false)
+            : base(bar, InitQuaternionVariable, def, readOnly)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;

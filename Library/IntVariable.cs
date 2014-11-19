@@ -42,11 +42,12 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the integer variable.
         /// </summary>
-        private static void InitIntVariable(Variable var, String id)
+        private static void InitIntVariable(Variable var, String id, bool readOnly)
         {
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Int32,
-                        ((IntVariable)var).SetCallback,
+                        readOnly ? (Tw.SetVarCallback)null
+                        : ((IntVariable)var).SetCallback,
                         ((IntVariable)var).GetCallback,
                         IntPtr.Zero, null);
         }
@@ -57,8 +58,9 @@ namespace AntTweakBar
         /// <param name="bar">The bar to create the integer variable in.</param>
         /// <param name="initialValue">The initial value of the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
-        public IntVariable(Bar bar, Int32 initialValue = 0, String def = null)
-            : base(bar, InitIntVariable, def)
+        /// <param name="readOnly">Whether the variable can be modified by the user.</param>
+        public IntVariable(Bar bar, Int32 initialValue = 0, String def = null, bool readOnly = false)
+            : base(bar, InitIntVariable, def, readOnly)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;

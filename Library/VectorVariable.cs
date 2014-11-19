@@ -41,11 +41,12 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the vector variable.
         /// </summary>
-        private static void InitVectorVariable(Variable var, String id)
+        private static void InitVectorVariable(Variable var, String id, bool readOnly)
         {
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Dir3F,
-                        ((VectorVariable)var).SetCallback,
+                        readOnly ? (Tw.SetVarCallback)null
+                        : ((VectorVariable)var).SetCallback,
                         ((VectorVariable)var).GetCallback,
                         IntPtr.Zero, null);
         }
@@ -58,8 +59,9 @@ namespace AntTweakBar
         /// <param name="y">The initial Y-component value of the variable.</param>
         /// <param name="z">The initial Z-component value of the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
-        public VectorVariable(Bar bar, float x = 0, float y = 0, float z = 0, String def = null)
-            : base(bar, InitVectorVariable, def)
+        /// <param name="readOnly">Whether the variable can be modified by the user.</param>
+        public VectorVariable(Bar bar, float x = 0, float y = 0, float z = 0, String def = null, bool readOnly = false)
+            : base(bar, InitVectorVariable, def, readOnly)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;

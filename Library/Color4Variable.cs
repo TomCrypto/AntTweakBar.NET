@@ -87,11 +87,12 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the RGBA color variable.
         /// </summary>
-        private static void InitColor4Variable(Variable var, String id)
+        private static void InitColor4Variable(Variable var, String id, bool readOnly)
         {
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Color4F,
-                        ((Color4Variable)var).SetCallback,
+                        readOnly ? (Tw.SetVarCallback)null
+                        : ((Color4Variable)var).SetCallback,
                         ((Color4Variable)var).GetCallback,
                         IntPtr.Zero, null);
         }
@@ -105,8 +106,9 @@ namespace AntTweakBar
         /// <param name="b">The initial blue channel value of the variable.</param>
         /// <param name="a">The initial alpha channel value of the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
-        public Color4Variable(Bar bar, float r = 0, float g = 0, float b = 0, float a = 0, String def = null)
-            : base(bar, InitColor4Variable, def)
+        /// <param name="readOnly">Whether the variable can be modified by the user.</param>
+        public Color4Variable(Bar bar, float r = 0, float g = 0, float b = 0, float a = 0, String def = null, bool readOnly = false)
+            : base(bar, InitColor4Variable, def, readOnly)
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
