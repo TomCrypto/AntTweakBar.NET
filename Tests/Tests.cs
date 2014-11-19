@@ -92,6 +92,13 @@ namespace Tests
         }
 
         [Test()]
+        public void LabelSpecialCharacters()
+        {
+            Bar.Label = "abcdefgXxåæçèéêëìîí0123456789ñðòñóYyôõöøùúûüýþÿuvwxyz";
+            Assert.AreEqual("abcdefgXxåæçèéêëìîí0123456789ñðòñóYyôõöøùúûüýþÿuvwxyz", Bar.Label);
+        }
+
+        [Test()]
         public void Help()
         {
             Bar.Help = "testing";
@@ -179,6 +186,13 @@ namespace Tests
         {
             Variable.Label = "testing";
             Assert.AreEqual("testing", Variable.Label);
+        }
+
+        [Test()]
+        public void LabelSpecialCharacters()
+        {
+            Variable.Label = "abcdefgXxåæçèéêëìîí0123456789ñðòñóYyôõöøùúûüýþÿuvwxyz";
+            Assert.AreEqual("abcdefgXxåæçèéêëìîí0123456789ñðòñóYyôõöøùúûüýþÿuvwxyz", Variable.Label);
         }
 
         [Test()]

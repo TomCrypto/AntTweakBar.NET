@@ -101,9 +101,9 @@ namespace AntTweakBar
               strBytes.Add(ch);
             }
 
-            string tmp = Encoding.UTF8.GetString(strBytes.ToArray());
-            bool changed = tmp != Value;
-            Value = tmp;
+            string data = Encoding.UTF8.GetString(strBytes.ToArray());
+            bool changed = (data != Value);
+            Value = data;
 
             if (changed)
                 OnChanged(EventArgs.Empty);

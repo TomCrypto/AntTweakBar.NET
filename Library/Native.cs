@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -243,7 +244,18 @@ namespace AntTweakBar
         /// <returns>A constant string that describes the error.</returns>
         public static String GetLastError()
         {
-            return Marshal.PtrToStringAnsi(NativeMethods.TwGetLastError());
+            var ptr = NativeMethods.TwGetLastError();
+
+            var strBytes = new List<byte>();
+            var off = 0;
+            while (true)
+            {
+                var ch = Marshal.ReadByte(ptr, off++);
+                if (ch == 0) break;
+                strBytes.Add(ch);
+            }
+
+            return Encoding.UTF8.GetString(strBytes.ToArray());
         }
 
         /// <summary>
