@@ -265,6 +265,10 @@ namespace AntTweakBar
         /// <param name="device">Pointer to the Direct3D device, or IntPtr.Zero for OpenGL.</param>
         public static void Init(GraphicsAPI graphicsAPI, IntPtr device)
         {
+            if (graphicsAPI == GraphicsAPI.Unspecified) {
+                throw new ArgumentOutOfRangeException("graphicsAPI");
+            }
+
              if (!NativeMethods.TwInit(graphicsAPI, device)) {
                  throw new AntTweakBarException("TwInit failed.");
              }
@@ -297,6 +301,12 @@ namespace AntTweakBar
         /// <param name="height">Height of the graphics window.</param>
         public static void WindowSize(int width, int height)
         {
+            if (width <= 0) {
+                throw new ArgumentOutOfRangeException("width");
+            } else if (height <= 0) {
+                throw new ArgumentOutOfRangeException("height");
+            }
+
             if (!NativeMethods.TwWindowSize(width, height))
                 throw new AntTweakBarException("TwWindowSize failed.");
         }
@@ -350,6 +360,10 @@ namespace AntTweakBar
         /// <returns>Whether the event has been handled by AntTweakBar.</returns>
         public static bool EventSFML(IntPtr sfmlEvent, byte majorVersion, byte minorVersion)
         {
+            if (sfmlEvent == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("sfmlEvent");
+            }
+
             return NativeMethods.TwEventSFML(sfmlEvent, majorVersion, minorVersion);
         }
 
@@ -359,6 +373,10 @@ namespace AntTweakBar
         /// <returns>Whether the event has been handled by AntTweakBar.</returns>
         public static bool EventSDL(IntPtr sdlEvent, byte majorVersion, byte minorVersion)
         {
+            if (sdlEvent == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("sdlEvent");
+            }
+
             return NativeMethods.TwEventSDL(sdlEvent, majorVersion, minorVersion);
         }
 
@@ -368,6 +386,10 @@ namespace AntTweakBar
         /// <returns>Whether the event has been handled by AntTweakBar.</returns>
         public static bool EventWin(IntPtr wnd, int msg, IntPtr wParam, IntPtr lParam)
         {
+            if (wnd == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("wnd");
+            }
+
             return NativeMethods.TwEventWin(wnd, msg, wParam, lParam);
         }
 
@@ -423,6 +445,10 @@ namespace AntTweakBar
         /// <param name="bar">Identifier to the tweak bar to delete.</param>
         public static void DeleteBar(IntPtr bar)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            }
+
             if (!NativeMethods.TwDeleteBar(bar)) {
                 throw new AntTweakBarException("TwDeleteBar failed.");
             }
@@ -434,6 +460,10 @@ namespace AntTweakBar
         /// <param name="bar">Bar identifier.</param>
         public static void SetTopBar(IntPtr bar)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            }
+
             if (!NativeMethods.TwSetTopBar(bar)) {
                 throw new AntTweakBarException("TwSetTopBar failed.");
             }
@@ -445,6 +475,10 @@ namespace AntTweakBar
         /// <param name="bar">Bar identifier.</param>
         public static void SetBottomBar(IntPtr bar)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            }
+
             if (!NativeMethods.TwSetBottomBar(bar)) {
                 throw new AntTweakBarException("TwSetBottomBar failed.");
             }
@@ -456,6 +490,10 @@ namespace AntTweakBar
         /// <param name="bar">Bar identifier.</param>
         public static void RefreshBar(IntPtr bar)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            }
+
             if (!NativeMethods.TwRefreshBar(bar)) {
                 throw new AntTweakBarException("TwRefreshBar failed.");
             }
@@ -467,6 +505,10 @@ namespace AntTweakBar
         /// <param name="def">A string containing one or more parameter assignments (separated by newlines).</param>
         public static void Define(String def)
         {
+            if (def == null) {
+                throw new ArgumentNullException("def");
+            }
+
             if (!NativeMethods.TwDefine(def)) {
                 throw new AntTweakBarException("TwDefine failed.");
             }
@@ -477,6 +519,14 @@ namespace AntTweakBar
         /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, String value)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (paramName == null) {
+                throw new ArgumentNullException("paramName");
+            } else if (value == null) {
+                throw new ArgumentNullException("value");
+            }
+
             if (!NativeMethods.TwSetParamStr(bar, varName, paramName, ParamValueType.CString, 1, value)) {
                 throw new AntTweakBarException("TwSetParam failed.");
             }
@@ -487,6 +537,16 @@ namespace AntTweakBar
         /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, params Int32[] values)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (paramName == null) {
+                throw new ArgumentNullException("paramName");
+            } else if (values == null) {
+                throw new ArgumentNullException("value");
+            } else if (values.Length == 0) {
+                throw new ArgumentOutOfRangeException("values.Length");
+            }
+
             if (!NativeMethods.TwSetParamInt(bar, varName, paramName, ParamValueType.Int32, (uint)values.Length, values)) {
                 throw new AntTweakBarException("TwSetParam failed.");
             }
@@ -497,6 +557,16 @@ namespace AntTweakBar
         /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, params Single[] values)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (paramName == null) {
+                throw new ArgumentNullException("paramName");
+            } else if (values == null) {
+                throw new ArgumentNullException("value");
+            } else if (values.Length == 0) {
+                throw new ArgumentOutOfRangeException("values.Length");
+            }
+
             if (!NativeMethods.TwSetParamSingle(bar, varName, paramName, ParamValueType.Float, (uint)values.Length, values)) {
                 throw new AntTweakBarException("TwSetParam failed.");
             }
@@ -507,6 +577,16 @@ namespace AntTweakBar
         /// </summary>
         public static void SetParam(IntPtr bar, String varName, String paramName, params Double[] values)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (paramName == null) {
+                throw new ArgumentNullException("paramName");
+            } else if (values == null) {
+                throw new ArgumentNullException("value");
+            } else if (values.Length == 0) {
+                throw new ArgumentOutOfRangeException("values.Length");
+            }
+
             if (!NativeMethods.TwSetParamDouble(bar, varName, paramName, ParamValueType.Double, (uint)values.Length, values)) {
                 throw new AntTweakBarException("TwSetParam failed.");
             }
@@ -549,6 +629,12 @@ namespace AntTweakBar
         /// </summary>
         public static String GetStringParam(IntPtr bar, String varName, String paramName)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (paramName == null) {
+                throw new ArgumentNullException("paramName");
+            }
+
             var buffer = new StringBuilder(MaxStringLength);
 
             if (NativeMethods.TwGetParamStr(bar, varName, paramName, ParamValueType.CString, (uint)buffer.Capacity, buffer) == 0) {
@@ -563,6 +649,12 @@ namespace AntTweakBar
         /// </summary>
         public static Int32[] GetIntParam(IntPtr bar, String varName, String paramName, int paramCount = 0)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (paramName == null) {
+                throw new ArgumentNullException("paramName");
+            }
+
             var buffer = new Int32[paramCount == 0 ? 32 : paramCount];
 
             int count = NativeMethods.TwGetParamInt(bar, varName, paramName, ParamValueType.Int32, (uint)buffer.Length, buffer);
@@ -582,6 +674,12 @@ namespace AntTweakBar
         /// </summary>
         public static Single[] GetSingleParam(IntPtr bar, String varName, String paramName, int paramCount = 0)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (paramName == null) {
+                throw new ArgumentNullException("paramName");
+            }
+
             var buffer = new Single[paramCount == 0 ? 32 : paramCount];
 
             int count = NativeMethods.TwGetParamSingle(bar, varName, paramName, ParamValueType.Float, (uint)buffer.Length, buffer);
@@ -601,6 +699,12 @@ namespace AntTweakBar
         /// </summary>
         public static Double[] GetDoubleParam(IntPtr bar, String varName, String paramName, int paramCount = 0)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (paramName == null) {
+                throw new ArgumentNullException("paramName");
+            }
+
             var buffer = new Double[paramCount == 0 ? 32 : paramCount];
 
             int count = NativeMethods.TwGetParamDouble(bar, varName, paramName, ParamValueType.Double, (uint)buffer.Length, buffer);
@@ -699,6 +803,16 @@ namespace AntTweakBar
         /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddVarRO(IntPtr bar, String name, VariableType type, IntPtr var, String def)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (type == VariableType.Undefined) {
+                throw new ArgumentOutOfRangeException("type");
+            } else if (var == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("var");
+            } else if (name == null) {
+                throw new ArgumentNullException("name");
+            }
+
             if (!NativeMethods.TwAddVarRO(bar, name, type, var, def)) {
                 throw new AntTweakBarException("TwAddVarRO failed.");
             }
@@ -714,6 +828,16 @@ namespace AntTweakBar
         /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddVarRW(IntPtr bar, String name, VariableType type, IntPtr var, String def)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (type == VariableType.Undefined) {
+                throw new ArgumentOutOfRangeException("type");
+            } else if (var == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("var");
+            } else if (name == null) {
+                throw new ArgumentNullException("name");
+            }
+
             if (!NativeMethods.TwAddVarRW(bar, name, type, var, def)) {
                 throw new AntTweakBarException("TwAddVarRW failed.");
             }
@@ -731,6 +855,16 @@ namespace AntTweakBar
         /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddVarCB(IntPtr bar, String name, VariableType type, SetVarCallback setCallback, GetVarCallback getCallback, IntPtr clientData, String def)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (type == VariableType.Undefined) {
+                throw new ArgumentOutOfRangeException("type");
+            } else if (name == null) {
+                throw new ArgumentNullException("name");
+            } else if (getCallback == null) {
+                throw new ArgumentNullException("getCallback");
+            }
+
             if (!NativeMethods.TwAddVarCB(bar, name, type, setCallback, getCallback, clientData, def)) {
                 throw new AntTweakBarException("TwAddVarCB failed.");
             }
@@ -744,6 +878,12 @@ namespace AntTweakBar
         /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddSeparator(IntPtr bar, String name, String def)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (name == null) {
+                throw new ArgumentNullException("name");
+            }
+
             if (!NativeMethods.TwAddSeparator(bar, name, def)) {
                 throw new AntTweakBarException("TwAddSeparator failed.");
             }
@@ -759,6 +899,14 @@ namespace AntTweakBar
         /// <param name="def">An optional definition string used to modify the behavior of this new entry.</param>
         public static void AddButton(IntPtr bar, String name, ButtonCallback callback, IntPtr clientData, String def)
         {
+            if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            } else if (name == null) {
+                throw new ArgumentNullException("name");
+            } else if (callback == null) {
+                throw new ArgumentNullException("callback");
+            }
+
             if (!NativeMethods.TwAddButton(bar, name, callback, clientData, def)) {
                 throw new AntTweakBarException("TwAddButton failed.");
             }
@@ -772,6 +920,12 @@ namespace AntTweakBar
         /// <returns></returns>
         public static VariableType DefineEnumFromString(String name, String enumString)
         {
+            if (name == null) {
+                throw new ArgumentNullException("name");
+            } else if (enumString == null) {
+                throw new ArgumentNullException("enumString");
+            }
+
             VariableType enumType;
 
             if ((enumType = NativeMethods.TwDefineEnumFromString(name, enumString)) == VariableType.Undefined) {
@@ -788,6 +942,12 @@ namespace AntTweakBar
         /// <param name="name">The name of the variable.</param>
         public static void RemoveVar(IntPtr bar, String name)
         {
+            if (name == null) {
+                throw new ArgumentNullException("name");
+            } else if (bar == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("bar");
+            }
+
             if (!NativeMethods.TwRemoveVar(bar, name)) {
                 throw new AntTweakBarException("TwRemoveVar failed.");
             }
