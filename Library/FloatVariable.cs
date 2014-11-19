@@ -30,7 +30,7 @@ namespace AntTweakBar
             get { return value; }
             set
             {
-                if (!((Min <= value) && (value <= Max)))
+                if (!((Min <= value) && (value <= Max)) || !Validate(value))
                     throw new ArgumentOutOfRangeException("value", "Invalid variable value");
                 else
                     this.value = value;
@@ -64,7 +64,24 @@ namespace AntTweakBar
         {
             setCallback = SetCallback;
             getCallback = GetCallback;
-            Value = initialValue;
+            value = initialValue;
+        }
+
+        
+
+        /// <summary>
+        /// A validation method for derived classes. Override this to provide custom
+        /// variables with arbitrary validation logic. If the user's input does not
+        /// pass validation, the variable's value reverts to its previous contents.
+        /// </summary>
+        /// <remarks>
+        /// The validation method is also invoked when setting the variable's value.
+        /// </remarks>
+        /// <param name="value">The value the variable will contain.</param>
+        /// <returns>Whether the variable is allowed to have this value.</returns>
+        protected virtual bool Validate(Single value)
+        {
+            return true;
         }
 
         /// <summary>

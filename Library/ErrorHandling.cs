@@ -1,11 +1,14 @@
 using System;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace AntTweakBar
 {
     /// <summary>
     /// The exception that is thrown when an error occurs in the AntTweakBar library.
     /// </summary>
-    public class AntTweakBarException : Exception
+    [Serializable]
+    public sealed class AntTweakBarException : Exception
     {
         /// <summary>
         /// Gets a detailed description of the error from AntTweakBar.
@@ -19,6 +22,20 @@ namespace AntTweakBar
         public AntTweakBarException(String message) : base(message)
         {
             Details = Tw.GetLastError();
+        }
+
+        [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter=true)]
+        private AntTweakBarException(SerializationInfo info, StreamingContext context) : base (info, context)
+        {
+            this.Details = info.GetString("AntTweakBarException.Details");
+        }
+
+        [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter=true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+
+            info.AddValue("AntTweakBarException.Details", this.Details);
         }
     }
 

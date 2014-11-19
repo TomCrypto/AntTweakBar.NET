@@ -9,7 +9,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar variable which can hold an enum.
     /// </summary>
-    public class EnumVariable<T> : Variable where T : struct
+    public sealed class EnumVariable<T> : Variable where T : struct
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.

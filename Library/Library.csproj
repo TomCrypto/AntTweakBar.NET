@@ -63,7 +63,7 @@
     <Compile Include="Variable.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Bar.cs" />
-    <Compile Include="Errors.cs" />
+    <Compile Include="ErrorHandling.cs" />
     <Compile Include="QuaternionVariable.cs" />
     <Compile Include="EnumVariable.cs" />
     <Compile Include="StringVariable.cs" />
