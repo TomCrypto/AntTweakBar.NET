@@ -108,7 +108,6 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
-        private readonly Tw.SetVarCallback setCallback;
         private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             float[] data = new float[3]; /* R, G, B */
@@ -129,7 +128,6 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs the variable's value.
         /// </summary>
-        private readonly Tw.GetVarCallback getCallback;
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             float[] data = new float[] { R, G, B };
@@ -177,5 +175,13 @@ namespace AntTweakBar
         {
             return String.Format("[ColorVariable: Label={0}, Value=({1}, {2}, {3})]", Label, R, G, B);
         }
+
+        /* See Variable remarks. */
+        #pragma warning disable 414
+
+        private readonly Tw.SetVarCallback setCallback;
+        private readonly Tw.GetVarCallback getCallback;
+
+        #pragma warning restore 414
     }
 }

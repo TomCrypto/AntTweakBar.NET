@@ -38,9 +38,10 @@ namespace AntTweakBar
         /// <param name="def">An optional definition string for the new bar.</param>
         public Bar(Context parent, String def = null)
         {
-            if ((ParentContext = parent) == null)
+            if ((ParentContext = parent) == null) {
                 throw new ArgumentNullException("parent");
-            
+            }
+
             Tw.SetCurrentWindow(ParentContext.Identifier); // per context
             Pointer = Tw.NewBar(ID = Guid.NewGuid().ToString());
             ParentContext.Add(this);
@@ -252,8 +253,8 @@ namespace AntTweakBar
                 if (disposing && ParentContext.Contains(this)) {
                     ParentContext.Remove(this);
                 }
-                
-                if (Pointer != null) {
+
+                if (Pointer != IntPtr.Zero) {
                     Tw.DeleteBar(Pointer);
                 }
 

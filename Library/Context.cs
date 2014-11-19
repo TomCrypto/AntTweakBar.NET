@@ -20,6 +20,16 @@ namespace AntTweakBar
         internal Int32 Identifier { get; private set; }
 
         /// <summary>
+        /// Checks whether a graphics API requires a device pointer.
+        /// </summary>
+        private static bool RequiresDevicePointer(Tw.GraphicsAPI api)
+        {
+            return ((api == Tw.GraphicsAPI.D3D9)
+                 || (api == Tw.GraphicsAPI.D3D10)
+                 || (api == Tw.GraphicsAPI.D3D11));
+        }
+
+        /// <summary>
         /// Creates a new AntTweakBar context. If there are no other active contexts, a graphics API to use must be provided.
         /// </summary>
         /// <param name="graphicsAPI">The graphics API you need to share with AntTweakBar.</param>
@@ -28,10 +38,8 @@ namespace AntTweakBar
         {
             lock (lk)
             {
-                if (graphicsAPI == Tw.GraphicsAPI.D3D9 || graphicsAPI == Tw.GraphicsAPI.D3D10 || graphicsAPI == Tw.GraphicsAPI.D3D11) {
-                    if (device == IntPtr.Zero) {
-                        throw new ArgumentException("A valid device pointer is required for Direct3D interop.");
-                    }
+                if (RequiresDevicePointer(graphicsAPI) && (device == IntPtr.Zero)) {
+                    throw new ArgumentException("A valid device pointer is required for Direct3D interop.");
                 }
 
                 if (contextCounter == 0)

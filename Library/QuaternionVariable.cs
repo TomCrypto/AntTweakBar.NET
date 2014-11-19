@@ -78,7 +78,6 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
-        private readonly Tw.SetVarCallback setCallback;
         private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             float[] data = new float[4]; /* X, Y, Z, W */
@@ -101,7 +100,6 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs the variable's value.
         /// </summary>
-        private readonly Tw.GetVarCallback getCallback;
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             float[] data = new float[] { X, Y, Z, W };
@@ -154,5 +152,13 @@ namespace AntTweakBar
         {
             return String.Format("[QuaternionVariable: Label={0}, Value=({1}, {2}, {3}, {4})]", Label, X, Y, Z, W);
         }
+
+        /* See Variable remarks. */
+        #pragma warning disable 414
+
+        private readonly Tw.SetVarCallback setCallback;
+        private readonly Tw.GetVarCallback getCallback;
+
+        #pragma warning restore 414
     }
 }

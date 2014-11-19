@@ -85,7 +85,6 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user changes the variable's value.
         /// </summary>
-        private readonly Tw.SetVarCallback setCallback;
         private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             int tmp = Marshal.ReadInt32(pointer);
@@ -99,7 +98,6 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs the variable's value.
         /// </summary>
-        private readonly Tw.GetVarCallback getCallback;
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             Marshal.WriteInt32(pointer, Value);
@@ -157,5 +155,13 @@ namespace AntTweakBar
         {
             return String.Format("[IntVariable: Label={0}, Value={1}]", Label, Value);
         }
+
+        /* See Variable remarks. */
+        #pragma warning disable 414
+
+        private readonly Tw.SetVarCallback setCallback;
+        private readonly Tw.GetVarCallback getCallback;
+
+        #pragma warning restore 414
     }
 }

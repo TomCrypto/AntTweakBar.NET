@@ -47,7 +47,6 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user clicks on the button.
         /// </summary>
-        private readonly Tw.ButtonCallback callback;
         private void Callback(IntPtr clientData)
         {
             OnClicked(EventArgs.Empty);
@@ -57,5 +56,12 @@ namespace AntTweakBar
         {
             return String.Format("[Button: Label={0}]", Label);
         }
+
+        /* See Variable remarks. */
+        #pragma warning disable 414
+
+        private readonly Tw.ButtonCallback callback;
+
+        #pragma warning restore 414
     }
 }
