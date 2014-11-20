@@ -9,7 +9,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar context, which logically maps to a unique window.
     /// </summary>
-    public class Context : IEnumerable<Bar>, IDisposable
+    public sealed class Context : IEnumerable<Bar>, IDisposable
     {
         private static object lk = new object();
         private static Int32 contextCounter = 0;
@@ -36,12 +36,12 @@ namespace AntTweakBar
         /// <param name="device">For Direct3D interop only, a pointer to the D3D device.</param>
         public Context(Tw.GraphicsAPI graphicsAPI = Tw.GraphicsAPI.Unspecified, IntPtr device = default(IntPtr))
         {
+            if (RequiresDevicePointer(graphicsAPI) && (device == IntPtr.Zero)) {
+                throw new ArgumentException("A valid device pointer is required for Direct3D interop.");
+            }
+
             lock (lk)
             {
-                if (RequiresDevicePointer(graphicsAPI) && (device == IntPtr.Zero)) {
-                    throw new ArgumentException("A valid device pointer is required for Direct3D interop.");
-                }
-
                 if (contextCounter == 0)
                 {
                     if (graphicsAPI == Tw.GraphicsAPI.Unspecified) {
@@ -210,7 +210,7 @@ namespace AntTweakBar
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposed)
             {

@@ -9,7 +9,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar bar, which holds a set of variables.
     /// </summary>
-    public class Bar : IEnumerable<Variable>, IDisposable
+    public sealed class Bar : IEnumerable<Variable>, IDisposable
     {
         /// <summary>
         /// The default label for unnamed bars.
@@ -242,7 +242,7 @@ namespace AntTweakBar
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposed && (ParentContext != null))
             {

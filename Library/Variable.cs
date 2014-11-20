@@ -154,7 +154,8 @@ namespace AntTweakBar
                     ParentBar.Remove(this);
                 }
 
-                if (disposing) {
+                if (disposing)
+                {
                     if (Tw.SetCallbacks.ContainsKey(ID)) {
                         Tw.SetCallbacks.Remove(ID);
                     }
