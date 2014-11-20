@@ -46,12 +46,12 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the quaternion variable.
         /// </summary>
-        private static void InitQuaternionVariable(Variable _var, String id)
+        private static void InitQuaternionVariable(Variable var, String id)
         {
-            var var = _var as QuaternionVariable;
+            var it = var as QuaternionVariable;
 
-            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
-            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(it.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Quat4F,

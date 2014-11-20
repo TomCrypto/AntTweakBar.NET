@@ -1,4 +1,4 @@
-AntTweakBar.NET 0.4.0
+AntTweakBar.NET 0.4.1
 =====================
 
 AntTweakBar.NET is an MIT-licensed C# wrapper for the [AntTweakBar](http://anttweakbar.sourceforge.net) GUI library.
@@ -82,6 +82,17 @@ Thanks to *Ilkka Jahnukainen* for helping in testing AntTweakBar.NET throughout 
 
 Changelog
 ---------
+
+20 November 2014 (v0.4.1)
+
+ - bug fix release, fixed numerous bugs including:
+   * string variable validation now works properly (previously threw exception instead of reverting)
+   * groups names with spaces now work correctly
+   * a few OnChanged methods were incorrectly private, they are now all public
+   * unmanaged callbacks will now no longer be garbage-collected, which previously caused crashes
+ - extended the sample with the ability to use symbolic variables in the fractal formula
+ - extended the sample to be able to choose between hardcoding the fractal in the shader (efficient, but slow to update) and passing it as a uniform (a bit slower, but much faster to update)
+ - fixed a bug in the polynomial class' Degree property
 
 19 November 2014 (v0.4.0)
 

@@ -78,12 +78,12 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the RGB color variable.
         /// </summary>
-        private static void InitColorVariable(Variable _var, String id)
+        private static void InitColorVariable(Variable var, String id)
         {
-            var var = _var as ColorVariable;
+            var it = var as ColorVariable;
 
-            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
-            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(it.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Color3F,

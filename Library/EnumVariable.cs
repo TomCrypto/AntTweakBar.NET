@@ -47,17 +47,17 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the enum variable.
         /// </summary>
-        private static void InitEnumVariable(Variable _var, String id)
+        private static void InitEnumVariable(Variable var, String id)
         {
             if (!typeof(T).IsEnum)
                 throw new InvalidOperationException(String.Format("Type {0} is not an enumeration", typeof(T).FullName));
 
             var enumNames = String.Join(",", typeof(T).GetEnumNames());
 
-            var var = _var as EnumVariable<T>;
+            var it = var as EnumVariable<T>;
 
-            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
-            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(it.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.DefineEnumFromString(typeof(T).FullName, enumNames),

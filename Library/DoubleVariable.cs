@@ -44,12 +44,12 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the floating-point variable.
         /// </summary>
-        private static void InitDoubleVariable(Variable _var, String id)
+        private static void InitDoubleVariable(Variable var, String id)
         {
-            var var = _var as DoubleVariable;
+            var it = var as DoubleVariable;
 
-            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
-            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(it.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Double,

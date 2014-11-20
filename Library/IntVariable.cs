@@ -44,12 +44,12 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the integer variable.
         /// </summary>
-        private static void InitIntVariable(Variable _var, String id)
+        private static void InitIntVariable(Variable var, String id)
         {
-            var var = _var as IntVariable;
+            var it = var as IntVariable;
 
-            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
-            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(it.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Int32,

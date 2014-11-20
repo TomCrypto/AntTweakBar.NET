@@ -41,12 +41,12 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the vector variable.
         /// </summary>
-        private static void InitVectorVariable(Variable _var, String id)
+        private static void InitVectorVariable(Variable var, String id)
         {
-            var var = _var as VectorVariable;
+            var it = var as VectorVariable;
 
-            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
-            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(it.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Dir3F,

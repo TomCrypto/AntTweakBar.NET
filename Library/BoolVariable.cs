@@ -30,12 +30,12 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the boolean variable.
         /// </summary>
-        private static void InitBoolVariable(Variable _var, String id)
+        private static void InitBoolVariable(Variable var, String id)
         {
-            var var = _var as BoolVariable;
+            var it = var as BoolVariable;
 
-            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
-            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(it.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Bool8,
