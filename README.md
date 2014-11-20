@@ -1,87 +1,103 @@
-AntTweakBar.NET 0.4.1
+AntTweakBar.NET 0.4.2
 =====================
 
-AntTweakBar.NET is an MIT-licensed C# wrapper for the [AntTweakBar](http://anttweakbar.sourceforge.net) GUI library.
+AntTweakBar.NET is an MIT-licensed C# wrapper for Philippe Decaudin's [AntTweakBar](http://anttweakbar.sourceforge.net) GUI library. It allows C# developers to enhance their tech demos or games with an easy-to-use graphical widget for modifying application parameters in realtime. AntTweakBar.NET offers a high-level interface to the widget which will feel natural to any C# programmer, and also provides access to exception-safe bindings to the native AntTweakBar calls for those who might want them.
 
-Getting Started
----------------
+AntTweakBar.NET runs on the Microsoft .NET framework and on the Mono runtime, both 32-bit and 64-bit (provided it can find the appropriate AntTweakBar DLL or shared library). It has been tested on Windows and Linux, and is expected to work - but has not yet been tested - on Mac OS X and presumably BSD.
 
-First of all, install AntTweakBar on your system. For Linux, this means compiling the code at [the AntTweakBar sourceforge page](http://anttweakbar.sourceforge.net) with the usual `make && make install` procedure. For Windows, prebuilt binaries are provided at said website, which you can add to your C# project as external native libraries (to be copied to the output folder) or install globally on your system.
+License
+-------
 
-A solution file is provided which can be used to compile the managed library wrapper, `AntTweakBar.NET.dll`, just add it as a reference to your project and you're good to go! See the tutorial provided to find out how to use it (it's really short) and refer to the FAQ below if you encounter a problem or have a specific question. If the FAQ does not help, feel free to post an issue and I'll take a look at it.
+The AntTweakBar.NET wrapper is distributed under the MIT license, while AntTweakBar itself by Philippe Decaudin is released under the zlib/libpng license. For more information on licensing of this software, please consult the LICENSE file.
 
-Now on [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/)! Search for "AntTweakBar.NET" in the NuGet package manager to find it.
+Quick Start
+-----------
 
-Status
-------
+You must obtain and install the native AntTweakBar library itself from its SourceForge page, if you haven't already. For Windows, download the appropriate prebuilt DLL's and install them on your system or as third party libraries in your C# project. For Linux, simply `make && make install` as usual. Then add the `AntTweakBar.NET.dll` assembly in your project, either by compiling it from the repository or retrieving it from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/). You're good to go!
 
-The wrapper is functional, but not every feature AntTweakBar provides is implemented. Each feature needs to be tested and integrated into the code, which is why I've tried to start with a minimal set of often-used features, leaving the less popular ones to be added over time. The wrapper is also not a direct mapping from the native C API to C#, as you will soon notice if you are familiar with the former.
+The AntTweakBar.NET high-level interface is divided into three main concepts: contexts, bars, and variables.
 
-**Todo**:
+- **`Context`**: An instance of this class conceptually maps to a graphical window in your application: each window that will contain bars should have its own context. Each context holds its own separate set of bars, and has several methods to send window events to AntTweakBar, and, of course, draw the bars into the window.
 
-- add more predefined event handlers for all of the events supported by AntTweakBar (missing GLUT and a couple others)
-- more/better unit tests
-- test multi-window support exhaustively
-- check it works on OS X
-- consider implementing custom struct type (perhaps through reflection, looking for FieldOffset attributes?)
-- automatic nested groups? (not sure if it is meaningful since you can't easily move variables around anyway)
-- complete this readme with advanced usage notes
-- add extensions (in a separate assembly) to help interoperate with popular frameworks? (maybe)
-- ...
+- **`Bar`**: An instance of this class represents a graphical bar which holds a set of variables. It has several useful properties to tweak the bar to your application's needs. Each bar belongs to a context passed to its constructor.
+ 
+- **`Variable`**: This is the base class from which all other variable types (like `IntVariable` or `StringVariable`) descend from. Just like the `Bar` class, it and its descendants have plenty of properties you can modify to tweak the variable's behavior and graphical appearance. In addition, value variables hold a value property which can be set graphically by the user and can be read on the fly by your code, this is the `Value` property for simple types (like `IntVariable`) or e.g. the `X`, `Y`, `Z` properties for the `VectorVariable`. They also have a `Changed` event to be notified when the user changes the variable's value. The `Button` variable type has a `Clicked` event instead. Each variable belongs to a bar passed to its constructor.
 
-FAQ
----
+The first context created should be passed the graphics API you are using, which is some version of OpenGL or DirectX. For DirectX, you must also pass a pointer to the native device, which should be available from the graphics framework you are using somehow (for instance, for SharpDX, use `SharpDX.Direct3D11.Device.NativePointer`).
 
-**Q**. *I've added the library in my references but when I run my program I get a strange exception at startup.*
+    using AntTweakBar;
 
-**A**. The AntTweakBar library (the native one, not the managed wrapper DLL) cannot be found. Are you sure it is somewhere your program can find it, and is it built for the right architecture (32-bit or 64-bit)? The exception is somewhat convoluted because the wrapper does some setup work in a static constructor (the inner DLLNotFoundException is the important one).
+    /* ... */
 
-**Q**. *I'm able to create bars and variables but as soon as I call the `Draw` method on my context I get a "Bad Size" exception.*
+    context = new Context(Tw.GraphicsAPI.Direct3D11, /* pointer to device */);
 
-**A**. This means AntTweakBar doesn't know the size of your window, and can't draw itself. You need to set up event handling, and you might also have to call the `HandleResize` method depending on your window manager.
+Other contexts do not have to provide a graphics API, and can be created as simply `new Context();`. AntTweakBar.NET keeps track of how many contexts are active, and initializes the AntTweakBar library whenever a first one is created, and terminates the library whenever the last one is destroyed.
 
-**Q**. *My bars are correctly drawn, but I can't interact with them or anything.*
+Once you have a context, you can create bars inside it, and you can create variables inside these bars. To draw the context, call its `Draw()` method at the very end of your rendering pipeline. To handle events, hook up the various `Handle*()` methods to your window events. Keep in mind that you generally do not need to keep references to variables around. In many cases, it is sufficient to set up a delegate on the variable's `Changed` event to automatically modify some property in another class, so that your program automatically responds to variable changes. The same goes for bars.
 
-**A**. You haven't set up event handling. Make sure you are sending your window events to AntTweakBar by using one of the predefined event handlers (e.g. `EventHandlerSFML` for SFML) or do it manually by hooking up your events to call `HandleKeyPress`, `HandleMouseMove`, and so on.
+    var myBar = new Bar(context);
+    myBar.Label = "Some bar";
+    myBar.Contained = true; // set some bar properties
 
-**Q**. *The AntTweakBar API lets you give identifiers to variables to refer to them later on. Is there an equivalent?*
+    var rotationVar = new IntVariable(myBar, 42 /* default value */);
+    rotationVar.Label = "Model rotation";
+    rotationVar.Changed += delegate { model.Rotation = rotationVar.Value; }
 
-**A**. Yes, the variable instance itself. If you need to keep it around, do so. In many cases, you just need to set the variable up once at startup and then bind it to some concrete variable in your program via its `Changed` event, and can forget about it afterwards. Note, though, that you can always emulate identifiers easily using, for instance, a dictionary from variable identifiers to variable instances.
+    /* don't need rotationVar anymore (it will still be tracked by myBar) */
 
-**Q**. *The AntTweakBar API has a handy mechanism to create/configure a variable from a definition string (e.g. `label=foo visible=false`). Can I do this with AntTweakBar.NET?*
+Generic event handling example to illustrate (this is not the only event you need to handle):
 
-**A**. Partly, yes. You cannot implicitly create variables this way, but you can provide a definition string to the constructor or to the `SetDefinition` method in order to configure the variable. Remember that variables have no unique "identifier" in AntTweakBar.NET, it is more natural in C# to consider the variable instance itself as an identifier. I'm sure it will become clear once you use the wrapper for a bit.
+    protected override void OnResize(EventArgs e)
+    {
+        base.OnResize(e);
+        context.HandleResize(this.ClientSize);
+    }
 
-**Q**. *Why is there only one integer variable type? AntTweakBar supports 8-, 16-, and 32-bit signed and unsigned variable types.*
+In general you *do* want to keep references to contexts, because you actually do want to destroy them when you close your windows. The different AntTweakBar.NET classes implement the `IDisposable` interface. When you dispose a bar, all variables inside it are implicitly disposed. When you dispose a context, all bars inside it are implicitly disposed. In other words, it is sufficient to dispose the contexts you create. It is very important to note that you must dispose the last context **before** terminating your graphics API. A symptom of failing to do this is an exception on shutdown pointing to the `Tw.Terminate()` function. Critically, this means you cannot just leave the contexts to be garbage-collected, as it will probably be too late by the time they are. If you manage context ownership sensibly, this should not be a problem.  
 
-**A**. The integer variable type that's there already supports minimum and maximum ranges, and its value can be easily converted to and from the other types. Each additional variable type is one that must be tested and maintained, so it's not worth the effort (except maybe unsigned 32-bit integers, which might be added eventually).
+Notes on the Sample
+-------------------
 
-**Q**. *How expensive is it to read the `Value` property of a variable? Can I safely read it in tight loops or do I want to copy it to a local variable before working with it?*
+This repository contains a sample, among other things, which is intended to show what a concrete graphics tech demo using AntTweakBar.NET might look like. The sample is an interactive Newton fractal renderer, and is released under the same license as the wrapper. All of the relevant wrapper usage is in `Program.cs`, the rest is just, you know, code. It uses the [OpenTK framework](http://www.opentk.com/), and is cross-platform (OpenTK.dll will be fetched through NuGet - if you have compile errors, try a package restore).
 
-**A**. Go ahead and read it directly if you need to. The value is actually stored on the C# side and is modified by the native AntTweakBar library through callbacks, so reading it is about as cheap as it gets. In short, there is no interop cost associated with reading back the value of a variable (this is **not** true of the other variable or bar properties, which all involve a native call to the AntTweakBar library, so bear that in mind).
+<p align="center">
+<img src="Screenshot.png" alt="Screenshot of the sample program"></img> 
+</p>
 
-**Q**. *The sample won't build, and generates an error on some OpenTK-related code.*
+Advanced Usage
+--------------
 
-**A**. You probably have an older or newer incompatible version of OpenTK installed on your system (for instance, the `libopentk-cil-dev` package on Ubuntu and/or Debian). NuGet dependencies, here OpenTK, are not included in the repository. If for some reason they are not automatically downloaded upon building the sample, for whatever reason the OpenTK reference will map to the one you have installed on your system, causing the errors. To fix this, perform a package restore (by right-clicking on the sample project and clicking "restore NuGet packages") and close/restart the IDE, the reference should now map to the correct one. If you know how to prevent this, please issue a pull request!
+ - **Bar/variable property scripting**
 
-**Q**. *I am getting an AccessViolationError on the TwTerminate call (or on Context.Dispose).*
+    You can script the different properties of your bars or variables from e.g. a text file using the `SetDefinition` method. This method takes a definition string containing your parameters. For your convenience, there is an optional `def` parameter in the constructor which automatically calls it as well. This method should be used e.g. as:
 
-**A**. As specified in the AntTweakBar documentation, you must terminate the AntTweakBar library *before* releasing your graphics device, or the results are undefined. In the wrapper the library is terminated when the last active context is disposed, so make sure you dispose said context in time (for instance, in most cases the graphics device is released as the window is closed). 
+        myVariable.SetDefinition("label='New Label' readonly=true");
+        myBar.SetDefinition("contained=true visible=false");
 
-Compatibility
--------------
+    This definition string follows the same format as documented on the AntTweakBar website under `TwDefine`, except it should not contain the variable's name, as you don't know what it is (it is automatically filled in by the method).
 
-AntTweakBar.NET runs on the Microsoft .NET framework and on the Mono runtime, both 32-bit and 64-bit (provided it can find the appropriate AntTweakBar DLL or shared library, of course). It has been tested on Windows and Linux, and is expected to work - but has not been tested - on Mac OS X and presumably BSD.
+ - **Defining custom variables**
+
+    TODO
+
+ - **AntTweakBar bindings**
+
+    The bindings are in the `AntTweakBar.Tw` static class. You (mostly) cannot interfere with the wrapper's operation with them since the wrapper does not expose its internal AntTweakBar pointers and identifiers for integrity reasons, so it is discouraged to use it to try and subvert the high-level wrapper. You are however encouraged to use them directly if you don't want to or can't use the high-level classes for whatever reason. Have fun! 
 
 Contribute
 ----------
 
-Any issues or pull requests are welcome, I especially need help with verifying and streamlining multi-window support, thread safety, Mac OSX testing, and adding more stuff to the FAQ, but any contribution is greatly appreciated.
-
-Thanks to *Ilkka Jahnukainen* for helping in testing AntTweakBar.NET throughout its ongoing development and providing valuable feedback to guide its design.
+Any issues or pull requests are welcome, I especially need help with verifying multi-window support, thread safety, and OS X testing, but any contribution is greatly appreciated. Thanks to *Ilkka Jahnukainen* for helping in testing AntTweakBar.NET throughout its ongoing development and providing valuable feedback to guide its design.
 
 Changelog
 ---------
+
+21 November 2014 (v0.4.2)
+
+ - fixed a few more bugs in the sample
+ - added ObjectDisposedException safety
+ - sealed a few more library classes
+ - updated to a new fancy readme file
 
 20 November 2014 (v0.4.1)
 
