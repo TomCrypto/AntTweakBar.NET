@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -961,8 +962,8 @@ namespace AntTweakBar
          * (entries are removed as variables get disposed of, so it's not too bad)
         */
 
-        internal static IDictionary<String, Tw.SetVarCallback> SetCallbacks = new Dictionary<String, Tw.SetVarCallback>();
-        internal static IDictionary<String, Tw.GetVarCallback> GetCallbacks = new Dictionary<String, Tw.GetVarCallback>();
-        internal static IDictionary<String, Tw.ButtonCallback> BtnCallbacks = new Dictionary<String, Tw.ButtonCallback>();
+        internal static IDictionary<String, Tw.SetVarCallback> SetCallbacks = new ConcurrentDictionary<String, Tw.SetVarCallback>();
+        internal static IDictionary<String, Tw.GetVarCallback> GetCallbacks = new ConcurrentDictionary<String, Tw.GetVarCallback>();
+        internal static IDictionary<String, Tw.ButtonCallback> BtnCallbacks = new ConcurrentDictionary<String, Tw.ButtonCallback>();
     }
 }
