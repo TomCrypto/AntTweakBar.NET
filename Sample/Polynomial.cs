@@ -86,6 +86,10 @@ namespace Sample
             const double threshold = 1e-10;
             const double rate = 0.5;
 
+            if (poly.Degree == 0) {
+                return new Tuple<ISet<Complex>, Complex>(new HashSet<Complex>(), Complex.Zero);
+            }
+
             var derv = Polynomial.Derivative(poly);
             var roots = new HashSet<Complex>();
             var random = new Random();
@@ -396,10 +400,10 @@ namespace Sample
                 return unit;
             if (str[0] == '(')
                 str = str.Substring(1, str.Length - 2);
-            if (!str.Contains("i")) // real part only
-                return new Complex(SafeParse(str, 0, symbols), 0);
             if (symbols.ContainsKey(str))
                 return new Complex(symbols[str], 0);
+            if (!str.Contains("i")) // real part only
+                return new Complex(SafeParse(str, 0, symbols), 0);
             else if (!str.StartsWith("+") && !str.StartsWith("-"))
                 str = "+" + str; // add a dummy + to enable split
 
