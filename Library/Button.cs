@@ -5,7 +5,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar button, which can be clicked.
     /// </summary>
-    public class Button : Variable
+    public sealed class Button : Variable
     {
         /// <summary>
         /// Occurs when this button is clicked by the user.
