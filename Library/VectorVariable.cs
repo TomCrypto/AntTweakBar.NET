@@ -17,7 +17,7 @@ namespace AntTweakBar
         /// <summary>
         /// Raises the Changed event.
         /// </summary>
-        private void OnChanged(EventArgs e)
+        public void OnChanged(EventArgs e)
         {
             if (Changed != null)
                 Changed(this, e);
@@ -41,12 +41,17 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the vector variable.
         /// </summary>
-        private static void InitVectorVariable(Variable var, String id)
+        private static void InitVectorVariable(Variable _var, String id)
         {
+            var var = _var as VectorVariable;
+
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Dir3F,
-                        ((VectorVariable)var).SetCallback,
-                        ((VectorVariable)var).GetCallback,
+                        Tw.SetCallbacks[id],
+                        Tw.GetCallbacks[id],
                         IntPtr.Zero, null);
         }
 
@@ -61,8 +66,6 @@ namespace AntTweakBar
         public VectorVariable(Bar bar, float x = 0, float y = 0, float z = 0, String def = null)
             : base(bar, InitVectorVariable, def)
         {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
             X = x;
             Y = y;
             Z = z;
@@ -145,13 +148,5 @@ namespace AntTweakBar
         {
             return String.Format("[VectorVariable: Label={0}, Value=({1}, {2}, {3})]", Label, X, Y, Z);
         }
-
-        /* See Variable remarks. */
-        #pragma warning disable 414
-
-        private readonly Tw.SetVarCallback setCallback;
-        private readonly Tw.GetVarCallback getCallback;
-
-        #pragma warning restore 414
     }
 }

@@ -35,14 +35,14 @@ namespace Sample
         /// <summary>
         /// Gets the fragment shader.
         /// </summary>
-        public static String FragShader(Polynomial poly, ShadingType type, AAQuality aa)
+        public static String FragShader(Polynomial poly, ShadingType type, AAQuality aa, bool hardcodePoly)
         {
             var shader = String.Join("\n", new[]
             {
                 "#version 130\n",
                 FragArithmetic(),
-                FragPolyRoots(poly, "poly"),
-                FragPolyRoots(Polynomial.Derivative(poly), "derv"),
+                FragPolyRoots(poly, "poly", hardcodePoly),
+                FragPolyRoots(Polynomial.Derivative(poly), "derv", hardcodePoly),
                 FragIterate(),
                 FragColorize(type),
                 FragShade(),
@@ -95,20 +95,40 @@ namespace Sample
             return str.ToString();
         }
 
-        private static String FragPolyRoots(Polynomial poly, String name)
+        private static String FragPolyRoots(Polynomial poly, String name, bool hardcode = true)
         {
             var roots = Polynomial.Roots(poly);
             var str = new StringBuilder();
 
-            str.AppendLine(String.Format("vec2 {0}(vec2 z)", name));
-            str.AppendLine("{");
-            str.AppendLine(String.Format("    vec2 r = vec2({0}, {1});", roots.Item2.Real, roots.Item2.Imaginary));
+            if (hardcode) /* Polynomial is hardcoded into shader */
+            {
+                str.AppendLine(String.Format("vec2 {0}(vec2 z)", name));
+                str.AppendLine("{");
+                str.AppendLine(String.Format("    vec2 r = vec2({0}, {1});", roots.Item2.Real, roots.Item2.Imaginary));
 
-            foreach (var root in roots.Item1)
-                str.AppendLine(String.Format("    r = cmul(r, z - vec2({0}, {1}));", root.Real, root.Imaginary));
+                foreach (var root in roots.Item1)
+                    str.AppendLine(String.Format("    r = cmul(r, z - vec2({0}, {1}));", root.Real, root.Imaginary));
 
-            str.AppendLine("    return r;");
-            str.AppendLine("}");
+                str.AppendLine("    return r;");
+                str.AppendLine("}");
+            }
+            else /* Polynomial is uploaded to shader */
+            {
+                str.AppendLine(String.Format("uniform vec2 {0}Coeffs[128];", name));
+                str.AppendLine(String.Format("uniform int {0}CoeffCount;", name));
+
+                str.AppendLine(String.Format("vec2 {0}(vec2 z)", name));
+                str.AppendLine("{");
+                str.AppendLine(String.Format("    vec2 r = {0}Coeffs[0];", name));
+                str.AppendLine();
+                str.AppendLine(String.Format("    for (int t = 1; t < {0}CoeffCount; ++t)", name));
+                str.AppendLine("    {");
+                str.AppendLine(String.Format("        r = cmul(r, z - {0}Coeffs[t]);", name));
+                str.AppendLine("    }");
+                str.AppendLine();
+                str.AppendLine("    return r;");
+                str.AppendLine("}");
+            }
 
             return str.ToString();
         }

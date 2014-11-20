@@ -17,7 +17,7 @@ namespace AntTweakBar
         /// <summary>
         /// Raises the Changed event.
         /// </summary>
-        private void OnChanged(EventArgs e)
+        public void OnChanged(EventArgs e)
         {
             if (Changed != null)
                 Changed(this, e);
@@ -44,12 +44,17 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the floating-point variable.
         /// </summary>
-        private static void InitVariable(Variable var, String id)
+        private static void InitDoubleVariable(Variable _var, String id)
         {
+            var var = _var as DoubleVariable;
+
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Double,
-                        ((DoubleVariable)var).SetCallback,
-                        ((DoubleVariable)var).GetCallback,
+                        Tw.SetCallbacks[id],
+                        Tw.GetCallbacks[id],
                         IntPtr.Zero, null);
         }
 
@@ -60,14 +65,10 @@ namespace AntTweakBar
         /// <param name="initialValue">The initial value of the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
         public DoubleVariable(Bar bar, Double initialValue = 0, String def = null)
-            : base(bar, InitVariable, def)
+            : base(bar, InitDoubleVariable, def)
         {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
             value = initialValue;
         }
-
-        
 
         /// <summary>
         /// A validation method for derived classes. Override this to provide custom
@@ -161,13 +162,5 @@ namespace AntTweakBar
         {
             return String.Format("[DoubleVariable: Label={0}, Value={1}]", Label, Value);
         }
-
-        /* See Variable remarks. */
-        #pragma warning disable 414
-
-        private readonly Tw.SetVarCallback setCallback;
-        private readonly Tw.GetVarCallback getCallback;
-
-        #pragma warning restore 414
     }
 }

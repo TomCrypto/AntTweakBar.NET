@@ -152,7 +152,14 @@ namespace Sample
         /// <summary>
         /// Gets the degree of this polynomial.
         /// </summary>
-        public UInt32 Degree { get { return terms.Keys.Where(p => terms[p] != Complex.Zero).Max(); } }
+        public UInt32 Degree
+        {
+            get
+            {
+                var nonzeroTerms = terms.Keys.Where(p => terms[p] != Complex.Zero);
+                return (nonzeroTerms.Count() == 0) ? 0 : nonzeroTerms.Max();
+            }
+        }
 
         /// <summary>
         /// Gets the leading term of this polynomial.
@@ -342,7 +349,7 @@ namespace Sample
         /// <summary>
         /// Parses an expression into a complex polynomial.
         /// </summary>
-        public static Polynomial Parse(String str)
+        public static Polynomial Parse(String str, IDictionary<String, Double> symbols)
         {
             try
             {
@@ -357,7 +364,7 @@ namespace Sample
                     var exp = pos == -1 ? str : str.Substring(0, pos);
                     var tokens = exp.Split('z'); /* Split and parse */
 
-                    var coeff = ParseComplex(tokens[0], Complex.One);
+                    var coeff = ParseComplex(tokens[0], Complex.One, symbols);
                     var power = tokens.Length == 1 ? 0 : (tokens[1] != ""
                               ? UInt32.Parse(tokens[1].Replace("^", ""))
                               : 1);
@@ -383,14 +390,16 @@ namespace Sample
         /// <summary>
         /// Parses an expression into a complex number.
         /// </summary>
-        private static Complex ParseComplex(String str, Complex unit)
+        private static Complex ParseComplex(String str, Complex unit, IDictionary<String, Double> symbols)
         {
             if (str == "")
                 return unit;
             if (str[0] == '(')
                 str = str.Substring(1, str.Length - 2);
             if (!str.Contains("i")) // real part only
-                return new Complex(SafeParse(str, 0), 0);
+                return new Complex(SafeParse(str, 0, symbols), 0);
+            if (symbols.ContainsKey(str))
+                return new Complex(symbols[str], 0);
             else if (!str.StartsWith("+") && !str.StartsWith("-"))
                 str = "+" + str; // add a dummy + to enable split
 
@@ -400,12 +409,16 @@ namespace Sample
                 str = str.Substring(pos) + str.Substring(0, pos);
             }
 
-            return new Complex(SafeParse(str.Split('i')[1], 0),
-                               SafeParse(str.Split('i')[0], 1));
+            return new Complex(SafeParse(str.Split('i')[1], 0, symbols),
+                               SafeParse(str.Split('i')[0], 1, symbols));
         }
 
-        private static Double SafeParse(String str, Double unit)
+        private static Double SafeParse(String str, Double unit, IDictionary<String, Double> symbols)
         {
+            if (symbols.ContainsKey(str)) {
+                return symbols[str];
+            }
+
             switch (str)
             {
                 case "":  return unit;

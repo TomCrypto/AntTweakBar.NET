@@ -72,7 +72,7 @@ namespace AntTweakBar
         public void ShowGroup(String groupName, Boolean visible)
         {
             Tw.SetCurrentWindow(ParentContext.Identifier);
-            Tw.Define(String.Format("{0}/{1} visible={2}", ID, groupName, visible ? "true" : "false"));
+            Tw.Define(String.Format("{0}/`{1}` visible={2}", ID, groupName, visible ? "true" : "false"));
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace AntTweakBar
         public void OpenGroup(String groupName, Boolean opened)
         {
             Tw.SetCurrentWindow(ParentContext.Identifier);
-            Tw.Define(String.Format("{0}/{1} opened={2}", ID, groupName, opened ? "true" : "false"));
+            Tw.Define(String.Format("{0}/`{1}` opened={2}", ID, groupName, opened ? "true" : "false"));
         }
 
         /// <summary>

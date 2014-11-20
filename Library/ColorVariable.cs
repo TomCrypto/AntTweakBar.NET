@@ -17,7 +17,7 @@ namespace AntTweakBar
         /// <summary>
         /// Raises the Changed event.
         /// </summary>
-        private void OnChanged(EventArgs e)
+        public void OnChanged(EventArgs e)
         {
             if (Changed != null)
                 Changed(this, e);
@@ -78,12 +78,17 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the RGB color variable.
         /// </summary>
-        private static void InitColorVariable(Variable var, String id)
+        private static void InitColorVariable(Variable _var, String id)
         {
+            var var = _var as ColorVariable;
+
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Color3F,
-                        ((ColorVariable)var).SetCallback,
-                        ((ColorVariable)var).GetCallback,
+                        Tw.SetCallbacks[id],
+                        Tw.GetCallbacks[id],
                         IntPtr.Zero, null);
         }
 
@@ -98,8 +103,6 @@ namespace AntTweakBar
         public ColorVariable(Bar bar, float r = 0, float g = 0, float b = 0, String def = null)
             : base(bar, InitColorVariable, def)
         {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
             R = r;
             G = g;
             B = b;
@@ -175,13 +178,5 @@ namespace AntTweakBar
         {
             return String.Format("[ColorVariable: Label={0}, Value=({1}, {2}, {3})]", Label, R, G, B);
         }
-
-        /* See Variable remarks. */
-        #pragma warning disable 414
-
-        private readonly Tw.SetVarCallback setCallback;
-        private readonly Tw.GetVarCallback getCallback;
-
-        #pragma warning restore 414
     }
 }

@@ -6,9 +6,6 @@ namespace AntTweakBar
     /// <summary>
     /// The base class for all AntTweakBar variables.
     /// </summary>
-    /// <remarks>
-    /// See comments at the bottom regarding CS0414.
-    /// </remarks>
     public abstract class Variable : IDisposable
     {
         /// <summary>
@@ -157,6 +154,20 @@ namespace AntTweakBar
                     ParentBar.Remove(this);
                 }
 
+                if (disposing) {
+                    if (Tw.SetCallbacks.ContainsKey(ID)) {
+                        Tw.SetCallbacks.Remove(ID);
+                    }
+
+                    if (Tw.GetCallbacks.ContainsKey(ID)) {
+                        Tw.GetCallbacks.Remove(ID);
+                    }
+
+                    if (Tw.BtnCallbacks.ContainsKey(ID)) {
+                        Tw.BtnCallbacks.Remove(ID);
+                    }
+                }
+
                 if (created) {
                     Tw.RemoveVar(ParentBar.Pointer, ID);
                 }
@@ -174,19 +185,5 @@ namespace AntTweakBar
         {
             return String.Format("[Variable: Label={0}]", Label);
         }
-
-        /* The #pragma warning in the derived variable classes are used to hide the warnings about the setCallback and
-         * getCallback fields not being used. This is not a cover-up, these fields are used to maintain a reference to
-         * the SetCallback and GetCallback methods, which are not called from C# but are from inside AntTweakBar.
-         *
-         * Without these references, the CLR has no way of knowing that the methods are being used as callbacks, as it
-         * assumes that they are no longer needed as soon as the Tw.AddVarCB call which uses them returns, which would
-         * cause the application to potentially crash if they get garbage-collected or deleted (being unreachable from
-         * the perspective of the CLR).
-         *
-         * Well, actually, this was the case several revisions ago - I have no idea if this still applies with the new
-         * way variables are created but I am leaving the fix since it doesn't cost anything whereas removing it could
-         * cause user code to start crashing without any reason. If you know for sure, please send a pull request.
-        */
     }
 }

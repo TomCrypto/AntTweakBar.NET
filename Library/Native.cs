@@ -952,5 +952,17 @@ namespace AntTweakBar
                 throw new AntTweakBarException("TwRemoveVar failed.");
             }
         }
+
+        /* These are used to keep strong references to the various unmanaged callbacks
+         * used by AntTweakBar. It's probably possible to do this more elegantly but I
+         * don't know how, and frankly, a garbage collected callback is so problematic
+         * that it's easier to just make absolutely sure they are never collected.
+         * 
+         * (entries are removed as variables get disposed of, so it's not too bad)
+        */
+
+        internal static IDictionary<String, Tw.SetVarCallback> SetCallbacks = new Dictionary<String, Tw.SetVarCallback>();
+        internal static IDictionary<String, Tw.GetVarCallback> GetCallbacks = new Dictionary<String, Tw.GetVarCallback>();
+        internal static IDictionary<String, Tw.ButtonCallback> BtnCallbacks = new Dictionary<String, Tw.ButtonCallback>();
     }
 }

@@ -46,12 +46,17 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the string variable.
         /// </summary>
-        private static void InitStringVariable(Variable var, String id)
+        private static void InitStringVariable(Variable _var, String id)
         {
+            var var = _var as StringVariable;
+
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.CSString,
-                        ((StringVariable)var).SetCallback,
-                        ((StringVariable)var).GetCallback,
+                        Tw.SetCallbacks[id],
+                        Tw.GetCallbacks[id],
                         IntPtr.Zero, null);
         }
 
@@ -67,8 +72,6 @@ namespace AntTweakBar
             if (initialValue == null)
                 throw new ArgumentNullException(initialValue);
 
-            setCallback = SetCallback;
-            getCallback = GetCallback;
             value = initialValue;
         }
 
@@ -126,13 +129,5 @@ namespace AntTweakBar
         {
             return String.Format("[StringVariable: Label={0}, Value={1}]", Label, Value);
         }
-
-        /* See Variable remarks. */
-        #pragma warning disable 414
-
-        private readonly Tw.SetVarCallback setCallback;
-        private readonly Tw.GetVarCallback getCallback;
-
-        #pragma warning restore 414
     }
 }

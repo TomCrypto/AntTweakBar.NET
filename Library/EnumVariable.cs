@@ -47,17 +47,22 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the enum variable.
         /// </summary>
-        private static void InitEnumVariable(Variable var, String id)
+        private static void InitEnumVariable(Variable _var, String id)
         {
             if (!typeof(T).IsEnum)
                 throw new InvalidOperationException(String.Format("Type {0} is not an enumeration", typeof(T).FullName));
 
             var enumNames = String.Join(",", typeof(T).GetEnumNames());
 
+            var var = _var as EnumVariable<T>;
+
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.DefineEnumFromString(typeof(T).FullName, enumNames),
-                        ((EnumVariable<T>)var).SetCallback,
-                        ((EnumVariable<T>)var).GetCallback,
+                        Tw.SetCallbacks[id],
+                        Tw.GetCallbacks[id],
                         IntPtr.Zero, null);
         }
 
@@ -72,8 +77,6 @@ namespace AntTweakBar
         {
             Tw.SetParam(ParentBar.Pointer, ID, "enum", GetEnumString());
 
-            setCallback = SetCallback;
-            getCallback = GetCallback;
             Value = initialValue;
         }
 
@@ -119,13 +122,5 @@ namespace AntTweakBar
         {
             return String.Format("[EnumVariable<{0}>: Label={1}, Value={2}]", typeof(T).Name, Label, Value);
         }
-
-        /* See Variable remarks. */
-        #pragma warning disable 414
-
-        private readonly Tw.SetVarCallback setCallback;
-        private readonly Tw.GetVarCallback getCallback;
-
-        #pragma warning restore 414
     }
 }

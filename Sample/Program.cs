@@ -29,6 +29,25 @@ namespace Sample
     /// </summary>
     class PolynomialVariable : StringVariable
     {
+        // Used to hold optional symbols used during polynomial parsing
+        private readonly IDictionary<String, Double> symbols = new Dictionary<String, Double>();
+
+        /// <summary>
+        /// Gets or sets a polynomial symbol.
+        /// </summary>
+        public double this[String index]
+        {
+            get { return symbols[index]; }
+            set
+            {
+                if (symbols.ContainsKey(index)) {
+                    symbols[index] = value;
+                } else {
+                    symbols.Add(index, value);
+                }
+            }
+        }
+
         public PolynomialVariable(Bar bar, String poly, String def = null)
             : base(bar, poly, def)
         {
@@ -42,13 +61,13 @@ namespace Sample
         {
             get
             {
-                return Polynomial.Parse(Value);
+                return Polynomial.Parse(Value, symbols);
             }
         }
 
         protected override bool Validate(String value)
         {
-            return (Polynomial.Parse(value) != null);
+            return (Polynomial.Parse(value, symbols) != null);
         }
     }
 
@@ -328,6 +347,13 @@ namespace Sample
             aaVar.Changed += delegate { fractal.AA = aaVar.Value; };
             aaVar.Label = "AA";
 
+            var hardcode = new BoolVariable(configsBar, fractal.HardcodePolynomial);
+            hardcode.Changed += delegate { fractal.HardcodePolynomial = hardcode.Value; };
+            hardcode.Label = "Hardcoded";
+            hardcode.Help = "If enabled, this will improve runtime performance, but " +
+                "changing the fractal formula will be more expensive. In particular, " +
+                "modifying symbolic variables may feel quite sluggish.";
+
             new Separator(configsBar);
 
             var paletteVar = new Color4Variable(configsBar, fractal.Palette.R, fractal.Palette.G, fractal.Palette.B, fractal.Palette.A);
@@ -360,7 +386,7 @@ namespace Sample
             var fractalBar = new Bar(context, "label='Fractal Equation' valueswidth=400");
             fractalBar.Contained = true;
             fractalBar.Position = new Point(Width - 500 - 20, 20);
-            fractalBar.Size = new Size(500, 50);
+            fractalBar.Size = new Size(500, 150);
 
             var poly = new PolynomialVariable(fractalBar, "z^3 - 1");
             var preset = new EnumVariable<FractalPreset>(fractalBar, FractalPreset.Cubic);
@@ -387,6 +413,32 @@ namespace Sample
 
                 fractal.Polynomial = poly.Polynomial;
             };
+
+            /* This is where you can use the Changed event to great advantage: we are
+             * going to create variables to manipulate symbols in the polynomial formula,
+             * and directly bind them to the "poly" variable's symbol dictionary, without
+             * keeping a reference to them. That way we don't need to track them at all.
+            */
+
+            for (char symbol = 'A'; symbol <= 'F'; ++symbol)
+            {
+                var symbolVar = new DoubleVariable(fractalBar);
+                symbolVar.Group = "Symbolic Variables";
+                symbolVar.Label = symbol.ToString();
+                symbolVar.Step = 0.001f;
+
+                symbolVar.Changed += delegate
+                {
+                    poly[symbolVar.Label] = symbolVar.Value; // update symbol
+                    fractal.Polynomial = poly.Polynomial; // update fractal
+                };
+
+                // also add the symbol initially, so that it exists on startup
+                poly[symbolVar.Label] = symbolVar.Value;
+            }
+
+            /* Start the symbol list closed to avoid clutter */
+            fractalBar.OpenGroup("Symbolic Variables", false);
         }
 
         private enum FractalPreset

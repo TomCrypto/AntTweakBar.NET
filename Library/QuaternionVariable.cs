@@ -17,7 +17,7 @@ namespace AntTweakBar
         /// <summary>
         /// Raises the Changed event.
         /// </summary>
-        private void OnChanged(EventArgs e)
+        public void OnChanged(EventArgs e)
         {
             if (Changed != null)
                 Changed(this, e);
@@ -46,12 +46,17 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the quaternion variable.
         /// </summary>
-        private static void InitQuaternionVariable(Variable var, String id)
+        private static void InitQuaternionVariable(Variable _var, String id)
         {
+            var var = _var as QuaternionVariable;
+
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Quat4F,
-                        ((QuaternionVariable)var).SetCallback,
-                        ((QuaternionVariable)var).GetCallback,
+                        Tw.SetCallbacks[id],
+                        Tw.GetCallbacks[id],
                         IntPtr.Zero, null);
         }
 
@@ -67,8 +72,6 @@ namespace AntTweakBar
         public QuaternionVariable(Bar bar, float x = 0, float y = 0, float z = 0, float w = 1, String def = null)
             : base(bar, InitQuaternionVariable, def)
         {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
             X = x;
             Y = y;
             Z = z;
@@ -152,13 +155,5 @@ namespace AntTweakBar
         {
             return String.Format("[QuaternionVariable: Label={0}, Value=({1}, {2}, {3}, {4})]", Label, X, Y, Z, W);
         }
-
-        /* See Variable remarks. */
-        #pragma warning disable 414
-
-        private readonly Tw.SetVarCallback setCallback;
-        private readonly Tw.GetVarCallback getCallback;
-
-        #pragma warning restore 414
     }
 }

@@ -30,12 +30,17 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the boolean variable.
         /// </summary>
-        private static void InitBoolVariable(Variable var, String id)
+        private static void InitBoolVariable(Variable _var, String id)
         {
+            var var = _var as BoolVariable;
+
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Bool8,
-                        ((BoolVariable)var).SetCallback,
-                        ((BoolVariable)var).GetCallback,
+                        Tw.SetCallbacks[id],
+                        Tw.GetCallbacks[id],
                         IntPtr.Zero, null);
         }
 
@@ -48,8 +53,6 @@ namespace AntTweakBar
         public BoolVariable(Bar bar, Boolean initialValue = false, String def = null)
             : base(bar, InitBoolVariable, def)
         {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
             Value = initialValue;
         }
 
@@ -101,13 +104,5 @@ namespace AntTweakBar
         {
             return String.Format("[BoolVariable: Label={0}, Value={1}]", Label, Value);
         }
-
-        /* See Variable remarks. */
-        #pragma warning disable 414
-
-        private readonly Tw.SetVarCallback setCallback;
-        private readonly Tw.GetVarCallback getCallback;
-
-        #pragma warning restore 414
     }
 }

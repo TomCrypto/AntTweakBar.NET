@@ -44,12 +44,17 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the integer variable.
         /// </summary>
-        private static void InitIntVariable(Variable var, String id)
+        private static void InitIntVariable(Variable _var, String id)
         {
+            var var = _var as IntVariable;
+
+            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(var.SetCallback));
+            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(var.GetCallback));
+
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Int32,
-                        ((IntVariable)var).SetCallback,
-                        ((IntVariable)var).GetCallback,
+                        Tw.SetCallbacks[id],
+                        Tw.GetCallbacks[id],
                         IntPtr.Zero, null);
         }
 
@@ -62,8 +67,6 @@ namespace AntTweakBar
         public IntVariable(Bar bar, Int32 initialValue = 0, String def = null)
             : base(bar, InitIntVariable, def)
         {
-            setCallback = SetCallback;
-            getCallback = GetCallback;
             value = initialValue;
         }
 
@@ -155,13 +158,5 @@ namespace AntTweakBar
         {
             return String.Format("[IntVariable: Label={0}, Value={1}]", Label, Value);
         }
-
-        /* See Variable remarks. */
-        #pragma warning disable 414
-
-        private readonly Tw.SetVarCallback setCallback;
-        private readonly Tw.GetVarCallback getCallback;
-
-        #pragma warning restore 414
     }
 }

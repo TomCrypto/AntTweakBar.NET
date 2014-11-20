@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Numerics;
+using System.Collections.Generic;
 
 using OpenTK;
 using OpenTK.Graphics;
@@ -61,6 +62,21 @@ namespace Sample
             set { GL.Uniform1(GL.GetUniformLocation(shHandle, "iters"), (uint)(iterations = value)); }
         }
 
+        private bool hardcodePolynomial;
+        public bool HardcodePolynomial
+        {
+            get { return hardcodePolynomial; }
+            set
+            {
+                hardcodePolynomial = value;
+                
+                SetupShaders();
+
+                if (!hardcodePolynomial)
+                    UploadPolynomial();
+            }
+        }
+
         private Polynomial polynomial;
         public Polynomial Polynomial
         {
@@ -68,7 +84,11 @@ namespace Sample
             set
             {
                 polynomial = value;
-                SetupShaders();
+
+                if (!hardcodePolynomial)
+                    UploadPolynomial();
+                else
+                    SetupShaders();
             }
         }
 
@@ -142,6 +162,35 @@ namespace Sample
             Iterations = iterations;
             Palette = palette;
         }
+        
+        private void UploadPolynomial()
+        {
+            var polyRoots = Polynomial.Roots(polynomial);
+
+            GL.Uniform1(GL.GetUniformLocation(shHandle, "polyCoeffCount"), polyRoots.Item1.Count + 1);
+            GL.Uniform2(GL.GetUniformLocation(shHandle, "polyCoeffs[0]"), new Vector2((float)polyRoots.Item2.Real, (float)polyRoots.Item2.Imaginary));
+            
+            int t = 1;
+            
+            foreach (var root in polyRoots.Item1) {
+                GL.Uniform2(GL.GetUniformLocation(shHandle, String.Format("polyCoeffs[{0}]", t)), new Vector2((float)root.Real, (float)root.Imaginary));
+                
+                ++t;
+            }
+
+            var dervRoots = Polynomial.Roots(Polynomial.Derivative(polynomial));
+
+            GL.Uniform1(GL.GetUniformLocation(shHandle, "dervCoeffCount"), dervRoots.Item1.Count + 1);
+            GL.Uniform2(GL.GetUniformLocation(shHandle, "dervCoeffs[0]"), new Vector2((float)dervRoots.Item2.Real, (float)dervRoots.Item2.Imaginary));
+            
+            t = 1;
+            
+            foreach (var root in dervRoots.Item1) {
+                GL.Uniform2(GL.GetUniformLocation(shHandle, String.Format("dervCoeffs[{0}]", t)), new Vector2((float)root.Real, (float)root.Imaginary));
+                
+                ++t;
+            }
+        }
 
         public void ZoomIn(float amount)
         {
@@ -182,22 +231,26 @@ namespace Sample
             fsHandle = GL.CreateShader(ShaderType.FragmentShader);
 
             GL.ShaderSource(vsHandle, Shader.VertShader());
-            GL.ShaderSource(fsHandle, Shader.FragShader(polynomial, shading, aa));
+            GL.ShaderSource(fsHandle, Shader.FragShader(polynomial, shading, aa, hardcodePolynomial));
 
             GL.CompileShader(vsHandle);
             GL.CompileShader(fsHandle);
 
             String log;
 
-            Console.WriteLine("====  COMPILATION LOG FOR VERTEX SHADER  ====\n");
             GL.GetShaderInfoLog(vsHandle, out log);
-            if (log == "") Console.WriteLine ("(empty)\n");
-            else Console.WriteLine(log + "\n");
+            if (log.Trim() != "") {
+                Console.WriteLine("====  COMPILATION LOG FOR VERTEX SHADER  ====\n");
+                Console.WriteLine(log.Trim() + "\n");
+                Console.WriteLine("====");
+            }
 
-            Console.WriteLine("==== COMPILATION LOG FOR FRAGMENT SHADER ====\n");
             GL.GetShaderInfoLog(fsHandle, out log);
-            if (log == "") Console.WriteLine ("(empty)\n");
-            else Console.WriteLine(log + "\n");
+            if (log.Trim() != "") {
+                Console.WriteLine("====  COMPILATION LOG FOR FRAGMENT SHADER  ====\n");
+                Console.WriteLine(log.Trim() + "\n");
+                Console.WriteLine("====");
+            }
         }
 
         private void CreateProgram()
@@ -211,11 +264,12 @@ namespace Sample
 
             String log;
 
-            Console.WriteLine("====   LINKAGE LOG FOR FRACTAL PROGRAM   ====\n");
             GL.GetShaderInfoLog(shHandle, out log);
-            if (log == "") Console.WriteLine ("(empty)\n");
-            else Console.WriteLine(log + "\n");
-            Console.WriteLine("====");
+            if (log.Trim() != "") {
+                Console.WriteLine("====   LINKAGE LOG FOR FRACTAL PROGRAM   ====\n");
+                Console.WriteLine(log.Trim() + "\n");
+                Console.WriteLine("====");
+            }
         }
 
         private void SetupOptions()
@@ -226,12 +280,13 @@ namespace Sample
             aCoeff = Complex.One;
             kCoeff = Complex.Zero;
             aa = AAQuality.AAx1;
+            hardcodePolynomial = true;
 
             intensity = 1;
             palette = Color4.Red;
             shading = ShadingType.Standard;
 
-            polynomial = Polynomial.Parse(DefaultPolynomial);
+            polynomial = Polynomial.Parse(DefaultPolynomial, new Dictionary<String, Double>());
         }
 
         public void Draw()

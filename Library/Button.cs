@@ -24,10 +24,14 @@ namespace AntTweakBar
         /// <summary>
         /// Initialization delegate, which creates the button.
         /// </summary>
-        private static void InitButton(Variable var, String id)
+        private static void InitButton(Variable _var, String id)
         {
+            var var = _var as Button;
+
+            Tw.BtnCallbacks.Add(id, new Tw.ButtonCallback(var.Callback));
+
             Tw.AddButton(var.ParentBar.Pointer, id,
-                         ((Button)var).Callback,
+                         Tw.BtnCallbacks[id],
                          IntPtr.Zero, null);
         }
 
@@ -40,7 +44,6 @@ namespace AntTweakBar
         public Button(Bar bar, EventHandler clicked = null, String def = null)
             : base(bar, InitButton, def)
         {
-            callback = Callback;
             Clicked += clicked;
         }
 
@@ -56,12 +59,5 @@ namespace AntTweakBar
         {
             return String.Format("[Button: Label={0}]", Label);
         }
-
-        /* See Variable remarks. */
-        #pragma warning disable 414
-
-        private readonly Tw.ButtonCallback callback;
-
-        #pragma warning restore 414
     }
 }
