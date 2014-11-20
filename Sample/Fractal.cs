@@ -71,9 +71,6 @@ namespace Sample
                 hardcodePolynomial = value;
                 
                 SetupShaders();
-
-                if (!hardcodePolynomial)
-                    UploadPolynomial();
             }
         }
 
@@ -85,10 +82,11 @@ namespace Sample
             {
                 polynomial = value;
 
-                if (!hardcodePolynomial)
+                if (!hardcodePolynomial) {
                     UploadPolynomial();
-                else
+                } else {
                     SetupShaders();
+                }
             }
         }
 
@@ -161,35 +159,31 @@ namespace Sample
 
             Iterations = iterations;
             Palette = palette;
+
+            if (!hardcodePolynomial)
+                UploadPolynomial();
+        }
+
+        private void UploadPolyToShader(Polynomial poly, String name)
+        {
+            var roots = Polynomial.Roots(poly);
+
+            GL.Uniform1(GL.GetUniformLocation(shHandle, name + "CoeffCount"), roots.Item1.Count + 1);
+            GL.Uniform2(GL.GetUniformLocation(shHandle, name + "Coeffs[0]"), new Vector2((float)roots.Item2.Real, (float)roots.Item2.Imaginary));
+            
+            int t = 1;
+            
+            foreach (var root in roots.Item1) {
+                GL.Uniform2(GL.GetUniformLocation(shHandle, String.Format(name + "Coeffs[{0}]", t)), new Vector2((float)root.Real, (float)root.Imaginary));
+                
+                ++t;
+            }
         }
         
         private void UploadPolynomial()
         {
-            var polyRoots = Polynomial.Roots(polynomial);
-
-            GL.Uniform1(GL.GetUniformLocation(shHandle, "polyCoeffCount"), polyRoots.Item1.Count + 1);
-            GL.Uniform2(GL.GetUniformLocation(shHandle, "polyCoeffs[0]"), new Vector2((float)polyRoots.Item2.Real, (float)polyRoots.Item2.Imaginary));
-            
-            int t = 1;
-            
-            foreach (var root in polyRoots.Item1) {
-                GL.Uniform2(GL.GetUniformLocation(shHandle, String.Format("polyCoeffs[{0}]", t)), new Vector2((float)root.Real, (float)root.Imaginary));
-                
-                ++t;
-            }
-
-            var dervRoots = Polynomial.Roots(Polynomial.Derivative(polynomial));
-
-            GL.Uniform1(GL.GetUniformLocation(shHandle, "dervCoeffCount"), dervRoots.Item1.Count + 1);
-            GL.Uniform2(GL.GetUniformLocation(shHandle, "dervCoeffs[0]"), new Vector2((float)dervRoots.Item2.Real, (float)dervRoots.Item2.Imaginary));
-            
-            t = 1;
-            
-            foreach (var root in dervRoots.Item1) {
-                GL.Uniform2(GL.GetUniformLocation(shHandle, String.Format("dervCoeffs[{0}]", t)), new Vector2((float)root.Real, (float)root.Imaginary));
-                
-                ++t;
-            }
+            UploadPolyToShader(polynomial, "poly");
+            UploadPolyToShader(Polynomial.Derivative(polynomial), "derv");
         }
 
         public void ZoomIn(float amount)
