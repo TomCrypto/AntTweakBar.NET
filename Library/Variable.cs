@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace AntTweakBar
@@ -16,12 +17,16 @@ namespace AntTweakBar
         /// <summary>
         /// Gets this variable's context-dependent unique identifier.
         /// </summary>
-        internal String ID { get; private set; }
+        internal String ID { get { ThrowIfDisposed(); return id; } }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly String id;
 
         /// <summary>
         /// Gets this variable's parent bar.
         /// </summary>
-        public Bar ParentBar { get; private set; }
+        public Bar ParentBar { get { ThrowIfDisposed(); return parentBar; } }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly Bar parentBar;
 
         /// <summary>
         /// Creates a new variable in a given AntTweakBar bar.
@@ -32,12 +37,12 @@ namespace AntTweakBar
         /// <param name="initLabel">Whether to initialize the variable's label.</param>
         protected Variable(Bar parent, Action<Variable, String> initFunc, String def = null, bool initLabel = true)
         {
-            if ((ParentBar = parent) == null) {
+            if ((parentBar = parent) == null) {
                 throw new ArgumentNullException("parent");
             }
 
             Tw.SetCurrentWindow(ParentBar.ParentContext.Identifier);
-            initFunc(this, ID = Guid.NewGuid().ToString());
+            initFunc(this, id = Guid.NewGuid().ToString());
             created = true; /* Variable now created. */
             if (initLabel) Label = UnnamedLabel;
             ParentBar.Add(this);
@@ -179,6 +184,16 @@ namespace AntTweakBar
 
         private bool disposed = false;
         private bool created = false;
+
+        /// <summary>
+        /// Throws an ObjectDisposedException if this variable has been disposed.
+        /// </summary>
+        protected void ThrowIfDisposed()
+        {
+            if (disposed) {
+                throw new ObjectDisposedException(GetType().FullName);
+            }
+        }
 
         #endregion
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -17,7 +18,9 @@ namespace AntTweakBar
         /// <summary>
         /// Gets this context's unique identifier, used to switch between contexts.
         /// </summary>
-        internal Int32 Identifier { get; private set; }
+        internal Int32 Identifier { get { ThrowIfDisposed(); return identifier; } }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly Int32 identifier;
 
         /// <summary>
         /// Checks whether a graphics API requires a device pointer.
@@ -51,7 +54,7 @@ namespace AntTweakBar
                     Tw.Init(graphicsAPI, device);
                 }
 
-                Identifier = contextCounter++;
+                identifier = contextCounter++;
             }
         }
 
@@ -230,6 +233,16 @@ namespace AntTweakBar
         }
 
         private bool disposed = false;
+
+        /// <summary>
+        /// Throws an ObjectDisposedException if this context has been disposed.
+        /// </summary>
+        private void ThrowIfDisposed()
+        {
+            if (disposed) {
+                throw new ObjectDisposedException(GetType().FullName);
+            }
+        }
 
         #endregion
 

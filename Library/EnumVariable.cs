@@ -22,6 +22,8 @@ namespace AntTweakBar
         /// </summary>
         public void OnChanged(EventArgs e)
         {
+            ThrowIfDisposed();
+
             if (Changed != null) {
                 Changed(this, e);
             }
@@ -32,9 +34,11 @@ namespace AntTweakBar
         /// </summary>
         public T Value
         {
-            get { return value; }
+            get { ThrowIfDisposed(); return value; }
             set
             {
+                ThrowIfDisposed();
+
                 if (!Enum.IsDefined (typeof(T), value)) {
                     throw new ArgumentOutOfRangeException("value", "Invalid variable value");
                 } else {

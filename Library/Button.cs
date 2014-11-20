@@ -17,6 +17,8 @@ namespace AntTweakBar
         /// </summary>
         public void OnClicked(EventArgs e)
         {
+            ThrowIfDisposed();
+
             if (Clicked != null) {
                 Clicked(this, e);
             }

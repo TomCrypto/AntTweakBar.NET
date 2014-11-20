@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace AntTweakBar
@@ -18,6 +19,8 @@ namespace AntTweakBar
         /// </summary>
         public void OnChanged(EventArgs e)
         {
+            ThrowIfDisposed();
+
             if (Changed != null) {
                 Changed(this, e);
             }
@@ -26,7 +29,14 @@ namespace AntTweakBar
         /// <summary>
         /// Gets or sets the value of this variable.
         /// </summary>
-        public Boolean Value { get; set; }
+        public Boolean Value
+        {
+            get { ThrowIfDisposed(); return value; }
+            set { ThrowIfDisposed(); this.value = value; }
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Boolean value;
 
         /// <summary>
         /// Initialization delegate, which creates the boolean variable.
@@ -74,7 +84,6 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs the variable's value.
         /// </summary>
-
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
             Marshal.WriteByte(pointer, Convert.ToByte(Value));

@@ -21,6 +21,8 @@ namespace AntTweakBar
         /// </summary>
         public void OnChanged(EventArgs e)
         {
+            ThrowIfDisposed();
+
             if (Changed != null) {
                 Changed(this, e);
             }
@@ -31,9 +33,11 @@ namespace AntTweakBar
         /// </summary>
         public String Value
         {
-            get { return value; }
+            get { ThrowIfDisposed(); return value; }
             set
             {
+                ThrowIfDisposed();
+
                 if ((value == null) || !Validate(value)) {
                     throw new ArgumentOutOfRangeException("value", "Invalid variable value.");
                 } else {

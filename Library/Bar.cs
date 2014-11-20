@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -19,17 +20,23 @@ namespace AntTweakBar
         /// <summary>
         /// Gets this bar's context-dependent unique identifier.
         /// </summary>
-        internal String ID { get; private set; }
+        internal String ID { get { ThrowIfDisposed(); return id; } }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly String id;
 
         /// <summary>
         /// Gets this bar's unmanaged AntTweakBar pointer.
         /// </summary>
-        internal IntPtr Pointer { get; private set; }
+        internal IntPtr Pointer { get { ThrowIfDisposed(); return pointer; } }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly IntPtr pointer;
 
         /// <summary>
         /// Gets this bar's parent context.
         /// </summary>
-        public Context ParentContext { get; private set; }
+        public Context ParentContext { get { ThrowIfDisposed(); return parentContext; } }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly Context parentContext;
 
         /// <summary>
         /// Creates a new bar in a a given AntTweakBar context.
@@ -38,12 +45,12 @@ namespace AntTweakBar
         /// <param name="def">An optional definition string for the new bar.</param>
         public Bar(Context parent, String def = null)
         {
-            if ((ParentContext = parent) == null) {
+            if ((parentContext = parent) == null) {
                 throw new ArgumentNullException("parent");
             }
 
             Tw.SetCurrentWindow(ParentContext.Identifier); // per context
-            Pointer = Tw.NewBar(ID = Guid.NewGuid().ToString());
+            pointer = Tw.NewBar(id = Guid.NewGuid().ToString());
             ParentContext.Add(this);
             Label = UnnamedLabel;
             SetDefinition(def);
@@ -263,6 +270,16 @@ namespace AntTweakBar
         }
 
         private bool disposed = false;
+
+        /// <summary>
+        /// Throws an ObjectDisposedException if this bar has been disposed.
+        /// </summary>
+        private void ThrowIfDisposed()
+        {
+            if (disposed) {
+                throw new ObjectDisposedException(GetType().FullName);
+            }
+        }
 
         #endregion
 

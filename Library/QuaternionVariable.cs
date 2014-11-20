@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
@@ -19,6 +20,8 @@ namespace AntTweakBar
         /// </summary>
         public void OnChanged(EventArgs e)
         {
+            ThrowIfDisposed();
+
             if (Changed != null) {
                 Changed(this, e);
             }
@@ -27,22 +30,47 @@ namespace AntTweakBar
         /// <summary>
         /// Gets or sets this quaternion's X-component.
         /// </summary>
-        public float X { get; set; }
+        public float X
+        {
+            get { ThrowIfDisposed(); return x; }
+            set { ThrowIfDisposed(); x = value; }
+        }
 
         /// <summary>
         /// Gets or sets this quaternion's Y-component.
         /// </summary>
-        public float Y { get; set; }
+        public float Y
+        {
+            get { ThrowIfDisposed(); return y; }
+            set { ThrowIfDisposed(); y = value; }
+        }
 
         /// <summary>
         /// Gets or sets this quaternion's Z-component.
         /// </summary>
-        public float Z { get; set; }
+        public float Z
+        {
+            get { ThrowIfDisposed(); return z; }
+            set { ThrowIfDisposed(); z = value; }
+        }
 
         /// <summary>
-        /// Gets or sets the W-component.
+        /// Gets or sets this quaternion's W-component.
         /// </summary>
-        public float W { get; set; }
+        public float W
+        {
+            get { ThrowIfDisposed(); return w; }
+            set { ThrowIfDisposed(); w = value; }
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private float x;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private float y;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private float z;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private float w;
 
         /// <summary>
         /// Initialization delegate, which creates the quaternion variable.

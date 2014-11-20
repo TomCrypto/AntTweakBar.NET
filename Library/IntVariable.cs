@@ -19,6 +19,8 @@ namespace AntTweakBar
         /// </summary>
         public void OnChanged(EventArgs e)
         {
+            ThrowIfDisposed();
+
             if (Changed != null) {
                 Changed(this, e);
             }
@@ -29,9 +31,11 @@ namespace AntTweakBar
         /// </summary>
         public Int32 Value
         {
-            get { return value; }
+            get { ThrowIfDisposed(); return value; }
             set
             {
+                ThrowIfDisposed();
+
                 if (!((Min <= value) && (value <= Max)) || !Validate(value)) {
                     throw new ArgumentOutOfRangeException("value", "Invalid variable value");
                 } else {
