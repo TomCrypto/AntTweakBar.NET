@@ -308,8 +308,9 @@ namespace AntTweakBar
                 throw new ArgumentOutOfRangeException("height");
             }
 
-            if (!NativeMethods.TwWindowSize(width, height))
+            if (!NativeMethods.TwWindowSize(width, height)) {
                 throw new AntTweakBarException("TwWindowSize failed.");
+            }
         }
 
         /// <summary>

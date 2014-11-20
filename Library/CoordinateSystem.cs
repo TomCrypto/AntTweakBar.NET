@@ -21,18 +21,21 @@ namespace AntTweakBar
         {
             if (!((axisX == AxisOrientation.PositiveX) || (axisX == AxisOrientation.NegativeX)
                || (axisY == AxisOrientation.PositiveX) || (axisY == AxisOrientation.NegativeX)
-               || (axisZ == AxisOrientation.PositiveX) || (axisZ == AxisOrientation.NegativeX)))
-                throw new ArgumentException("Invalid coordinate system");
+               || (axisZ == AxisOrientation.PositiveX) || (axisZ == AxisOrientation.NegativeX))) {
+                throw new ArgumentException("Invalid coordinate system.");
+            }
 
             if (!((axisX == AxisOrientation.PositiveY) || (axisX == AxisOrientation.NegativeY)
                || (axisY == AxisOrientation.PositiveY) || (axisY == AxisOrientation.NegativeY)
-               || (axisZ == AxisOrientation.PositiveY) || (axisZ == AxisOrientation.NegativeY)))
-                throw new ArgumentException("Invalid coordinate system");
+               || (axisZ == AxisOrientation.PositiveY) || (axisZ == AxisOrientation.NegativeY))) {
+                throw new ArgumentException("Invalid coordinate system.");
+            }
 
             if (!((axisX == AxisOrientation.PositiveZ) || (axisX == AxisOrientation.NegativeZ)
                || (axisY == AxisOrientation.PositiveZ) || (axisY == AxisOrientation.NegativeZ)
-               || (axisZ == AxisOrientation.PositiveZ) || (axisZ == AxisOrientation.NegativeZ)))
-                throw new ArgumentException("Invalid coordinate system");
+               || (axisZ == AxisOrientation.PositiveZ) || (axisZ == AxisOrientation.NegativeZ))) {
+                throw new ArgumentException("Invalid coordinate system.");
+            }
 
             AxisX = axisX;
             AxisY = axisY;
@@ -75,8 +78,9 @@ namespace AntTweakBar
 
         public override bool Equals(Object obj)
         {
-            if (!(obj is CoordinateSystem))
+            if (!(obj is CoordinateSystem)) {
                 return false;
+            }
 
             return Equals((CoordinateSystem)obj);
         }

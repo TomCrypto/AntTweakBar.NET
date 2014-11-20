@@ -19,8 +19,9 @@ namespace AntTweakBar
         /// </summary>
         public void OnChanged(EventArgs e)
         {
-            if (Changed != null)
+            if (Changed != null) {
                 Changed(this, e);
+            }
         }
 
         /// <summary>
@@ -31,10 +32,11 @@ namespace AntTweakBar
             get { return value; }
             set
             {
-                if (!((Min <= value) && (value <= Max)) || !Validate(value))
+                if (!((Min <= value) && (value <= Max)) || !Validate(value)) {
                     throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-                else
+                } else {
                     this.value = value;
+                }
             }
         }
 
@@ -94,8 +96,9 @@ namespace AntTweakBar
             bool changed = tmp != Value;
             Value = tmp;
 
-            if (changed)
+            if (changed) {
                 OnChanged(EventArgs.Empty);
+            }
         }
 
         /// <summary>

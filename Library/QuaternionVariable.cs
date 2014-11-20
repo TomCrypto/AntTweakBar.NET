@@ -19,8 +19,9 @@ namespace AntTweakBar
         /// </summary>
         public void OnChanged(EventArgs e)
         {
-            if (Changed != null)
+            if (Changed != null) {
                 Changed(this, e);
+            }
         }
 
         /// <summary>
@@ -96,8 +97,9 @@ namespace AntTweakBar
             Z = data[2];
             W = data[3];
 
-            if (changed)
+            if (changed) {
                 OnChanged(EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -129,10 +131,9 @@ namespace AntTweakBar
             set { Tw.SetParam(ParentBar.Pointer, ID, "showval", value); }
         }
 
-        private CoordinateSystem coordinates =
-            new CoordinateSystem(AxisOrientation.PositiveX,
-                                 AxisOrientation.PositiveY,
-                                 AxisOrientation.PositiveZ);
+        private CoordinateSystem coordinates = new CoordinateSystem(AxisOrientation.PositiveX,
+                                                                    AxisOrientation.PositiveY,
+                                                                    AxisOrientation.PositiveZ);
 
         /// <summary>
         /// Gets or sets this variable's coordinate system.

@@ -22,8 +22,9 @@ namespace AntTweakBar
         /// </summary>
         public void OnChanged(EventArgs e)
         {
-            if (Changed != null)
+            if (Changed != null) {
                 Changed(this, e);
+            }
         }
 
         /// <summary>
@@ -34,10 +35,11 @@ namespace AntTweakBar
             get { return value; }
             set
             {
-                if (!Enum.IsDefined (typeof(T), value))
+                if (!Enum.IsDefined (typeof(T), value)) {
                     throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-                else
+                } else {
                     this.value = value;
+                }
             }
         }
 
@@ -49,8 +51,9 @@ namespace AntTweakBar
         /// </summary>
         private static void InitEnumVariable(Variable var, String id)
         {
-            if (!typeof(T).IsEnum)
+            if (!typeof(T).IsEnum) {
                 throw new InvalidOperationException(String.Format("Type {0} is not an enumeration", typeof(T).FullName));
+            }
 
             var enumNames = String.Join(",", typeof(T).GetEnumNames());
 
@@ -89,8 +92,9 @@ namespace AntTweakBar
             bool changed = (data != (int)(object)Value);
             Value = (T)(object)data;
 
-            if (changed)
+            if (changed) {
                 OnChanged(EventArgs.Empty);
+            }
         }
 
         /// <summary>

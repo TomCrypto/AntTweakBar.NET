@@ -21,8 +21,9 @@ namespace AntTweakBar
         /// </summary>
         public void OnChanged(EventArgs e)
         {
-            if (Changed != null)
+            if (Changed != null) {
                 Changed(this, e);
+            }
         }
 
         /// <summary>
@@ -33,10 +34,11 @@ namespace AntTweakBar
             get { return value; }
             set
             {
-                if ((value == null) || !Validate(value))
+                if ((value == null) || !Validate(value)) {
                     throw new ArgumentOutOfRangeException("value", "Invalid variable value.");
-                else
+                } else {
                     this.value = value;
+                }
             }
         }
 
@@ -69,8 +71,9 @@ namespace AntTweakBar
         public StringVariable(Bar bar, String initialValue = "", String def = null)
             : base(bar, InitStringVariable, def)
         {
-            if (initialValue == null)
+            if (initialValue == null) {
                 throw new ArgumentNullException(initialValue);
+            }
 
             value = initialValue;
         }
@@ -110,8 +113,9 @@ namespace AntTweakBar
                 bool changed = (data != Value);
                 value = data;
 
-                if (changed)
+                if (changed) {
                     OnChanged(EventArgs.Empty);
+                }
             }
         }
 

@@ -5,7 +5,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar separator, which visually separates other variables.
     /// </summary>
-    public class Separator : Variable
+    public sealed class Separator : Variable
     {
         /// <summary>
         /// Initialization delegate, which creates the separator.
