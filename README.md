@@ -33,7 +33,7 @@ The first context created should be passed the graphics API you are using, which
 
 Other contexts do not have to provide a graphics API, and can be created as simply `new Context();`. AntTweakBar.NET keeps track of how many contexts are active, and initializes the AntTweakBar library whenever a first one is created, and terminates the library whenever the last one is destroyed.
 
-Once you have a context, you can create bars inside it, and you can create variables inside these bars. To draw the context, call its `Draw()` method at the very end of your rendering pipeline. To handle events, hook up the various `Handle*()` methods to your window events. Keep in mind that you generally do not need to keep references to variables around. In many cases, it is sufficient to set up a delegate on the variable's `Changed` event to automatically modify some property in another class, so that your program automatically responds to variable changes. The same goes for bars.
+Once you have a context, you can create bars inside it, and you can create variables inside these bars. To draw the context, call its `Draw()` method at the very end of your rendering pipeline. To handle events, hook up the various `Handle*()` methods to your window events. Keep in mind that you generally do not need to keep references to variables around. In many cases, it is sufficient to set up a delegate on the variable's `Changed` event to automatically modify some property in another class, so that your program automatically responds to variable changes.
 
     var myBar = new Bar(context);
     myBar.Label = "Some bar";
@@ -43,7 +43,7 @@ Once you have a context, you can create bars inside it, and you can create varia
     rotationVar.Label = "Model rotation";
     rotationVar.Changed += delegate { model.Rotation = rotationVar.Value; }
 
-    /* don't need rotationVar anymore (it will still be tracked by myBar) */
+    /* don't need rotationVar anymore (it will still be held onto by myBar) */
 
 Generic event handling example to illustrate (this is not the only event you need to handle):
 
@@ -53,7 +53,7 @@ Generic event handling example to illustrate (this is not the only event you nee
         context.HandleResize(this.ClientSize);
     }
 
-In general you *do* want to keep references to contexts, because you actually do want to destroy them when you close your windows. The different AntTweakBar.NET classes implement the `IDisposable` interface. When you dispose a bar, all variables inside it are implicitly disposed. When you dispose a context, all bars inside it are implicitly disposed. In other words, it is sufficient to dispose the contexts you create. It is very important to note that you must dispose the last context **before** terminating your graphics API. A symptom of failing to do this is an exception on shutdown pointing to the `Tw.Terminate()` function. Critically, this means you cannot just leave the contexts to be garbage-collected, as it will probably be too late by the time they are. If you manage context ownership sensibly, this should not be a problem.  
+In general you *do* want to keep references to contexts, because you actually do want to destroy them when you close your windows. The different AntTweakBar.NET classes implement the `IDisposable` interface. When you dispose a bar, all variables inside it are implicitly disposed. When you dispose a context, all bars inside it are implicitly disposed. In other words, it is sufficient to dispose the contexts you create. It is very important to note that you must dispose the last context **before** terminating your graphics API. A symptom of failing to do this is an exception on shutdown pointing to the `Tw.Terminate()` function. Critically, this means you cannot just leave the contexts to be garbage-collected, as it will probably be too late by the time they are. If you implement context ownership sensibly, this should not be a problem.  
 
 Notes on the Sample
 -------------------
