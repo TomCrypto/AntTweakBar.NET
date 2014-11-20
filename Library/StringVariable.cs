@@ -102,11 +102,14 @@ namespace AntTweakBar
             }
 
             string data = Encoding.UTF8.GetString(strBytes.ToArray());
-            bool changed = (data != Value);
-            Value = data;
 
-            if (changed)
-                OnChanged(EventArgs.Empty);
+            if (Validate(data)) {
+                bool changed = (data != Value);
+                value = data;
+
+                if (changed)
+                    OnChanged(EventArgs.Empty);
+            }
         }
 
         /// <summary>
