@@ -108,15 +108,40 @@ namespace AntTweakBar
         public static extern Boolean TwDeleteBar(
             [In] IntPtr bar);
 
+        [DllImport(DLLName, EntryPoint = "TwDeleteAllBars", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern Boolean TwDeleteAllBars();
+
         [DllImport(DLLName, EntryPoint = "TwSetTopBar", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwSetTopBar(
             [In] IntPtr bar);
 
+        [DllImport(DLLName, EntryPoint = "TwGetTopBar", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr TwGetTopBar();
+
         [DllImport(DLLName, EntryPoint = "TwSetBottomBar", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwSetBottomBar(
             [In] IntPtr bar);
+
+        [DllImport(DLLName, EntryPoint = "TwGetBottomBar", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr TwGetBottomBar();
+
+        [DllImport(DLLName, EntryPoint = "TwGetBarName", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr TwGetBarName(
+            [In] IntPtr bar);
+
+        [DllImport(DLLName, EntryPoint = "TwGetBarCount", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Int32 TwGetBarCount();
+
+        [DllImport(DLLName, EntryPoint = "TwGetBarByIndex", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr TwGetBarByIndex(
+            [In] Int32 barIndex);
+
+        [DllImport(DLLName, EntryPoint = "TwGetBarByName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        public static extern IntPtr TwGetBarByName(
+            [In, MarshalAs(UnmanagedType.LPStr)] String barName);
 
         [DllImport(DLLName, EntryPoint = "TwRefreshBar", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -259,6 +284,11 @@ namespace AntTweakBar
         public static extern Boolean TwRemoveVar(
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String name);
+
+        [DllImport(DLLName, EntryPoint = "TwRemoveAllVars", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern Boolean TwRemoveAllVars(
+            [In] IntPtr bar);
     }
 
     /// <summary>
@@ -482,6 +512,16 @@ namespace AntTweakBar
                 throw new AntTweakBarException("TwDeleteBar failed.");
             }
         }
+
+        /// <summary>
+        /// Delete all bars previously created by <see cref="AntTweakBar.Tw.NewBar"/>.
+        /// </summary>
+        public static void DeleteAllBars()
+        {
+            if (!NativeMethods.TwDeleteAllBars()) {
+                throw new AntTweakBarException("TwDeleteAllBars failed.");
+            }
+        }
         
         /// <summary>
         /// Set the specified bar as the foreground bar. It will be displayed on top of the other bars.
@@ -499,6 +539,15 @@ namespace AntTweakBar
         }
 
         /// <summary>
+        /// Returns the identifier of the current foreground bar (the bar displayed on top of the others).
+        /// </summary>
+        /// <returns>Zero if no bar is displayed, otherwise a pointer to the top bar.</returns>
+        public static IntPtr GetTopBar()
+        {
+            return NativeMethods.TwGetTopBar();
+        }
+
+        /// <summary>
         /// Set the specified bar as the background bar. It will be displayed behind the other bars.
         /// </summary>
         /// <param name="bar">Bar identifier.</param>
@@ -511,6 +560,68 @@ namespace AntTweakBar
             if (!NativeMethods.TwSetBottomBar(bar)) {
                 throw new AntTweakBarException("TwSetBottomBar failed.");
             }
+        }
+
+        /// <summary>
+        /// Returns the identifier of the current background bar (the bar displayed behind the others).
+        /// </summary>
+        /// <returns>Zero if no bar is displayed, otherwise a pointer to the bottom bar.</returns>
+        public static IntPtr GetBottomBar()
+        {
+            return NativeMethods.TwGetBottomBar();
+        }
+
+        /// <summary>
+        /// Returns the name of a given tweak bar.
+        /// </summary>
+        /// <param name="bar">Identifier to the tweak bar.</param>
+        /// <returns>The name of the bar.</returns>
+        public static String GetBarName(IntPtr bar)
+        {
+            var ptr = NativeMethods.TwGetBarName(bar);
+            if (ptr == IntPtr.Zero) {
+                throw new AntTweakBarException("TwGetBarName failed.");
+            }
+
+            var strBytes = new List<byte>();
+            var off = 0;
+            while (true)
+            {
+                var ch = Marshal.ReadByte(ptr, off++);
+                if (ch == 0) break;
+                strBytes.Add(ch);
+            }
+
+            return Encoding.UTF8.GetString(strBytes.ToArray());
+        }
+
+        /// <summary>
+        /// Returns the number of created bars.
+        /// </summary>
+        /// <returns>Number of bars.</returns>
+        public static int GetBarCount()
+        {
+            return NativeMethods.TwGetBarCount();
+        }
+
+        /// <summary>
+        /// Returns the bar of a given index.
+        /// </summary>
+        /// <param name="barIndex">Index of the requested bar.</param>
+        /// <returns>The bar identifier, or zero if the index is out of range.</returns>
+        public static IntPtr GetBarByIndex(int barIndex)
+        {
+            return NativeMethods.TwGetBarByIndex(barIndex);
+        }
+
+        /// <summary>
+        /// Returns the bar of a given name.
+        /// </summary>
+        /// <param name="barName">Name of the requested bar.</param>
+        /// <returns>The bar identifier, or zero if the bar is not found.</returns>
+        public static IntPtr GetBarByName(String barName)
+        {
+            return NativeMethods.TwGetBarByName(barName);
         }
 
         /// <summary>
@@ -979,6 +1090,17 @@ namespace AntTweakBar
 
             if (!NativeMethods.TwRemoveVar(bar, name)) {
                 throw new AntTweakBarException("TwRemoveVar failed.");
+            }
+        }
+
+        /// <summary>
+        /// This function removes all the variables, buttons and separators previously added to a tweak bar.
+        /// </summary>
+        /// <param name="bar">The tweak bar from which to remove all variables.</param>
+        public static void RemoveAllVars(IntPtr bar)
+        {
+            if (!NativeMethods.TwRemoveAllVars(bar)) {
+                throw new AntTweakBarException("TwRemoveAllVars failed.");
             }
         }
     }
