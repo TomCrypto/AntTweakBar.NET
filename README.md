@@ -88,6 +88,14 @@ Advanced Usage
 
     You must refer to `e.Value` (or `e.R`, `e.X`, etc. as appropriate) to perform validation, as the variable's value has not yet been updated when the validation handlers are called. Note you can of course refer to external objects in your handler to implement context-sensitive validation logic. Most variables already have built-in validators, for instance numeric variables validate against their `Min` and `Max` properties, `StringVariable` rejects null strings, etc.
 
+ - **Error handling**
+
+    All AntTweakBar errors will be translated into `AntTweakBarException` instances. But you can also intercept errors via the `Tw.Error` event. It is probably not too useful to reason on the error messages received, but you can use this to log them, for example.
+
+ - **More descriptive enums**
+
+    By default an `EnumVariable<T>` will graphically display the name of the enum value as defined in your code. You can give it a custom name or summary by tagging your enum values with a `DescriptionAttribute`, it will be picked up by AntTweakBar.NET and displayed instead of the raw enum name.
+
  - **AntTweakBar bindings**
 
     The bindings are in the `AntTweakBar.Tw` static class. You (mostly) cannot interfere with the wrapper's operation with them since the wrapper does not expose its internal AntTweakBar pointers and identifiers for integrity reasons, so it is discouraged to use them to try and subvert the high-level wrapper. You are however encouraged to use them directly if you don't want to or can't use the high-level classes for whatever reason. Have fun! 
@@ -119,6 +127,7 @@ Changelog
  - added ObjectDisposedException safety
  - sealed all classes and added validation events
  - updated to a new fancy readme file
+ - removed the tutorial (the readme now has a quick start containing the same info)
 
 20 November 2014 (v0.4.1)
 
