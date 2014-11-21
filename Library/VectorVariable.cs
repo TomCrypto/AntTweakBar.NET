@@ -12,9 +12,9 @@ namespace AntTweakBar
         /// Whether to accept this vector value.
         /// </summary>
         public bool Valid { get; set; }
-        public readonly float X;
-        public readonly float Y;
-        public readonly float Z;
+        public float X { get; private set; }
+        public float Y { get; private set; }
+        public float Z { get; private set; }
 
         public VectorValidationEventArgs(float x, float y, float z)
         {

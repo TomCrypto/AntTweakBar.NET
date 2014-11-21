@@ -252,6 +252,7 @@ namespace AntTweakBar
         /// </summary>
         public enum MouseButton
         {
+            None                                 = 0,
             /// <summary>
             /// Represents the left mouse button.
             /// </summary>
@@ -275,23 +276,23 @@ namespace AntTweakBar
             /// <summary>
             /// Represents no key modifier.
             /// </summary>
-            None = 0x0000,
+            None                                 = 0x0000,
             /// <summary>
             /// Represents the shift key modifier.
             /// </summary>
-            Shift = 0x0003,
+            Shift                                = 0x0003,
             /// <summary>
             /// Represents the ctrl key modifier.
             /// </summary>
-            Ctrl = 0x00c0,
+            Ctrl                                 = 0x00c0,
             /// <summary>
             /// Represents the alt key modifier.
             /// </summary>
-            Alt = 0x0100,
+            Alt                                  = 0x0100,
             /// <summary>
             /// Represents the meta key modifier.
             /// </summary>
-            Meta = 0x0c00,
+            Meta                                 = 0x0c00,
         }
 
         /// <summary>
@@ -299,6 +300,7 @@ namespace AntTweakBar
         /// </summary>
         public enum SpecialKey
         {
+            None                                 = 0,
             Backspace                            = '\b',
             Tab                                  = '\t',
             Clear                                = 0x0c,

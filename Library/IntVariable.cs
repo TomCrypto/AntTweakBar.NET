@@ -11,7 +11,7 @@ namespace AntTweakBar
         /// Whether to accept this integer value.
         /// </summary>
         public bool Valid { get; set; }
-        public readonly int Value;
+        public int Value { get; private set; }
 
         public IntValidationEventArgs(int value)
         {

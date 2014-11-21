@@ -13,7 +13,7 @@ namespace AntTweakBar
         /// Whether to accept this enum value.
         /// </summary>
         public bool Valid { get; set; }
-        public readonly T Value;
+        public T Value { get; private set; }
 
         public EnumValidationEventArgs(T value)
         {

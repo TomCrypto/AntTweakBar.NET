@@ -12,10 +12,10 @@ namespace AntTweakBar
         /// Whether to accept this quaternion value.
         /// </summary>
         public bool Valid { get; set; }
-        public readonly float X;
-        public readonly float Y;
-        public readonly float Z;
-        public readonly float W;
+        public float X { get; private set; }
+        public float Y { get; private set; }
+        public float Z { get; private set; }
+        public float W { get; private set; }
 
         public QuaternionValidationEventArgs(float x, float y, float z, float w)
         {

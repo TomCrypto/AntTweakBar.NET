@@ -11,7 +11,7 @@ namespace AntTweakBar
         /// Whether to accept this boolean value.
         /// </summary>
         public bool Valid { get; set; }
-        public readonly bool Value;
+        public bool Value { get; private set; }
 
         public BoolValidationEventArgs(bool value)
         {

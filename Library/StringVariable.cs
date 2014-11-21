@@ -13,7 +13,7 @@ namespace AntTweakBar
         /// Whether to accept this string value.
         /// </summary>
         public bool Valid { get; set; }
-        public readonly String Value;
+        public String Value { get; private set; }
 
         public StringValidationEventArgs(String value)
         {

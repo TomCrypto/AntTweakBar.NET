@@ -11,7 +11,7 @@ namespace AntTweakBar
         /// Whether to accept this single-precision value.
         /// </summary>
         public bool Valid { get; set; }
-        public readonly float Value;
+        public float Value { get; private set; }
 
         public FloatValidationEventArgs(float value)
         {

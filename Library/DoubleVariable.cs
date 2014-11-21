@@ -11,7 +11,7 @@ namespace AntTweakBar
         /// Whether to accept this double-precision value.
         /// </summary>
         public bool Valid { get; set; }
-        public readonly double Value;
+        public double Value { get; private set; }
 
         public DoubleValidationEventArgs(double value)
         {

@@ -11,10 +11,10 @@ namespace AntTweakBar
         /// Whether to accept this RGBA color value.
         /// </summary>
         public bool Valid { get; set; }
-        public readonly float R;
-        public readonly float G;
-        public readonly float B;
-        public readonly float A;
+        public float R { get; private set; }
+        public float G { get; private set; }
+        public float B { get; private set; }
+        public float A { get; private set; }
 
         public Color4ValidationEventArgs(float r, float g, float b, float a)
         {

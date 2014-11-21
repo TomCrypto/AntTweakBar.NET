@@ -24,6 +24,16 @@ namespace AntTweakBar
             Details = Tw.GetLastError();
         }
 
+        public AntTweakBarException(String message, Exception innerException) : base(message, innerException)
+        {
+            Details = Tw.GetLastError();
+        }
+
+        public AntTweakBarException() : base()
+        {
+            Details = Tw.GetLastError();
+        }
+
         [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter=true)]
         private AntTweakBarException(SerializationInfo info, StreamingContext context) : base (info, context)
         {
