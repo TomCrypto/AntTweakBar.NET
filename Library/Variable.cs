@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -161,16 +163,16 @@ namespace AntTweakBar
 
                 if (disposing)
                 {
-                    if (Tw.SetCallbacks.ContainsKey(ID)) {
-                        Tw.SetCallbacks.Remove(ID);
+                    if (SetCallbacks.ContainsKey(ID)) {
+                        SetCallbacks.Remove(ID);
                     }
 
-                    if (Tw.GetCallbacks.ContainsKey(ID)) {
-                        Tw.GetCallbacks.Remove(ID);
+                    if (GetCallbacks.ContainsKey(ID)) {
+                        GetCallbacks.Remove(ID);
                     }
 
-                    if (Tw.BtnCallbacks.ContainsKey(ID)) {
-                        Tw.BtnCallbacks.Remove(ID);
+                    if (BtnCallbacks.ContainsKey(ID)) {
+                        BtnCallbacks.Remove(ID);
                     }
                 }
 
@@ -201,5 +203,17 @@ namespace AntTweakBar
         {
             return String.Format("[Variable: Label={0}]", Label);
         }
+
+        /* These are used to keep strong references to the various unmanaged callbacks
+         * used by AntTweakBar. It's probably possible to do this more elegantly but I
+         * don't know how, and frankly, a garbage collected callback is so problematic
+         * that it's easier to just make absolutely sure they are never collected.
+         * 
+         * (entries are removed as variables get disposed of, so it's not too bad)
+        */
+
+        internal static IDictionary<String, Tw.SetVarCallback> SetCallbacks = new ConcurrentDictionary<String, Tw.SetVarCallback>();
+        internal static IDictionary<String, Tw.GetVarCallback> GetCallbacks = new ConcurrentDictionary<String, Tw.GetVarCallback>();
+        internal static IDictionary<String, Tw.ButtonCallback> BtnCallbacks = new ConcurrentDictionary<String, Tw.ButtonCallback>();
     }
 }

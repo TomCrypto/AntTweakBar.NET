@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -954,17 +953,5 @@ namespace AntTweakBar
                 throw new AntTweakBarException("TwRemoveVar failed.");
             }
         }
-
-        /* These are used to keep strong references to the various unmanaged callbacks
-         * used by AntTweakBar. It's probably possible to do this more elegantly but I
-         * don't know how, and frankly, a garbage collected callback is so problematic
-         * that it's easier to just make absolutely sure they are never collected.
-         * 
-         * (entries are removed as variables get disposed of, so it's not too bad)
-        */
-
-        internal static IDictionary<String, Tw.SetVarCallback> SetCallbacks = new ConcurrentDictionary<String, Tw.SetVarCallback>();
-        internal static IDictionary<String, Tw.GetVarCallback> GetCallbacks = new ConcurrentDictionary<String, Tw.GetVarCallback>();
-        internal static IDictionary<String, Tw.ButtonCallback> BtnCallbacks = new ConcurrentDictionary<String, Tw.ButtonCallback>();
     }
 }

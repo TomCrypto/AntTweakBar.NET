@@ -45,13 +45,13 @@ namespace AntTweakBar
         {
             var it = var as BoolVariable;
 
-            Tw.SetCallbacks.Add(id, new Tw.SetVarCallback(it.SetCallback));
-            Tw.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
+            Variable.SetCallbacks.Add(id, new Tw.SetVarCallback(it.SetCallback));
+            Variable.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
                         Tw.VariableType.Bool8,
-                        Tw.SetCallbacks[id],
-                        Tw.GetCallbacks[id],
+                        Variable.SetCallbacks[id],
+                        Variable.GetCallbacks[id],
                         IntPtr.Zero, null);
         }
 

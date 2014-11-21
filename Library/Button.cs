@@ -31,10 +31,10 @@ namespace AntTweakBar
         {
             var it = var as Button;
 
-            Tw.BtnCallbacks.Add(id, new Tw.ButtonCallback(it.Callback));
+            Variable.BtnCallbacks.Add(id, new Tw.ButtonCallback(it.Callback));
 
             Tw.AddButton(var.ParentBar.Pointer, id,
-                         Tw.BtnCallbacks[id],
+                         Variable.BtnCallbacks[id],
                          IntPtr.Zero, null);
         }
 
