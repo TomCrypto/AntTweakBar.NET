@@ -331,7 +331,7 @@ namespace Tests
         }
 
         [Test()]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void MinCheck()
         {
             Variable.Min = 50;
@@ -339,7 +339,7 @@ namespace Tests
         }
 
         [Test()]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void MaxCheck()
         {
             Variable.Max = 50;
@@ -405,7 +405,7 @@ namespace Tests
         }
 
         [Test()]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void MinCheck()
         {
             Variable.Min = 3.5f;
@@ -413,7 +413,7 @@ namespace Tests
         }
 
         [Test()]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void MaxCheck()
         {
             Variable.Max = 3.5f;
@@ -479,7 +479,7 @@ namespace Tests
         }
 
         [Test()]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void MinCheck()
         {
             Variable.Min = 3.5;
@@ -487,7 +487,7 @@ namespace Tests
         }
 
         [Test()]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void MaxCheck()
         {
             Variable.Max = 3.5;
@@ -668,7 +668,7 @@ namespace Tests
         }
 
         [Test()]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void ValueCheck()
         {
             Assert.IsFalse(Enum.IsDefined(typeof(TestEnum), (int)397528781));

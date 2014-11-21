@@ -78,11 +78,21 @@ Advanced Usage
 
  - **Defining custom variables**
 
-    TODO
+    All the classes in the wrapper are sealed. In most cases you should favor composing variables together to extend their functionality, as done for instance in the sample, where a complex variable type is created by composing two `DoubleVariable` instances, and a polynomial variable type is implemented by adding custom validation logic to a `StringVariable` to make it only accept polynomial formulas. In general, the `Validating` event can be used to introduce additional requirements on the contents of the variable. The variable's value will be changed if and only it passes validation by *all* event handlers attached to the variable's `Validating` event.
+
+    If user input fails validation, the variable will gracefully revert to its previous value. On the other hand, if you manually try to set an invalid value from code, it will throw an `ArgumentException`. The following example shows how to make the value of `myVar` be a multiple of five: 
+
+        myVar.Validating += (s, e) => { e.Valid = (e.Value % 5 == 0); }; /* myVar is an IntVariable */
+
+    You must refer to `e.Value` (or `e.R`, `e.X`, etc. as appropriate) to perform validation, as the variable's value has not yet been updated when the validation handlers are called. Note you can of course refer to external objects in your handler to implement context-sensitive validation logic. Most variables already have built-in validators, for instance numeric variables validate against their `Min` and `Max` properties, `StringVariable` rejects null strings, etc.
 
  - **AntTweakBar bindings**
 
-    The bindings are in the `AntTweakBar.Tw` static class. You (mostly) cannot interfere with the wrapper's operation with them since the wrapper does not expose its internal AntTweakBar pointers and identifiers for integrity reasons, so it is discouraged to use it to try and subvert the high-level wrapper. You are however encouraged to use them directly if you don't want to or can't use the high-level classes for whatever reason. Have fun! 
+    The bindings are in the `AntTweakBar.Tw` static class. You (mostly) cannot interfere with the wrapper's operation with them since the wrapper does not expose its internal AntTweakBar pointers and identifiers for integrity reasons, so it is discouraged to use them to try and subvert the high-level wrapper. You are however encouraged to use them directly if you don't want to or can't use the high-level classes for whatever reason. Have fun! 
+
+ - **Exception safety**
+
+    You should avoid throwing exceptions from within delegates subscribed to `Changed`, `Click` and `Validate` events. The reason for this is because they can be called from native code, and the results of throwing a managed exception inside an unmanaged callback is implementation-defined. It is recommended instead to log any exception and safely return.
 
 Contribute
 ----------
@@ -96,7 +106,7 @@ Changelog
 
  - fixed a few more bugs in the sample
  - added ObjectDisposedException safety
- - sealed a few more library classes
+ - sealed all classes and added validation events
  - updated to a new fancy readme file
 
 20 November 2014 (v0.4.1)

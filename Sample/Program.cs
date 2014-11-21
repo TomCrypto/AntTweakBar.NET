@@ -1,13 +1,3 @@
-/* AntTweakBar.NET
- * ===============
- * 
- * The sample program below will draw Newton fractals
- * using OpenTK with AntTweakBar.NET - it is designed
- * to give an idea of how to use AntTweakBar.NET in a
- * real program i.e. how to create and bind variables
- * to actual parameters of the program, and so on.
-*/
-
 using System;
 using System.Drawing;
 using System.Numerics;
@@ -27,7 +17,7 @@ namespace Sample
     /// This variable will hold a polynomial (if an invalid formula
     /// is entered by the user, it will simply refuse to accept it).
     /// </summary>
-    class PolynomialVariable : StringVariable
+    class PolynomialVariable
     {
         // Used to hold optional symbols used during polynomial parsing
         private readonly IDictionary<String, Double> symbols = new Dictionary<String, Double>();
@@ -48,26 +38,20 @@ namespace Sample
             }
         }
 
-        public PolynomialVariable(Bar bar, String poly, String def = null)
-            : base(bar, poly, def)
-        {
+        /// <summary>
+        /// The actual backing variable.
+        /// </summary>
+        public StringVariable PolyString { get; set; }
 
+        public PolynomialVariable(Bar bar, String poly, String def = null)
+        {
+            PolyString = new StringVariable(bar, poly, def);
+            PolyString.Validating += (s, e) => { e.Valid = (Polynomial.Parse(e.Value, symbols) != null); };
         }
 
-        /// <summary>
-        /// Gets the polynomial entered by the user.
-        /// </summary>
         public Polynomial Polynomial
         {
-            get
-            {
-                return Polynomial.Parse(Value, symbols);
-            }
-        }
-
-        protected override bool Validate(String value)
-        {
-            return (Polynomial.Parse(value, symbols) != null);
+            get { return Polynomial.Parse(PolyString.Value, symbols); }
         }
     }
 
@@ -390,24 +374,24 @@ namespace Sample
 
             var poly = new PolynomialVariable(fractalBar, "z^3 - 1");
             var preset = new EnumVariable<FractalPreset>(fractalBar, FractalPreset.Cubic);
-            poly.Changed += delegate { fractal.Polynomial = poly.Polynomial; };
-            poly.Label = "Equation";
+            poly.PolyString.Changed += delegate { fractal.Polynomial = poly.Polynomial; };
+            poly.PolyString.Label = "Equation";
             preset.Label = "Presets";
             preset.Changed += delegate
             {
                 switch (preset.Value)
                 {
                     case FractalPreset.Cubic:
-                        poly.Value = "z^3 - 1";
+                        poly.PolyString.Value = "z^3 - 1";
                         break;
                     case FractalPreset.OtherCubic:
-                        poly.Value = "z^3 - 2z + 2";
+                        poly.PolyString.Value = "z^3 - 2z + 2";
                         break;
                     case FractalPreset.SineTaylor:
-                        poly.Value = "z - 1/6z^3 + 1/120z^5 - 1/5040z^7 + 1/362880z^9";
+                        poly.PolyString.Value = "z - 1/6z^3 + 1/120z^5 - 1/5040z^7 + 1/362880z^9";
                         break;
                     case FractalPreset.ExpIz:
-                        poly.Value = "1 + iz - 1/2z^2 + (1/6i)z^3";
+                        poly.PolyString.Value = "1 + iz - 1/2z^2 + (1/6i)z^3";
                         break;
                 }
 

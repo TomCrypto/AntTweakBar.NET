@@ -1,16 +1,3 @@
-/* AntTweakBar.NET
- * ===============
- * 
- * This is some tutorial code which doesn't really do
- * anything, but shows how to use this wrapper. Since
- * it was designed to be engine-agnostic, each engine
- * specific section is replaced with a comment, which
- * explains what you need to do to integrate the code
- * into your own graphics application. I suggest that
- * you read through the entire source file, though to
- * be fair the wrapper is rather easy to use.
-*/
-
 using System;
 using System.Drawing;
 using System.Diagnostics;

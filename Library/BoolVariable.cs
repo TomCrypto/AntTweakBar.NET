@@ -1,9 +1,24 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace AntTweakBar
 {
+    public sealed class BoolValidationEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Whether to accept this boolean value.
+        /// </summary>
+        public bool Valid { get; set; }
+        public readonly bool Value;
+
+        public BoolValidationEventArgs(bool value)
+        {
+            Value = value;
+        }
+    }
+
     /// <summary>
     /// An AntTweakBar variable which can hold a boolean value.
     /// </summary>
@@ -13,6 +28,11 @@ namespace AntTweakBar
         /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
+
+        /// <summary>
+        /// Occurs when the new value of this variable is validated.
+        /// </summary>
+        public event EventHandler<BoolValidationEventArgs> Validating;
 
         /// <summary>
         /// Raises the Changed event.
@@ -32,7 +52,7 @@ namespace AntTweakBar
         public Boolean Value
         {
             get { ThrowIfDisposed(); return value; }
-            set { ThrowIfDisposed(); this.value = value; }
+            set { ValidateAndSet(value); }
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -64,7 +84,35 @@ namespace AntTweakBar
         public BoolVariable(Bar bar, Boolean initialValue = false, String def = null)
             : base(bar, InitBoolVariable, def)
         {
-            Value = initialValue;
+            Validating += (s, e) => { e.Valid = true; };
+
+            ValidateAndSet(initialValue);
+        }
+
+        /// <summary>
+        /// Checks if this variable can hold this value.
+        /// </summary>
+        private bool IsValid(bool value)
+        {
+            ThrowIfDisposed();
+
+            return !Validating.GetInvocationList().Select(h => {
+                var check = new BoolValidationEventArgs(value);
+                h.DynamicInvoke(new object[] { this, check });
+                return !check.Valid;
+            }).Any(failed => failed);
+        }
+
+        /// <summary>
+        /// Tries to set this variable's value, validating it.
+        /// </summary>
+        private void ValidateAndSet(bool value)
+        {
+            if (!IsValid(value)) {
+                throw new ArgumentException("Invalid variable value.");
+            } else {
+                this.value = value;
+            }
         }
 
         /// <summary>

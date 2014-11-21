@@ -7,6 +7,20 @@ using System.Runtime.InteropServices;
 
 namespace AntTweakBar
 {
+    public sealed class EnumValidationEventArgs<T> : EventArgs where T : struct
+    {
+        /// <summary>
+        /// Whether to accept this enum value.
+        /// </summary>
+        public bool Valid { get; set; }
+        public readonly T Value;
+
+        public EnumValidationEventArgs(T value)
+        {
+            Value = value;
+        }
+    }
+
     /// <summary>
     /// An AntTweakBar variable which can hold an enum.
     /// </summary>
@@ -16,6 +30,11 @@ namespace AntTweakBar
         /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
+
+        /// <summary>
+        /// Occurs when the new value of this variable is validated.
+        /// </summary>
+        public event EventHandler<EnumValidationEventArgs<T>> Validating;
 
         /// <summary>
         /// Raises the Changed event.
@@ -35,16 +54,7 @@ namespace AntTweakBar
         public T Value
         {
             get { ThrowIfDisposed(); return value; }
-            set
-            {
-                ThrowIfDisposed();
-
-                if (!Enum.IsDefined (typeof(T), value)) {
-                    throw new ArgumentOutOfRangeException("value", "Invalid variable value");
-                } else {
-                    this.value = value;
-                }
-            }
+            set { ValidateAndSet(value); }
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -56,7 +66,7 @@ namespace AntTweakBar
         private static void InitEnumVariable(Variable var, String id)
         {
             if (!typeof(T).IsEnum) {
-                throw new InvalidOperationException(String.Format("Type {0} is not an enumeration", typeof(T).FullName));
+                throw new InvalidOperationException(String.Format("Type {0} is not an enumeration.", typeof(T).FullName));
             }
 
             var enumNames = String.Join(",", typeof(T).GetEnumNames());
@@ -82,9 +92,35 @@ namespace AntTweakBar
         public EnumVariable(Bar bar, T initialValue, String def = null)
             : base(bar, InitEnumVariable, def)
         {
+            Validating += (s, e) => { e.Valid = Enum.IsDefined(typeof(T), e.Value); };
             Tw.SetParam(ParentBar.Pointer, ID, "enum", GetEnumString());
+            ValidateAndSet(initialValue);
+        }
 
-            Value = initialValue;
+        /// <summary>
+        /// Checks if this variable can hold this value.
+        /// </summary>
+        private bool IsValid(T value)
+        {
+            ThrowIfDisposed();
+
+            return !Validating.GetInvocationList().Select(h => {
+                var check = new EnumValidationEventArgs<T>(value);
+                h.DynamicInvoke(new object[] { this, check });
+                return !check.Valid;
+            }).Any(failed => failed);
+        }
+
+        /// <summary>
+        /// Tries to set this variable's value, validating it.
+        /// </summary>
+        private void ValidateAndSet(T value)
+        {
+            if (!IsValid(value)) {
+                throw new ArgumentException("Invalid variable value.");
+            } else {
+                this.value = value;
+            }
         }
 
         /// <summary>
@@ -93,11 +129,15 @@ namespace AntTweakBar
         private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
             int data = Marshal.ReadInt32(pointer);
-            bool changed = (data != (int)(object)Value);
-            Value = (T)(object)data;
 
-            if (changed) {
-                OnChanged(EventArgs.Empty);
+            if (IsValid((T)(object)data))
+            {
+                bool changed = (data != (int)(object)value);
+                value = (T)(object)data;
+
+                if (changed) {
+                    OnChanged(EventArgs.Empty);
+                }
             }
         }
 

@@ -1,10 +1,29 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace AntTweakBar
 {
+    public sealed class VectorValidationEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Whether to accept this vector value.
+        /// </summary>
+        public bool Valid { get; set; }
+        public readonly float X;
+        public readonly float Y;
+        public readonly float Z;
+
+        public VectorValidationEventArgs(float x, float y, float z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+    }
+
     /// <summary>
     /// An AntTweakBar variable which can hold a 3D vector.
     /// </summary>
@@ -14,6 +33,11 @@ namespace AntTweakBar
         /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
+
+        /// <summary>
+        /// Occurs when the new value of this variable is validated.
+        /// </summary>
+        public event EventHandler<VectorValidationEventArgs> Validating;
 
         /// <summary>
         /// Raises the Changed event.
@@ -33,7 +57,7 @@ namespace AntTweakBar
         public float X
         {
             get { ThrowIfDisposed(); return x; }
-            set { ThrowIfDisposed(); x = value; }
+            set { ValidateAndSet(value, Y, Z); }
         }
 
         /// <summary>
@@ -42,7 +66,7 @@ namespace AntTweakBar
         public float Y
         {
             get { ThrowIfDisposed(); return y; }
-            set { ThrowIfDisposed(); y = value; }
+            set { ValidateAndSet(X, value, Z); }
         }
 
         /// <summary>
@@ -51,7 +75,7 @@ namespace AntTweakBar
         public float Z
         {
             get { ThrowIfDisposed(); return z; }
-            set { ThrowIfDisposed(); z = value; }
+            set { ValidateAndSet(X, Y, value); }
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -89,9 +113,37 @@ namespace AntTweakBar
         public VectorVariable(Bar bar, float x = 0, float y = 0, float z = 0, String def = null)
             : base(bar, InitVectorVariable, def)
         {
-            X = x;
-            Y = y;
-            Z = z;
+            Validating += (s, e) => { e.Valid = true; };
+
+            ValidateAndSet(x, y, z);
+        }
+
+        /// <summary>
+        /// Checks if this variable can hold this value.
+        /// </summary>
+        private bool IsValid(float x, float y, float z)
+        {
+            ThrowIfDisposed();
+
+            return !Validating.GetInvocationList().Select(h => {
+                var check = new VectorValidationEventArgs(x, y, z);
+                h.DynamicInvoke(new object[] { this, check });
+                return !check.Valid;
+            }).Any(failed => failed);
+        }
+
+        /// <summary>
+        /// Tries to set this variable's value, validating it.
+        /// </summary>
+        private void ValidateAndSet(float x, float y, float z)
+        {
+            if (!IsValid(x, y, z)) {
+                throw new ArgumentException("Invalid variable value.");
+            } else {
+                this.x = x;
+                this.y = y;
+                this.z = z;
+            }
         }
 
         /// <summary>
@@ -102,16 +154,19 @@ namespace AntTweakBar
             float[] data = new float[3]; /* X, Y, Z */
             Marshal.Copy(pointer, data, 0, data.Length);
 
-            bool changed = (data[0] != X)
-                        || (data[1] != Y)
-                        || (data[2] != Z);
+            if (IsValid(data[0], data[1], data[2]))
+            {
+                bool changed = (data[0] != x)
+                            || (data[1] != y)
+                            || (data[2] != z);
 
-            X = data[0];
-            Y = data[1];
-            Z = data[2];
+                x = data[0];
+                y = data[1];
+                z = data[2];
 
-            if (changed) {
-                OnChanged(EventArgs.Empty);
+                if (changed) {
+                    OnChanged(EventArgs.Empty);
+                }
             }
         }
 

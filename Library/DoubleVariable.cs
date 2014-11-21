@@ -1,18 +1,38 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace AntTweakBar
 {
+    public sealed class DoubleValidationEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Whether to accept this double-precision value.
+        /// </summary>
+        public bool Valid { get; set; }
+        public readonly double Value;
+
+        public DoubleValidationEventArgs(double value)
+        {
+            Value = value;
+        }
+    }
+
     /// <summary>
     /// An AntTweakBar variable which can hold a double-precision floating-point number.
     /// </summary>
-    public class DoubleVariable : Variable
+    public sealed class DoubleVariable : Variable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
+
+        /// <summary>
+        /// Occurs when the new value of this variable is validated.
+        /// </summary>
+        public event EventHandler<DoubleValidationEventArgs> Validating;
 
         /// <summary>
         /// Raises the Changed event.
@@ -32,16 +52,7 @@ namespace AntTweakBar
         public Double Value
         {
             get { ThrowIfDisposed(); return value; }
-            set
-            {
-                ThrowIfDisposed();
-
-                if (!((Min <= value) && (value <= Max)) || !Validate(value)) {
-                    throw new ArgumentOutOfRangeException("value", "Invalid variable value.");
-                } else {
-                    this.value = value;
-                }
-            }
+            set { ValidateAndSet(value); }
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -73,22 +84,35 @@ namespace AntTweakBar
         public DoubleVariable(Bar bar, Double initialValue = 0, String def = null)
             : base(bar, InitDoubleVariable, def)
         {
-            value = initialValue;
+            Validating += (s, e) => { e.Valid = (Min <= e.Value) && (e.Value <= Max); };
+
+            ValidateAndSet(initialValue);
         }
 
         /// <summary>
-        /// A validation method for derived classes. Override this to provide custom
-        /// variables with arbitrary validation logic. If the user's input does not
-        /// pass validation, the variable's value reverts to its previous contents.
+        /// Checks if this variable can hold this value.
         /// </summary>
-        /// <remarks>
-        /// The validation method is also invoked when setting the variable's value.
-        /// </remarks>
-        /// <param name="value">The value the variable will contain.</param>
-        /// <returns>Whether the variable is allowed to have this value.</returns>
-        protected virtual bool Validate(Double value)
+        private bool IsValid(double value)
         {
-            return true;
+            ThrowIfDisposed();
+
+            return !Validating.GetInvocationList().Select(h => {
+                var check = new DoubleValidationEventArgs(value);
+                h.DynamicInvoke(new object[] { this, check });
+                return !check.Valid;
+            }).Any(failed => failed);
+        }
+
+        /// <summary>
+        /// Tries to set this variable's value, validating it.
+        /// </summary>
+        private void ValidateAndSet(double value)
+        {
+            if (!IsValid(value)) {
+                throw new ArgumentException("Invalid variable value.");
+            } else {
+                this.value = value;
+            }
         }
 
         /// <summary>
@@ -99,12 +123,14 @@ namespace AntTweakBar
             double[] data = new double[1]; /* Value */
             Marshal.Copy(pointer, data, 0, data.Length);
 
-            bool changed = (data[0] != Value);
+            if (IsValid(data[0]))
+            {
+                bool changed = (data[0] != value);
+                value = data[0];
 
-            Value = data[0];
-
-            if (changed) {
-                OnChanged(EventArgs.Empty);
+                if (changed) {
+                    OnChanged(EventArgs.Empty);
+                }
             }
         }
 

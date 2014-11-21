@@ -1,20 +1,40 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace AntTweakBar
 {
+    public sealed class StringValidationEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Whether to accept this string value.
+        /// </summary>
+        public bool Valid { get; set; }
+        public readonly String Value;
+
+        public StringValidationEventArgs(String value)
+        {
+            Value = value;
+        }
+    }
+
     /// <summary>
     /// An AntTweakBar variable which can hold a string.
     /// </summary>
-    public class StringVariable : Variable
+    public sealed class StringVariable : Variable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
+
+        /// <summary>
+        /// Occurs when the new value of this variable is validated.
+        /// </summary>
+        public event EventHandler<StringValidationEventArgs> Validating;
 
         /// <summary>
         /// Raises the Changed event.
@@ -34,16 +54,7 @@ namespace AntTweakBar
         public String Value
         {
             get { ThrowIfDisposed(); return value; }
-            set
-            {
-                ThrowIfDisposed();
-
-                if ((value == null) || !Validate(value)) {
-                    throw new ArgumentOutOfRangeException("value", "Invalid variable value.");
-                } else {
-                    this.value = value;
-                }
-            }
+            set { ValidateAndSet(value); }
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -75,26 +86,35 @@ namespace AntTweakBar
         public StringVariable(Bar bar, String initialValue = "", String def = null)
             : base(bar, InitStringVariable, def)
         {
-            if (initialValue == null) {
-                throw new ArgumentNullException(initialValue);
-            }
+            Validating += (s, e) => { e.Valid = (e.Value != null); };
 
-            value = initialValue;
+            ValidateAndSet(initialValue);
         }
 
         /// <summary>
-        /// A validation method for derived classes. Override this to provide custom
-        /// variables with arbitrary validation logic. If the user's input does not
-        /// pass validation, the variable's value reverts to its previous contents.
+        /// Checks if this variable can hold this value.
         /// </summary>
-        /// <remarks>
-        /// The validation method is also invoked when setting the variable's value.
-        /// </remarks>
-        /// <param name="value">The value the variable will contain.</param>
-        /// <returns>Whether the variable is allowed to have this value.</returns>
-        protected virtual bool Validate(String value)
+        private bool IsValid(String value)
         {
-            return true;
+            ThrowIfDisposed();
+
+            return !Validating.GetInvocationList().Select(h => {
+                var check = new StringValidationEventArgs(value);
+                h.DynamicInvoke(new object[] { this, check });
+                return !check.Valid;
+            }).Any(failed => failed);
+        }
+
+        /// <summary>
+        /// Tries to set this variable's value, validating it.
+        /// </summary>
+        private void ValidateAndSet(String value)
+        {
+            if (!IsValid(value)) {
+                throw new ArgumentException("Invalid variable value.");
+            } else {
+                this.value = value;
+            }
         }
 
         /// <summary>
@@ -113,8 +133,9 @@ namespace AntTweakBar
 
             string data = Encoding.UTF8.GetString(strBytes.ToArray());
 
-            if (Validate(data)) {
-                bool changed = (data != Value);
+            if (IsValid(data))
+            {
+                bool changed = (data != value);
                 value = data;
 
                 if (changed) {

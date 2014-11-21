@@ -1,9 +1,28 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace AntTweakBar
 {
+    public sealed class ColorValidationEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Whether to accept this RGB color value.
+        /// </summary>
+        public bool Valid { get; set; }
+        public readonly float R;
+        public readonly float G;
+        public readonly float B;
+
+        public ColorValidationEventArgs(float r, float g, float b)
+        {
+            R = r;
+            G = g;
+            B = b;
+        }
+    }
+
     /// <summary>
     /// An AntTweakBar variable which can hold an RGB color value.
     /// </summary>
@@ -13,6 +32,11 @@ namespace AntTweakBar
         /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
+
+        /// <summary>
+        /// Occurs when the new value of this variable is validated.
+        /// </summary>
+        public event EventHandler<ColorValidationEventArgs> Validating;
 
         /// <summary>
         /// Raises the Changed event.
@@ -32,16 +56,7 @@ namespace AntTweakBar
         public float R
         {
             get { ThrowIfDisposed(); return r; }
-            set
-            {
-                ThrowIfDisposed();
-
-                if (!(0 <= value && value <= 1)) {
-                    throw new ArgumentOutOfRangeException("value", "Invalid variable value.");
-                } else {
-                    r = value;
-                }
-            }
+            set { ValidateAndSet(value, G, B); }
         }
 
         /// <summary>
@@ -50,16 +65,7 @@ namespace AntTweakBar
         public float G
         {
             get { ThrowIfDisposed(); return g; }
-            set
-            {
-                ThrowIfDisposed();
-
-                if (!(0 <= value && value <= 1)) {
-                    throw new ArgumentOutOfRangeException("value", "Invalid variable value.");
-                } else {
-                    g = value;
-                }
-            }
+            set { ValidateAndSet(R, value, B); }
         }
 
         /// <summary>
@@ -68,16 +74,7 @@ namespace AntTweakBar
         public float B
         {
             get { ThrowIfDisposed(); return b; }
-            set
-            {
-                ThrowIfDisposed();
-
-                if (!(0 <= value && value <= 1)) {
-                    throw new ArgumentOutOfRangeException("value", "Invalid variable value.");
-                } else {
-                    b = value;
-                }
-            }
+            set { ValidateAndSet(R, G, value); }
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -115,9 +112,39 @@ namespace AntTweakBar
         public ColorVariable(Bar bar, float r = 0, float g = 0, float b = 0, String def = null)
             : base(bar, InitColorVariable, def)
         {
-            R = r;
-            G = g;
-            B = b;
+            Validating += (s, e) => { e.Valid = (0 <= e.R) && (e.R <= 1); };
+            Validating += (s, e) => { e.Valid = (0 <= e.G) && (e.G <= 1); };
+            Validating += (s, e) => { e.Valid = (0 <= e.B) && (e.B <= 1); };
+
+            ValidateAndSet(r, g, b);
+        }
+
+        /// <summary>
+        /// Checks if this variable can hold this value.
+        /// </summary>
+        private bool IsValid(float r, float g, float b)
+        {
+            ThrowIfDisposed();
+
+            return !Validating.GetInvocationList().Select(h => {
+                var check = new ColorValidationEventArgs(r, g, b);
+                h.DynamicInvoke(new object[] { this, check });
+                return !check.Valid;
+            }).Any(failed => failed);
+        }
+
+        /// <summary>
+        /// Tries to set this variable's value, validating it.
+        /// </summary>
+        private void ValidateAndSet(float r, float g, float b)
+        {
+            if (!IsValid(r, g, b)) {
+                throw new ArgumentException("Invalid variable value.");
+            } else {
+                this.r = r;
+                this.g = g;
+                this.b = b;
+            }
         }
 
         /// <summary>
@@ -128,16 +155,19 @@ namespace AntTweakBar
             float[] data = new float[3]; /* R, G, B */
             Marshal.Copy(pointer, data, 0, data.Length);
 
-            bool changed = (data[0] != R)
-                        || (data[1] != G)
-                        || (data[2] != B);
+            if (IsValid(data[0], data[1], data[2]))
+            {
+                bool changed = (data[0] != r)
+                            || (data[1] != g)
+                            || (data[2] != b);
 
-            R = data[0];
-            G = data[1];
-            B = data[2];
+                r = data[0];
+                g = data[1];
+                b = data[2];
 
-            if (changed) {
-                OnChanged(EventArgs.Empty);
+                if (changed) {
+                    OnChanged(EventArgs.Empty);
+                }
             }
         }
 

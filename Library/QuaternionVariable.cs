@@ -1,10 +1,31 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace AntTweakBar
 {
+    public sealed class QuaternionValidationEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Whether to accept this quaternion value.
+        /// </summary>
+        public bool Valid { get; set; }
+        public readonly float X;
+        public readonly float Y;
+        public readonly float Z;
+        public readonly float W;
+
+        public QuaternionValidationEventArgs(float x, float y, float z, float w)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+            W = w;
+        }
+    }
+
     /// <summary>
     /// An AntTweakBar variable which can hold a quaternion.
     /// </summary>
@@ -14,6 +35,11 @@ namespace AntTweakBar
         /// Occurs when the user changes this variable's value.
         /// </summary>
         public event EventHandler Changed;
+
+        /// <summary>
+        /// Occurs when the new value of this variable is validated.
+        /// </summary>
+        public event EventHandler<QuaternionValidationEventArgs> Validating;
 
         /// <summary>
         /// Raises the Changed event.
@@ -33,7 +59,7 @@ namespace AntTweakBar
         public float X
         {
             get { ThrowIfDisposed(); return x; }
-            set { ThrowIfDisposed(); x = value; }
+            set { ValidateAndSet(value, Y, Z, W); }
         }
 
         /// <summary>
@@ -42,7 +68,7 @@ namespace AntTweakBar
         public float Y
         {
             get { ThrowIfDisposed(); return y; }
-            set { ThrowIfDisposed(); y = value; }
+            set { ValidateAndSet(X, value, Z, W); }
         }
 
         /// <summary>
@@ -51,7 +77,7 @@ namespace AntTweakBar
         public float Z
         {
             get { ThrowIfDisposed(); return z; }
-            set { ThrowIfDisposed(); z = value; }
+            set { ValidateAndSet(X, Y, value, W); }
         }
 
         /// <summary>
@@ -60,7 +86,7 @@ namespace AntTweakBar
         public float W
         {
             get { ThrowIfDisposed(); return w; }
-            set { ThrowIfDisposed(); w = value; }
+            set { ValidateAndSet(X, Y, Z, value); }
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -101,10 +127,38 @@ namespace AntTweakBar
         public QuaternionVariable(Bar bar, float x = 0, float y = 0, float z = 0, float w = 1, String def = null)
             : base(bar, InitQuaternionVariable, def)
         {
-            X = x;
-            Y = y;
-            Z = z;
-            W = w;
+            Validating += (s, e) => { e.Valid = true; };
+
+            ValidateAndSet(x, y, z, w);
+        }
+
+        /// <summary>
+        /// Checks if this variable can hold this value.
+        /// </summary>
+        private bool IsValid(float x, float y, float z, float w)
+        {
+            ThrowIfDisposed();
+
+            return !Validating.GetInvocationList().Select(h => {
+                var check = new QuaternionValidationEventArgs(x, y, z, w);
+                h.DynamicInvoke(new object[] { this, check });
+                return !check.Valid;
+            }).Any(failed => failed);
+        }
+
+        /// <summary>
+        /// Tries to set this variable's value, validating it.
+        /// </summary>
+        private void ValidateAndSet(float x, float y, float z, float w)
+        {
+            if (!IsValid(x, y, z, w)) {
+                throw new ArgumentException("Invalid variable value.");
+            } else {
+                this.x = x;
+                this.y = y;
+                this.z = z;
+                this.w = w;
+            }
         }
 
         /// <summary>
@@ -115,18 +169,21 @@ namespace AntTweakBar
             float[] data = new float[4]; /* X, Y, Z, W */
             Marshal.Copy(pointer, data, 0, data.Length);
 
-            bool changed = (data[0] != X)
-                        || (data[1] != Y)
-                        || (data[2] != Z)
-                        || (data[3] != W);
+            if (IsValid(data[0], data[1], data[2], data[3]))
+            {
+                bool changed = (data[0] != x)
+                            || (data[1] != y)
+                            || (data[2] != z)
+                            || (data[3] != w);
 
-            X = data[0];
-            Y = data[1];
-            Z = data[2];
-            W = data[3];
+                x = data[0];
+                y = data[1];
+                z = data[2];
+                w = data[3];
 
-            if (changed) {
-                OnChanged(EventArgs.Empty);
+                if (changed) {
+                    OnChanged(EventArgs.Empty);
+                }
             }
         }
 
