@@ -53,12 +53,14 @@ Generic event handling example to illustrate (this is not the only event you nee
         context.HandleResize(this.ClientSize);
     }
 
-In general you *do* want to keep references to contexts, because you actually do want to destroy them when you close your windows. The different AntTweakBar.NET classes implement the `IDisposable` interface. When you dispose a bar, all variables inside it are implicitly disposed. When you dispose a context, all bars inside it are implicitly disposed. In other words, it is sufficient to dispose the contexts you create. It is very important to note that you must dispose the last context **before** terminating your graphics API. A symptom of failing to do this is an exception on shutdown pointing to the `Tw.Terminate()` function. Critically, this means you cannot just leave the contexts to be garbage-collected, as it will probably be too late by the time they are. If you implement context ownership sensibly, this should not be a problem.  
+The preferred way of doing event handling is by using the `Handle*()` events, which means you have to do some event translation. However, if you are using a particular framework, it may be possible to use ready-made event handlers. For instance, if you are using WinForms and happen to have access to your form's `WndProc` (perhaps because you are already overriding it) then you can use `EventHandlerWin()` to handle all events except perhaps `HandleResize` in a single line of code. There is currently such support for WinForms, SFML (via SFML.Net) and SDL (untested). Using the generic handlers works anywhere, though.
+
+In general you *do* want to keep references to contexts, because you actually do need to destroy them when you close your windows. The different AntTweakBar.NET classes implement the `IDisposable` interface. When you dispose a bar, all variables inside it are implicitly disposed. When you dispose a context, all bars inside it are implicitly disposed. In other words, it is sufficient to dispose the contexts you create. It is very important to note that you must dispose the last context **before** terminating your graphics API. A symptom of failing to do this is an exception on shutdown pointing to the `Tw.Terminate()` function. Critically, this means you cannot just leave the contexts to be garbage-collected, as it will probably be too late by the time they are. This should not be a problem in most sensible implementations.  
 
 Notes on the Sample
 -------------------
 
-This repository contains a sample, among other things, which is intended to show what a concrete graphics tech demo using AntTweakBar.NET might look like. The sample is an interactive Newton fractal renderer, and is released under the same license as the wrapper. All of the relevant wrapper usage is in `Program.cs`, the rest is just, you know, code. It uses the [OpenTK framework](http://www.opentk.com/), and is cross-platform (OpenTK.dll will be fetched through NuGet - if you have compile errors, try a package restore).
+This repository contains a sample, among other things, which is intended to show what a concrete graphics tech demo using AntTweakBar.NET might look like. The sample is an interactive Newton fractal renderer, and is released under the same license as the wrapper. All of the relevant wrapper usage is in `Program.cs`, the rest is just, you know, code. It uses the [OpenTK framework](http://www.opentk.com/), and is cross-platform (OpenTK will be fetched through NuGet - if you have compile errors, try a package restore).
 
 <p align="center">
 <img src="Screenshot.png" alt="Screenshot of the sample program"></img> 
@@ -82,7 +84,7 @@ Advanced Usage
 
     If user input fails validation, the variable will gracefully revert to its previous value. On the other hand, if you manually try to set an invalid value from code, it will throw an `ArgumentException`. The following example shows how to make the value of `myVar` be a multiple of five: 
 
-        myVar.Validating += (s, e) => { e.Valid = (e.Value % 5 == 0); }; /* myVar is an IntVariable */
+        myVar.Validating += (s, e) => { e.Valid = (e.Value % 5 == 0); }; /* for IntVariable */
 
     You must refer to `e.Value` (or `e.R`, `e.X`, etc. as appropriate) to perform validation, as the variable's value has not yet been updated when the validation handlers are called. Note you can of course refer to external objects in your handler to implement context-sensitive validation logic. Most variables already have built-in validators, for instance numeric variables validate against their `Min` and `Max` properties, `StringVariable` rejects null strings, etc.
 
@@ -98,6 +100,15 @@ Contribute
 ----------
 
 Any issues or pull requests are welcome, I especially need help with verifying multi-window support, thread safety, and OS X testing, but any contribution is greatly appreciated. Thanks to *Ilkka Jahnukainen* for helping in testing AntTweakBar.NET throughout its ongoing development and providing valuable feedback to guide its design.
+
+**Todo**:
+
+ * more/better unit tests
+ * test multi-window support exhaustively
+ * check it works on OS X
+ * consider implementing custom struct type (perhaps through reflection, looking for FieldOffset attributes?)
+ * automatic nested groups? (not sure if it is meaningful since you can't easily move variables around anyway) [I could see something like that working with e.g. `myVar.Group = "Group/NestedGroup";`, but it has some pitfalls]
+ * add extensions (in a separate assembly) to help interoperate with popular frameworks? (maybe)
 
 Changelog
 ---------
