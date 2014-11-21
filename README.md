@@ -124,6 +124,7 @@ Changelog
 Slated for next release:
 
  - added a few missing AntTweakBar functions in the low-level wrapper
+ - added convenience Clear methods to bar and context
 
 21 November 2014 (v0.4.2)
 

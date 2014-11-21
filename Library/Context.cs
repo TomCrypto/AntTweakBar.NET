@@ -188,6 +188,16 @@ namespace AntTweakBar
             bars.Remove(bar);
         }
 
+        /// <summary>
+        /// Removes all bars in this context.
+        /// </summary>
+        public void Clear()
+        {
+            while (bars.Any()) {
+                bars.First().Dispose();
+            }
+        }
+
         public IEnumerator<Bar> GetEnumerator()
         {
             return bars.GetEnumerator();

@@ -224,6 +224,16 @@ namespace AntTweakBar
             variables.Remove(variable);
         }
 
+        /// <summary>
+        /// Removes all variables in this bar.
+        /// </summary>
+        public void Clear()
+        {
+            while (variables.Any()) {
+                variables.First().Dispose();
+            }
+        }
+
         public IEnumerator<Variable> GetEnumerator()
         {
             return variables.GetEnumerator();
