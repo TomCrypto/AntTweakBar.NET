@@ -17,11 +17,11 @@ You must obtain and install the native AntTweakBar library itself from its Sourc
 
 The AntTweakBar.NET high-level interface is divided into three main concepts: contexts, bars, and variables.
 
-- **`Context`**: An instance of this class conceptually maps to a graphical window in your application: each window that will contain bars should have its own context. Each context holds its own separate set of bars, and has several methods to send window events to AntTweakBar, and, of course, draw the bars into the window.
+- **Context**: An instance of this class conceptually maps to a graphical window in your application: each window that will contain bars should have its own context. Each context holds its own separate set of bars, and has several methods to send window events to AntTweakBar, and, of course, draw the bars into the window.
 
-- **`Bar`**: An instance of this class represents a graphical bar which holds a set of variables. It has several useful properties to tweak the bar to your application's needs. Each bar belongs to a context passed to its constructor.
+- **Bar**: An instance of this class represents a graphical bar which holds a set of variables. It has several useful properties to tweak the bar to your application's needs. Each bar belongs to a context passed to its constructor.
  
-- **`Variable`**: This is the base class from which all other variable types (like `IntVariable` or `StringVariable`) descend from. Just like the `Bar` class, it and its descendants have plenty of properties you can modify to tweak the variable's behavior and graphical appearance. In addition, value variables hold a value property which can be set graphically by the user and can be read on the fly by your code, this is the `Value` property for simple types (like `IntVariable`) or e.g. the `X`, `Y`, `Z` properties for the `VectorVariable`. They also have a `Changed` event to be notified when the user changes the variable's value. The `Button` variable type has a `Clicked` event instead. Each variable belongs to a bar passed to its constructor.
+- **Variable**: This is the base class from which all other variable types (like `IntVariable` or `StringVariable`) descend from. Just like the `Bar` class, it and its descendants have plenty of properties you can modify to tweak the variable's behavior and graphical appearance. In addition, value variables hold a value property which can be set graphically by the user and can be read on the fly by your code, this is the `Value` property for simple types (like `IntVariable`) or e.g. the `X`, `Y`, `Z` properties for the `VectorVariable`. They also have a `Changed` event to be notified when the user changes the variable's value. The `Button` variable type has a `Clicked` event instead. Each variable belongs to a bar passed to its constructor.
 
 The first context created should be passed the graphics API you are using, which is some version of OpenGL or DirectX. For DirectX, you must also pass a pointer to the native device, which should be available from the graphics framework you are using somehow (for instance, for SharpDX, use `SharpDX.Direct3D11.Device.NativePointer`).
 
@@ -41,7 +41,7 @@ Once you have a context, you can create bars inside it, and you can create varia
 
     var rotationVar = new IntVariable(myBar, 42 /* default value */);
     rotationVar.Label = "Model rotation";
-    rotationVar.Changed += delegate { model.Rotation = rotationVar.Value; }
+    rotationVar.Changed += delegate { model.Rotation = rotationVar.Value; };
 
     /* don't need rotationVar anymore (it will still be held onto by myBar) */
 
@@ -114,7 +114,7 @@ Any issues or pull requests are welcome, I especially need help with verifying m
  * more/better unit tests
  * test multi-window support exhaustively
  * check it works on OS X
- * consider implementing custom struct type (perhaps through reflection, looking for FieldOffset attributes?) [doing this would also be nice in that it would complete the wrapper, currently the only things missing are struct-related functions, and miscellaneous string conversion and GLUT/GLWF callback functions which we have no use for anyway]
+ * consider implementing custom struct type (perhaps through reflection, looking for FieldOffset attributes?) [doing this would also be nice in that it would complete the wrapper, currently the only things missing are struct-related functions, and miscellaneous string conversion and GLUT/GLFW callback functions which we have no use for anyway]
  * automatic nested groups? (not sure if it is meaningful since you can't easily move variables around anyway) [I could see something like that working with e.g. `myVar.Group = "Group/NestedGroup";`, but it has some pitfalls]
  * add extensions (in a separate assembly) to help interoperate with popular frameworks? (maybe)
 
