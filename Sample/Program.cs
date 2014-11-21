@@ -356,14 +356,14 @@ namespace Sample
             var aCoeffVar = new ComplexVariable(configsBar, fractal.ACoeff);
             aCoeffVar.Changed += delegate { fractal.ACoeff = aCoeffVar.Value; };
             aCoeffVar.Label = "Relaxation Coeff.";
-            aCoeffVar.Step = 0.002;
-            aCoeffVar.Precision = 3;
+            aCoeffVar.Step = 0.0002;
+            aCoeffVar.Precision = 4;
 
             var kcoeff = new ComplexVariable(configsBar, fractal.KCoeff);
             kcoeff.Changed += delegate { fractal.KCoeff = kcoeff.Value; };
             kcoeff.Label = "Nova Coeff.";
-            kcoeff.Step = 0.002;
-            kcoeff.Precision = 3;
+            kcoeff.Step = 0.0002;
+            kcoeff.Precision = 4;
 
             /* Set up a bar for the user to play with the equation */
 
@@ -409,7 +409,8 @@ namespace Sample
                 var symbolVar = new DoubleVariable(fractalBar);
                 symbolVar.Group = "Symbolic Variables";
                 symbolVar.Label = symbol.ToString();
-                symbolVar.Step = 0.001f;
+                symbolVar.Step = 0.0002f;
+                symbolVar.Precision = 4;
 
                 symbolVar.Changed += delegate
                 {
