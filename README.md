@@ -80,7 +80,7 @@ Advanced Usage
 
  - **Defining custom variables**
 
-    All the classes in the wrapper are sealed. In most cases you should favor composing variables together to extend their functionality, as done for instance in the sample, where a complex variable type is created by composing two `DoubleVariable` instances, and a polynomial variable type is implemented by adding custom validation logic to a `StringVariable` to make it only accept polynomial formulas. In general, the `Validating` event can be used to introduce additional requirements on the contents of the variable. The variable's value will be changed if and only it passes validation by *all* event handlers attached to the variable's `Validating` event.
+    All the classes in the wrapper are sealed. In most cases you should favor composing variables together to extend their functionality, as done for instance in the sample, where a complex variable type is created by composing two `DoubleVariable` instances, and a polynomial variable type is implemented by adding custom validation logic to a `StringVariable` to make it only accept polynomial formulas. In general, the `Validating` event can be used to introduce additional requirements on the contents of the variable. The variable's value will be changed if and only if it passes validation by *all* event handlers attached to the variable's `Validating` event.
 
     If user input fails validation, the variable will gracefully revert to its previous value. On the other hand, if you manually try to set an invalid value from code, it will throw an `ArgumentException`. The following example shows how to make the value of `myVar` be a multiple of five: 
 
