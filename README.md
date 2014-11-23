@@ -114,8 +114,7 @@ Any issues or pull requests are welcome, I especially need help with verifying m
  * more/better unit tests
  * test multi-window support exhaustively
  * check it works on OS X
- * consider implementing custom struct type (perhaps through reflection, looking for FieldOffset attributes?) [doing this would also be nice in that it would complete the wrapper, currently the only things missing are struct-related functions, and miscellaneous string conversion and GLUT/GLFW callback functions which we have no use for anyway]
- * automatic nested groups? (not sure if it is meaningful since you can't easily move variables around anyway) [I could see something like that working with e.g. `myVar.Group = "Group/NestedGroup";`, but it has some pitfalls]
+ * finish adding all low-level functions (even those we don't use, like the struct stuff) for completeness
  * add extensions (in a separate assembly) to help interoperate with popular frameworks? (maybe)
 
 Changelog
@@ -125,6 +124,7 @@ Slated for next release:
 
  - added a few missing AntTweakBar functions in the low-level wrapper
  - added convenience Clear methods to bar and context
+ - added MoveGroup method for nested groups
 
 21 November 2014 (v0.4.2)
 

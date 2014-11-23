@@ -74,23 +74,34 @@ namespace AntTweakBar
         /// <summary>
         /// Shows or hides a variable group in this bar.
         /// </summary>
-        /// <param name="groupName">The name of the group to show or hide.</param>
+        /// <param name="group">The name of the group to show or hide.</param>
         /// <param name="visible">Whether the group should be visible.</param>
-        public void ShowGroup(String groupName, Boolean visible)
+        public void ShowGroup(String group, Boolean visible)
         {
             Tw.SetCurrentWindow(ParentContext.Identifier);
-            Tw.Define(String.Format("{0}/`{1}` visible={2}", ID, groupName, visible ? "true" : "false"));
+            Tw.Define(String.Format("{0}/`{1}` visible={2}", ID, group, visible ? "true" : "false"));
         }
 
         /// <summary>
         /// Opens or closes a variable group in this bar.
         /// </summary>
-        /// <param name="groupName">The name of the group to open or close.</param>
+        /// <param name="group">The name of the group to open or close.</param>
         /// <param name="opened">Whether the group should be open.</param>
-        public void OpenGroup(String groupName, Boolean opened)
+        public void OpenGroup(String group, Boolean opened)
         {
             Tw.SetCurrentWindow(ParentContext.Identifier);
-            Tw.Define(String.Format("{0}/`{1}` opened={2}", ID, groupName, opened ? "true" : "false"));
+            Tw.Define(String.Format("{0}/`{1}` opened={2}", ID, group, opened ? "true" : "false"));
+        }
+
+        /// <summary>
+        /// Moves a variable group into another group.
+        /// </summary>
+        /// <param name="group">The name of the group to move.</param>
+        /// <param name="into">The name of the group to move it into.</param>
+        public void MoveGroup(String group, String into)
+        {
+            Tw.SetCurrentWindow(ParentContext.Identifier);
+            Tw.Define(String.Format("{0}/`{1}` group=`{2}`", ID, group, into));
         }
 
         /// <summary>
