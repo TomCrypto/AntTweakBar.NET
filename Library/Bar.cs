@@ -240,6 +240,8 @@ namespace AntTweakBar
         /// </summary>
         public void Clear()
         {
+            ThrowIfDisposed();
+
             while (variables.Any()) {
                 variables.First().Dispose();
             }
