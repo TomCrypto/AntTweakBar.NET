@@ -302,18 +302,7 @@ namespace AntTweakBar
         /// <returns>A constant string that describes the error.</returns>
         public static String GetLastError()
         {
-            var ptr = NativeMethods.TwGetLastError();
-
-            var strBytes = new List<byte>();
-            var off = 0;
-            while (true)
-            {
-                var ch = Marshal.ReadByte(ptr, off++);
-                if (ch == 0) break;
-                strBytes.Add(ch);
-            }
-
-            return Encoding.UTF8.GetString(strBytes.ToArray());
+            return Helpers.StrFromPtr(NativeMethods.TwGetLastError());
         }
 
         /// <summary>
@@ -583,16 +572,7 @@ namespace AntTweakBar
                 throw new AntTweakBarException("TwGetBarName failed.");
             }
 
-            var strBytes = new List<byte>();
-            var off = 0;
-            while (true)
-            {
-                var ch = Marshal.ReadByte(ptr, off++);
-                if (ch == 0) break;
-                strBytes.Add(ch);
-            }
-
-            return Encoding.UTF8.GetString(strBytes.ToArray());
+            return Helpers.StrFromPtr(ptr);
         }
 
         /// <summary>
@@ -1102,6 +1082,26 @@ namespace AntTweakBar
             if (!NativeMethods.TwRemoveAllVars(bar)) {
                 throw new AntTweakBarException("TwRemoveAllVars failed.");
             }
+        }
+    }
+
+    /// <summary>
+    /// Utility class containing useful functions.
+    /// </summary>
+    internal static class Helpers
+    {
+        public static String StrFromPtr(IntPtr ptr)
+        {
+            var strBytes = new List<byte>();
+            var off = 0;
+            while (true)
+            {
+                var ch = Marshal.ReadByte(ptr, off++);
+                if (ch == 0) break;
+                strBytes.Add(ch);
+            }
+
+            return Encoding.UTF8.GetString(strBytes.ToArray());
         }
     }
 }
