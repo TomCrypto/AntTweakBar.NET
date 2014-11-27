@@ -193,6 +193,8 @@ namespace AntTweakBar
         /// </summary>
         public void Clear()
         {
+            ThrowIfDisposed();
+
             while (bars.Any()) {
                 bars.First().Dispose();
             }

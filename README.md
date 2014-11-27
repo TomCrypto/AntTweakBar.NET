@@ -1,4 +1,4 @@
-AntTweakBar.NET 0.4.2
+AntTweakBar.NET 0.4.3
 =====================
 
 AntTweakBar.NET is an MIT-licensed C# wrapper for Philippe Decaudin's [AntTweakBar](http://anttweakbar.sourceforge.net) C/C++ GUI library. It allows C# developers to enhance their tech demos or games with an easy-to-use graphical widget for modifying application parameters in realtime. AntTweakBar.NET offers a high-level interface to the widget which will feel natural to any C# programmer, and also provides access to exception-safe bindings to the native AntTweakBar calls for those who might want them.
@@ -88,6 +88,10 @@ Advanced Usage
 
     You must refer to `e.Value` (or `e.R`, `e.X`, etc. as appropriate) to perform validation, as the variable's value has not yet been updated when the validation handlers are called. Note you can of course refer to external objects in your handler to implement context-sensitive validation logic. Most variables already have built-in validators, for instance numeric variables validate against their `Min` and `Max` properties, `StringVariable` rejects null strings, etc.
 
+ - **Defining struct variables**
+
+    Struct variables as defined by AntTweakBar are not yet available in AntTweakBar.NET *per se*. However, you can currently emulate this functionality by composing together the different variables in said struct and putting them all in the same group. This group is then possibly nested into another group using the bar's `MoveGroup` method. This is somewhat awkward, and there may be first-class support for this type of aggregate variable in a future version. Also see the `Complex` type in the sample, which represents a complex number as two double variables (but it's not a great example, as it was written for a very early AntTweakBar.NET version, it will be improved eventually)
+
  - **Error handling**
 
     All AntTweakBar errors will be translated into `AntTweakBarException` instances. But you can also intercept errors via the `Tw.Error` event. It is probably not too useful to reason on the error messages received, but you can use this to log them, for example.
@@ -120,7 +124,7 @@ Any issues or pull requests are welcome, I especially need help with verifying m
 Changelog
 ---------
 
-Slated for next release:
+26 November 2014 (v0.4.3)
 
  - added a few missing AntTweakBar functions in the low-level wrapper
  - added convenience Clear methods to bar and context
