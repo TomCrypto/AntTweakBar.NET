@@ -14,71 +14,71 @@ namespace AntTweakBar
         /* For libAntTweakBar.so, AntTweakBar.dll. */
         private const String DLLName = "AntTweakBar";
 
-        [DllImport(DLLName, EntryPoint = "TwGetLastError", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwGetLastError")]
         public static extern IntPtr TwGetLastError();
 
-        [DllImport(DLLName, EntryPoint = "TwInit", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwInit")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwInit(
             [In] Tw.GraphicsAPI graphicsAPI,
             [In] IntPtr device);
 
-        [DllImport(DLLName, EntryPoint = "TwTerminate", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwTerminate")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwTerminate();
 
-        [DllImport(DLLName, EntryPoint = "TwDraw", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwDraw")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwDraw();
 
-        [DllImport(DLLName, EntryPoint = "TwHandleErrors", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwHandleErrors")]
         public static extern void TwHandleErrors(
             [In] Tw.ErrorHandler handler);
 
-        [DllImport(DLLName, EntryPoint = "TwWindowSize", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwWindowSize")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwWindowSize(
             [In] Int32 width,
             [In] Int32 height);
 
-        [DllImport(DLLName, EntryPoint = "TwMouseMotion", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwMouseMotion")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwMouseMotion(
             [In] Int32 mouseX,
             [In] Int32 mouseY);
 
-        [DllImport(DLLName, EntryPoint = "TwMouseWheel", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwMouseWheel")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwMouseWheel(
             [In] Int32 pos);
 
-        [DllImport(DLLName, EntryPoint = "TwMouseButton", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwMouseButton")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwMouseButton(
             [In] Tw.MouseAction action,
             [In] Tw.MouseButton button);
 
-        [DllImport(DLLName, EntryPoint = "TwKeyPressed", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwKeyPressed")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwKeyPressed(
             [In] Int32 key,
             [In] Tw.KeyModifier modifiers);
 
-        [DllImport(DLLName, EntryPoint = "TwEventSFML", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwEventSFML")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwEventSFML(
             [In] IntPtr sfmlEvent,
             [In] Byte major,
             [In] Byte minor);
 
-        [DllImport(DLLName, EntryPoint = "TwEventSDL", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwEventSDL")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwEventSDL(
             [In] IntPtr sdlEvent,
             [In] Byte major,
             [In] Byte minor);
 
-        [DllImport(DLLName, EntryPoint = "TwEventWin", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwEventWin")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwEventWin(
             [In] IntPtr wnd,
@@ -86,74 +86,74 @@ namespace AntTweakBar
             [In] IntPtr wParam,
             [In] IntPtr lParam);
 
-        [DllImport(DLLName, EntryPoint = "TwSetCurrentWindow", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwSetCurrentWindow")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwSetCurrentWindow(
             [In] Int32 windowID);
 
-        [DllImport(DLLName, EntryPoint = "TwGetCurrentWindow", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwGetCurrentWindow")]
         public static extern Int32 TwGetCurrentWindow();
 
-        [DllImport(DLLName, EntryPoint = "TwWindowExists", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwWindowExists")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwWindowExists(
             [In] Int32 windowID);
 
-        [DllImport(DLLName, EntryPoint = "TwNewBar", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwNewBar", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         public static extern IntPtr TwNewBar(
             [In, MarshalAs(UnmanagedType.LPStr)] String barName);
 
-        [DllImport(DLLName, EntryPoint = "TwDeleteBar", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwDeleteBar")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwDeleteBar(
             [In] IntPtr bar);
 
-        [DllImport(DLLName, EntryPoint = "TwDeleteAllBars", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwDeleteAllBars")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwDeleteAllBars();
 
-        [DllImport(DLLName, EntryPoint = "TwSetTopBar", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwSetTopBar")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwSetTopBar(
             [In] IntPtr bar);
 
-        [DllImport(DLLName, EntryPoint = "TwGetTopBar", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwGetTopBar")]
         public static extern IntPtr TwGetTopBar();
 
-        [DllImport(DLLName, EntryPoint = "TwSetBottomBar", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwSetBottomBar")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwSetBottomBar(
             [In] IntPtr bar);
 
-        [DllImport(DLLName, EntryPoint = "TwGetBottomBar", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwGetBottomBar")]
         public static extern IntPtr TwGetBottomBar();
 
-        [DllImport(DLLName, EntryPoint = "TwGetBarName", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwGetBarName")]
         public static extern IntPtr TwGetBarName(
             [In] IntPtr bar);
 
-        [DllImport(DLLName, EntryPoint = "TwGetBarCount", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwGetBarCount")]
         public static extern Int32 TwGetBarCount();
 
-        [DllImport(DLLName, EntryPoint = "TwGetBarByIndex", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwGetBarByIndex")]
         public static extern IntPtr TwGetBarByIndex(
             [In] Int32 barIndex);
 
-        [DllImport(DLLName, EntryPoint = "TwGetBarByName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwGetBarByName", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         public static extern IntPtr TwGetBarByName(
             [In, MarshalAs(UnmanagedType.LPStr)] String barName);
 
-        [DllImport(DLLName, EntryPoint = "TwRefreshBar", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwRefreshBar")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwRefreshBar(
             [In] IntPtr bar);
 
-        [DllImport(DLLName, EntryPoint = "TwDefine", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwDefine", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwDefine(
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
-        [DllImport(DLLName, EntryPoint = "TwSetParam", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwSetParam", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwSetParamStr(
             [In] IntPtr bar,
@@ -163,7 +163,7 @@ namespace AntTweakBar
             [In] uint reserved,
             [In, MarshalAs(UnmanagedType.LPStr)] String param);
 
-        [DllImport(DLLName, EntryPoint = "TwSetParam", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwSetParam", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwSetParamInt(
             [In] IntPtr bar,
@@ -173,7 +173,7 @@ namespace AntTweakBar
             [In] uint elemCount,
             [In] Int32[] param);
 
-        [DllImport(DLLName, EntryPoint = "TwSetParam", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwSetParam", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwSetParamSingle(
             [In] IntPtr bar,
@@ -183,7 +183,7 @@ namespace AntTweakBar
             [In] uint elemCount,
             [In] Single[] param);
 
-        [DllImport(DLLName, EntryPoint = "TwSetParam", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwSetParam", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwSetParamDouble(
             [In] IntPtr bar,
@@ -193,7 +193,7 @@ namespace AntTweakBar
             [In] uint elemCount,
             [In] Double[] param);
 
-        [DllImport(DLLName, EntryPoint = "TwGetParam", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwGetParam", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         public static extern Int32 TwGetParamStr(
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
@@ -202,7 +202,7 @@ namespace AntTweakBar
             [In] uint maxStrLength,
             [Out, MarshalAs(UnmanagedType.LPStr)] StringBuilder param);
 
-        [DllImport(DLLName, EntryPoint = "TwGetParam", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwGetParam", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         public static extern Int32 TwGetParamInt(
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
@@ -211,7 +211,7 @@ namespace AntTweakBar
             [In] uint maxElemCount,
             [Out] Int32[] param);
 
-        [DllImport(DLLName, EntryPoint = "TwGetParam", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwGetParam", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         public static extern Int32 TwGetParamSingle(
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
@@ -220,7 +220,7 @@ namespace AntTweakBar
             [In] uint maxElemCount,
             [Out] Single[] param);
 
-        [DllImport(DLLName, EntryPoint = "TwGetParam", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwGetParam", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         public static extern Int32 TwGetParamDouble(
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String varName,
@@ -229,7 +229,7 @@ namespace AntTweakBar
             [In] uint maxElemCount,
             [Out] Double[] param);
 
-        [DllImport(DLLName, EntryPoint = "TwAddVarRO", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwAddVarRO", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwAddVarRO(
             [In] IntPtr bar,
@@ -238,7 +238,7 @@ namespace AntTweakBar
             [In] IntPtr var,
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
-        [DllImport(DLLName, EntryPoint = "TwAddVarRW", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwAddVarRW", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwAddVarRW(
             [In] IntPtr bar,
@@ -247,7 +247,7 @@ namespace AntTweakBar
             [In] IntPtr var,
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
-        [DllImport(DLLName, EntryPoint = "TwAddVarCB", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwAddVarCB", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwAddVarCB(
             [In] IntPtr bar,
@@ -258,14 +258,14 @@ namespace AntTweakBar
             [In] IntPtr clientData,
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
-        [DllImport(DLLName, EntryPoint = "TwAddSeparator", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwAddSeparator", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwAddSeparator(
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String name,
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
-        [DllImport(DLLName, EntryPoint = "TwAddButton", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwAddButton", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwAddButton(
             [In] IntPtr bar,
@@ -274,18 +274,18 @@ namespace AntTweakBar
             [In] IntPtr clientData,
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
-        [DllImport(DLLName, EntryPoint = "TwDefineEnumFromString", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwDefineEnumFromString", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         public static extern Tw.VariableType TwDefineEnumFromString(
             [In, MarshalAs(UnmanagedType.LPStr)] String name,
             [In, MarshalAs(UnmanagedType.LPStr)] String enumString);
 
-        [DllImport(DLLName, EntryPoint = "TwRemoveVar", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [DllImport(DLLName, EntryPoint = "TwRemoveVar", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwRemoveVar(
             [In] IntPtr bar,
             [In, MarshalAs(UnmanagedType.LPStr)] String name);
 
-        [DllImport(DLLName, EntryPoint = "TwRemoveAllVars", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLName, EntryPoint = "TwRemoveAllVars")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwRemoveAllVars(
             [In] IntPtr bar);
