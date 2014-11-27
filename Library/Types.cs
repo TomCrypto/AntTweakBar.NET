@@ -57,25 +57,25 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user changes a variable's value.
         /// </summary>
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void SetVarCallback([In] IntPtr value, [In] IntPtr clientData);
 
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs a variable's value.
         /// </summary>
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void GetVarCallback([In] IntPtr value, [In] IntPtr clientData);
 
         /// <summary>
         /// Called by AntTweakBar when the user clicks on a button.
         /// </summary>
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void ButtonCallback([In] IntPtr clientData);
 
         /// <summary>
         /// Called by AntTweakBar when an error occurs.
         /// </summary>
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         public delegate void ErrorHandler([In, MarshalAs(UnmanagedType.LPStr)] String message);
 
         /// <summary>
