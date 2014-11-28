@@ -124,6 +124,12 @@ Any issues or pull requests are welcome, I especially need help with verifying m
 Changelog
 ---------
 
+Next release:
+
+ - changed `Tw.WindowSize` to accept sizes of (0, 0) to allow AntTweakBar resource cleanup (see [#3](https://github.com/TomCrypto/AntTweakBar.NET/issues/3))
+ - added `ReleaseResources` and `ResetResources` methods to the `Context` class (see [#3](https://github.com/TomCrypto/AntTweakBar.NET/issues/3))
+ - changed Sample to use GLSL version 120, fixed shader saving overwrite bug and close on Esc.
+
 28 November 2014 (v0.4.4)
 
  - fixed an interop bug for 32-bit Windows (see [#1](https://github.com/TomCrypto/AntTweakBar.NET/issues/1))

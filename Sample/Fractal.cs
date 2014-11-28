@@ -59,7 +59,7 @@ namespace Sample
         public int Iterations
         {
             get { return iterations; }
-            set { GL.Uniform1(GL.GetUniformLocation(shHandle, "iters"), (uint)(iterations = value)); }
+            set { GL.Uniform1(GL.GetUniformLocation(shHandle, "iters"), iterations = value); }
         }
 
         private bool hardcodePolynomial;

@@ -348,9 +348,9 @@ namespace AntTweakBar
         /// <param name="height">Height of the graphics window.</param>
         public static void WindowSize(int width, int height)
         {
-            if (width <= 0) {
+            if ((width == 0) && (height > 0)) {
                 throw new ArgumentOutOfRangeException("width");
-            } else if (height <= 0) {
+            } else if ((height == 0) && (width > 0)) {
                 throw new ArgumentOutOfRangeException("height");
             }
 

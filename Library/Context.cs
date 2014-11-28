@@ -23,6 +23,12 @@ namespace AntTweakBar
         private readonly Int32 identifier;
 
         /// <summary>
+        /// Gets this context's last set window size. This is used for release/reset.
+        /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Size size;
+
+        /// <summary>
         /// Checks whether a graphics API requires a device pointer.
         /// </summary>
         private static bool RequiresDevicePointer(Tw.GraphicsAPI api)
@@ -67,6 +73,25 @@ namespace AntTweakBar
             Tw.Draw(); // Applies to all bars
         }
 
+        /// <summary>
+        /// Releases all graphics resources used by this context. They can be reset with <see cref="AntTweakBar.Context.ResetResources"/>.
+        /// </summary>
+        /// <remarks>
+        /// This does not affect the bars and variables in this context in any way.
+        /// </remarks>
+        public void ReleaseResources()
+        {
+            HandleResize(Size.Empty);
+        }
+
+        /// <summary>
+        /// Resets all graphics resources used by this context.
+        /// </summary>
+        public void ResetResources()
+        {
+            HandleResize(size);
+        }
+
         #region Event Handlers
 
         /// <summary>
@@ -77,6 +102,10 @@ namespace AntTweakBar
         {
             Tw.SetCurrentWindow(Identifier);
             Tw.WindowSize(size.Width, size.Height);
+
+            if (size != Size.Empty) {
+                this.size = size;
+            }
         }
 
         /// <summary>
@@ -232,6 +261,8 @@ namespace AntTweakBar
                 while (disposing && bars.Any()) {
                     bars.First().Dispose();
                 }
+
+                ReleaseResources();
 
                 lock (lk)
                 {

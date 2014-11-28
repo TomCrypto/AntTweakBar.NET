@@ -298,7 +298,11 @@ namespace Sample
 
             KeyPress += (sender, e) => context.HandleKeyPress(e.KeyChar);
             Resize += (sender, e) => context.HandleResize(ClientSize);
-            KeyDown += (sender, e) => HandleKeyPress(context, e);
+            KeyDown += (sender, e) => {
+                if (!HandleKeyPress(context, e) && (e.Key == Key.Escape)) {
+                    Close(); // Close program on Esc when appropriate
+                }
+            };
 
             Mouse.WheelChanged += (sender, e) => fractal.ZoomIn(e.DeltaPrecise);
             Mouse.Move += (sender, e) => context.HandleMouseMove(e.Position);
