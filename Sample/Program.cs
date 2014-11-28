@@ -290,7 +290,7 @@ namespace Sample
         {
             base.OnLoad(_);
 
-            context = new Context(Tw.GraphicsAPI.OpenGLCore);
+            context = new Context(Tw.GraphicsAPI.OpenGL);
             fractal = new Fractal();
 
             /* Hook up the different events to the AntTweakBar.NET context, and

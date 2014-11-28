@@ -122,16 +122,7 @@ namespace AntTweakBar
         /// </summary>
         private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-            var strBytes = new List<byte>();
-            var off = 0;
-            while (true)
-            {
-              var ch = Marshal.ReadByte(pointer, off++);
-              if (ch == 0) break;
-              strBytes.Add(ch);
-            }
-
-            string data = Encoding.UTF8.GetString(strBytes.ToArray());
+            var data = Helpers.StrFromPtr(pointer);
 
             if (IsValid(data))
             {

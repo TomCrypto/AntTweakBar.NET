@@ -83,12 +83,12 @@ namespace AntTweakBar
         /// </summary>
         static Tw()
         {
-            NativeMethods.TwHandleErrors(error =>
+            NativeMethods.TwHandleErrors(ptr =>
             {
                 var handler = Error;
 
                 if (handler != null) {
-                    handler(null, new ErrorEventArgs(error));
+                    handler(null, new ErrorEventArgs(Helpers.StrFromPtr(ptr)));
                 }
             });
         }
