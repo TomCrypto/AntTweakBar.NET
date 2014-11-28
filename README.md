@@ -13,7 +13,7 @@ The AntTweakBar.NET wrapper is distributed under the MIT license, while AntTweak
 Quick Start
 -----------
 
-You must obtain and install the native AntTweakBar library itself from its SourceForge page, if you haven't already. For Windows, download the appropriate prebuilt DLL's and install them on your system or as third party libraries in your C# project. For Linux, simply `make && make install` as usual. Then add the `AntTweakBar.NET.dll` assembly in your project, either by compiling it from the repository or retrieving it from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/). You're good to go!
+You must obtain and install the native AntTweakBar library itself from its [SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download), if you haven't already. For Windows, download the appropriate prebuilt DLL's and install them on your system or as third party libraries in your C# project. For Linux, simply `make && make install` as usual. Then add the `AntTweakBar.NET.dll` assembly in your project, either by compiling it from the repository or retrieving it from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/). You're good to go!
 
 The AntTweakBar.NET high-level interface is divided into three main concepts: contexts, bars, and variables.
 
@@ -123,6 +123,11 @@ Any issues or pull requests are welcome, I especially need help with verifying m
 
 Changelog
 ---------
+
+28 November 2014 (v0.4.4)
+
+ - fixed an interop bug for 32-bit Windows (see [#1](https://github.com/TomCrypto/AntTweakBar.NET/issues/1))
+ - changed Sample from using Tw.GraphicsAPI.OpenGLCore to Tw.GraphicsAPI.OpenGL for increased compatibility
 
 26 November 2014 (v0.4.3)
 
