@@ -146,7 +146,7 @@ namespace Sample
             str.AppendLine();
             str.AppendLine("vec4 iterate(vec2 z)");
             str.AppendLine("{");
-            str.AppendLine("    float speed;");
+            str.AppendLine("    float speed = 0;");
             str.AppendLine("    int t;");
             str.AppendLine();
             str.AppendLine("    for (t = int(0); t < iters; ++t)");
@@ -207,7 +207,7 @@ namespace Sample
             str.AppendLine("vec3 shade(vec2 z)");
             str.AppendLine("{");
             str.AppendLine("    vec4 r = iterate(z);");
-            str.AppendLine("    return colorize(z, r.xy, pow(r.z, intensity), r.w * r.z / iters);");
+            str.AppendLine("    return colorize(z, r.xy, pow(r.z, intensity), r.w * intensity / iters);");
             str.AppendLine("}");
 
             return str.ToString();
