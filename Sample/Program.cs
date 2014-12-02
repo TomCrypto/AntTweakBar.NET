@@ -362,11 +362,18 @@ namespace Sample
             intensityVar.SetDefinition("min=0 max=3 step=0.01 precision=2)");
             intensityVar.Label = "Intensity";
 
-            var aCoeffVar = new ComplexVariable(configsBar, fractal.ACoeff);
+            /*var aCoeffVar = new ComplexVariable(configsBar, fractal.ACoeff);
             aCoeffVar.Changed += delegate { fractal.ACoeff = aCoeffVar.Value; };
             aCoeffVar.Label = "Relaxation Coeff.";
             aCoeffVar.Step = 0.0002;
-            aCoeffVar.Precision = 4;
+            aCoeffVar.Precision = 4;*/
+
+            var aCoeffVar = new StructVariable<Complex>(configsBar, new Dictionary<String, Tw.StructMemberInfo>()
+            {
+                { "re", Tw.StructMemberInfo.FromStruct<Complex>("real", Tw.VariableType.Double, "label='real' step=0.0002 precision=4") },
+                { "im", Tw.StructMemberInfo.FromStruct<Complex>("imaginary", Tw.VariableType.Double, "label='imaginary' step=0.0002 precision=4") },
+            }, fractal.ACoeff, "label='Relaxation Coeff.'");
+            aCoeffVar.Changed += delegate { fractal.ACoeff = aCoeffVar.Value; };
 
             var kcoeff = new ComplexVariable(configsBar, fractal.KCoeff);
             kcoeff.Changed += delegate { fractal.KCoeff = kcoeff.Value; };
