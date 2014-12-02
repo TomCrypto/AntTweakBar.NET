@@ -57,22 +57,37 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user changes a variable's value.
         /// </summary>
-        public delegate void SetVarCallback([In] IntPtr value, [In] IntPtr clientData);
+        public delegate void SetVarCallback(
+            [In] IntPtr value,
+            [In] IntPtr clientData);
 
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs a variable's value.
         /// </summary>
-        public delegate void GetVarCallback([In] IntPtr value, [In] IntPtr clientData);
+        public delegate void GetVarCallback(
+            [In] IntPtr value,
+            [In] IntPtr clientData);
 
         /// <summary>
         /// Called by AntTweakBar when the user clicks on a button.
         /// </summary>
-        public delegate void ButtonCallback([In] IntPtr clientData);
+        public delegate void ButtonCallback(
+            [In] IntPtr clientData);
+
+        /// <summary>
+        /// Called by AntTweakBar to retrieve a summary of a struct variable.
+        /// </summary>
+        public delegate void SummaryCallback(
+            [In] IntPtr summaryString,
+            [In] IntPtr summaryMaxLength,
+            [In] IntPtr value,
+            [In] IntPtr clientData);
 
         /// <summary>
         /// Called by AntTweakBar when an error occurs.
         /// </summary>
-        public delegate void ErrorHandler([In] IntPtr message);
+        public delegate void ErrorHandler(
+            [In] IntPtr message);
 
         /// <summary>
         /// Specifies the graphics API's AntTweakBar supports.

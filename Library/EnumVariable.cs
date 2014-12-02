@@ -66,10 +66,8 @@ namespace AntTweakBar
         private static void InitEnumVariable(Variable var, String id)
         {
             if (!typeof(T).IsEnum) {
-                throw new InvalidOperationException(String.Format("Type {0} is not an enumeration.", typeof(T).FullName));
+                throw new ArgumentException(String.Format("Type {0} is not an enumeration.", typeof(T).FullName));
             }
-
-            var enumNames = String.Join(",", typeof(T).GetEnumNames());
 
             var it = var as EnumVariable<T>;
 
@@ -77,7 +75,7 @@ namespace AntTweakBar
             Variable.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
-                        Tw.DefineEnumFromString(typeof(T).FullName, enumNames),
+                        Tw.DefineEnum(Guid.NewGuid().ToString(), GetEnumLabels()),
                         Variable.SetCallbacks[id],
                         Variable.GetCallbacks[id],
                         IntPtr.Zero, null);
@@ -93,7 +91,6 @@ namespace AntTweakBar
             : base(bar, InitEnumVariable, def)
         {
             Validating += (s, e) => { e.Valid = Enum.IsDefined(typeof(T), e.Value); };
-            Tw.SetParam(ParentBar.Pointer, ID, "enum", GetEnumString());
             ValidateAndSet(initialValue);
         }
 
@@ -150,20 +147,19 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Returns a formatted key-value representation of this enum.
+        /// Returns the enum type's values and labels/descriptions.
         /// </summary>
-        private static String GetEnumString()
+        private static IDictionary<int, String> GetEnumLabels()
         {
-            IList<String> enumList = new List<String>();
+            var labels = new Dictionary<int, String>();
 
             foreach (var kv in ((int[])Enum.GetValues(typeof(T))).Zip(typeof(T).GetEnumNames(), (i, n) => new Tuple<int, string>(i, n)))
             {
-                var valueAttributes = typeof(T).GetMember(kv.Item2)[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
-                string label = valueAttributes.Any() ? ((DescriptionAttribute)valueAttributes.First()).Description : kv.Item2;
-                enumList.Add(String.Format("{0} {{{1}}}", kv.Item1, label)); // Follows the AntTweakBar enum string format.
+                var attr = typeof(T).GetMember(kv.Item2)[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+                labels.Add(kv.Item1, attr.Any() ? ((DescriptionAttribute)attr.First()).Description : kv.Item2);
             }
 
-            return String.Join(",", enumList);
+            return labels;
         }
 
         public override String ToString()

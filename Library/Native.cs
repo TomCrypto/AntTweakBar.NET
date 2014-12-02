@@ -86,6 +86,11 @@ namespace AntTweakBar
             [In] IntPtr wParam,
             [In] IntPtr lParam);
 
+        [DllImport(DLLName, EntryPoint = "TwEventX11")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern Boolean TwEventX11(
+            [In] IntPtr xEvent);
+
         [DllImport(DLLName, EntryPoint = "TwSetCurrentWindow")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwSetCurrentWindow(
@@ -274,10 +279,25 @@ namespace AntTweakBar
             [In] IntPtr clientData,
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
+        [DllImport(DLLName, EntryPoint = "TwDefineEnum", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        public static extern Tw.VariableType TwDefineEnum(
+            [In, MarshalAs(UnmanagedType.LPStr)] String name,
+            [In] EnumVal[] enumValues,
+            [In] uint numValues);
+
         [DllImport(DLLName, EntryPoint = "TwDefineEnumFromString", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         public static extern Tw.VariableType TwDefineEnumFromString(
             [In, MarshalAs(UnmanagedType.LPStr)] String name,
             [In, MarshalAs(UnmanagedType.LPStr)] String enumString);
+
+        [DllImport(DLLName, EntryPoint = "TwDefineStruct", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        public static extern Tw.VariableType TwDefineStruct(
+            [In, MarshalAs(UnmanagedType.LPStr)] String name,
+            [In] StructMember[] structMembers,
+            [In] uint numMembers,
+            [In] UIntPtr structSize,
+            [In] Tw.SummaryCallback callback,
+            [In] IntPtr clientData);
 
         [DllImport(DLLName, EntryPoint = "TwRemoveVar", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -289,6 +309,36 @@ namespace AntTweakBar
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwRemoveAllVars(
             [In] IntPtr bar);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct EnumVal
+        {
+            public int Value;
+            public IntPtr Label;
+
+            public EnumVal(int value, IntPtr label) : this()
+            {
+                Value = value;
+                Label = label;
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct StructMember
+        {
+            public IntPtr Name;
+            public Tw.VariableType Type;
+            public UIntPtr Offset;
+            public IntPtr DefString;
+
+            public StructMember(IntPtr name, Tw.VariableType type, UIntPtr offset, IntPtr defString) : this()
+            {
+                Name = name;
+                Type = type;
+                Offset = offset;
+                DefString = defString;
+            }
+        }
     }
 
     /// <summary>
@@ -439,6 +489,19 @@ namespace AntTweakBar
             }
 
             return NativeMethods.TwEventWin(wnd, msg, wParam, lParam);
+        }
+
+        /// <summary>
+        /// The X11 event handler.
+        /// </summary>
+        /// <returns>Whether the event has been handled by AntTweakBar.</returns>
+        public static bool EventX11(IntPtr xEvent)
+        {
+            if (xEvent == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("xEvent");
+            }
+
+            return NativeMethods.TwEventX11(xEvent);
         }
 
         /// <summary>
@@ -1035,9 +1098,45 @@ namespace AntTweakBar
         /// <summary>
         /// This function creates a new variable type corresponding to an enum.
         /// </summary>
+        /// <param name="name"> Specify a name for the enum type (must be unique).</param>
+        /// <param name="labels">A mapping from admissible values to their labels.</param>
+        public static VariableType DefineEnum(String name, IDictionary<Int32, String> labels)
+        {
+            if (name == null) {
+                throw new ArgumentNullException("name");
+            } else if (labels == null) {
+                throw new ArgumentNullException("labels");
+            }
+
+            var values = new List<NativeMethods.EnumVal>();
+
+            try
+            {
+                foreach (var kv in labels) {
+                    values.Add(new NativeMethods.EnumVal(kv.Key, Helpers.PtrFromStr(kv.Value)));
+                }
+
+                VariableType enumType = NativeMethods.TwDefineEnum(name, values.ToArray(), (uint)values.Count);
+
+                if (enumType == VariableType.Undefined) {
+                    throw new AntTweakBarException("TwDefineEnum failed.");
+                }
+
+                return enumType;
+            }
+            finally
+            {
+                foreach (var value in values) {
+                    Marshal.FreeCoTaskMem(value.Label);
+                }
+            }
+        }
+
+        /// <summary>
+        /// This function creates a new variable type corresponding to an enum.
+        /// </summary>
         /// <param name="name">Specify a name for the enum type (must be unique).</param>
         /// <param name="enumString">Comma-separated list of labels.</param>
-        /// <returns></returns>
         public static VariableType DefineEnumFromString(String name, String enumString)
         {
             if (name == null) {
@@ -1046,9 +1145,9 @@ namespace AntTweakBar
                 throw new ArgumentNullException("enumString");
             }
 
-            VariableType enumType;
+            VariableType enumType = NativeMethods.TwDefineEnumFromString(name, enumString);
 
-            if ((enumType = NativeMethods.TwDefineEnumFromString(name, enumString)) == VariableType.Undefined) {
+            if (enumType == VariableType.Undefined) {
                 throw new AntTweakBarException("TwDefineEnumFromString failed.");
             }
              
@@ -1090,6 +1189,9 @@ namespace AntTweakBar
     /// </summary>
     internal static class Helpers
     {
+        /// <summary>
+        /// Decodes a UTF-8 string from a pointer.
+        /// </summary>
         public static String StrFromPtr(IntPtr ptr)
         {
             var strBytes = new List<byte>();
@@ -1102,6 +1204,30 @@ namespace AntTweakBar
             }
 
             return Encoding.UTF8.GetString(strBytes.ToArray());
+        }
+
+        /// <summary>
+        /// Allocates a new pointer containing the UTF-8 string.
+        /// </summary>
+        /// <remarks>
+        /// The pointer must be freed later with FreeCoTaskMem.
+        /// </remarks>
+        public static IntPtr PtrFromStr(String str)
+        {
+            var cnt = Encoding.UTF8.GetByteCount(str);
+            var ptr = Marshal.AllocCoTaskMem(cnt + 1);
+            CopyStrToPtr(ptr, str);
+            return ptr;
+        }
+
+        /// <summary>
+        /// Encodes a UTF-8 string into a pointer.
+        /// </summary>
+        public static void CopyStrToPtr(IntPtr ptr, String str)
+        {
+            var bytes = new List<byte>(Encoding.UTF8.GetBytes(str));
+            bytes.Add(0); // append the null-terminated character
+            Marshal.Copy(bytes.ToArray(), 0, ptr, bytes.Count);
         }
     }
 }

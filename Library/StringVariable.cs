@@ -140,9 +140,7 @@ namespace AntTweakBar
         /// </summary>
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
-            var bytes = new List<byte>(Encoding.UTF8.GetBytes(Value));
-            bytes.Add(0); /* Append the null-terminated character. */
-            Marshal.Copy(bytes.ToArray(), 0, pointer, bytes.Count);
+            Helpers.CopyStrToPtr(pointer, Value);
         }
 
         public override String ToString()

@@ -119,6 +119,10 @@ Any issues or pull requests are welcome, I especially need help with verifying m
  * test multi-window support exhaustively
  * check it works on OS X
  * finish adding all low-level functions (even those we don't use, like the struct stuff) for completeness
+   currently missing:
+    - wrapper function to TwDefineStruct (this one will be tricky)
+    - string copy stuff (ignore, we don't need and never will)
+    - GLFW/GLUT callbacks (maybe...)
  * add extensions (in a separate assembly) to help interoperate with popular frameworks? (maybe)
 
 Changelog
@@ -129,6 +133,7 @@ Next release:
  - changed `Tw.WindowSize` to accept sizes of (0, 0) to allow AntTweakBar resource cleanup (see [#3](https://github.com/TomCrypto/AntTweakBar.NET/issues/3))
  - added `ReleaseResources` and `ResetResources` methods to the `Context` class (see [#3](https://github.com/TomCrypto/AntTweakBar.NET/issues/3))
  - changed Sample to use GLSL version 120, fixed shader saving overwrite bug and close on Esc.
+ - added TwDefineEnum and TwDefineStruct native functions and a DefineEnum low-level wrapper
 
 28 November 2014 (v0.4.4)
 
