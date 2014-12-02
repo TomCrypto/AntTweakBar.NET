@@ -1172,6 +1172,70 @@ namespace AntTweakBar
         }
 
         /// <summary>
+        /// This function creates a new <see cref="AntTweakBar.Tw.VariableType"/> corresponding to a structure.
+        /// </summary>
+        public static VariableType DefineStruct(String name, IDictionary<String, StructMemberInfo> structMembers, int structSize, Tw.SummaryCallback callback, IntPtr clientData)
+        {
+            if (name == null) {
+                throw new ArgumentNullException("name");
+            } else if (structMembers == null) {
+                throw new ArgumentNullException("structMembers");
+            } else if (structSize == 0) {
+                throw new ArgumentOutOfRangeException("structSize");
+            }
+
+            var structData = new List<NativeMethods.StructMember>();
+
+            try
+            {
+                foreach (var kv in structMembers) {
+                    IntPtr namePtr = IntPtr.Zero;
+                    IntPtr defPtr = IntPtr.Zero;
+
+                    try
+                    {
+                        namePtr = Helpers.PtrFromStr(kv.Key);
+                        defPtr = Helpers.PtrFromStr(kv.Value.Def);
+
+                        structData.Add(new NativeMethods.StructMember(
+                            namePtr,
+                            kv.Value.Type,
+                            new UIntPtr((uint)kv.Value.Offset),
+                            defPtr
+                            ));
+                    }
+                    catch (Exception)
+                    {
+                        if (namePtr != IntPtr.Zero) {
+                            Marshal.FreeCoTaskMem(namePtr);
+                        }
+
+                        if (defPtr != IntPtr.Zero) {
+                            Marshal.FreeCoTaskMem(defPtr);
+                        }
+
+                        throw;
+                    }
+                }
+
+                Tw.VariableType structType = NativeMethods.TwDefineStruct(name, structData.ToArray(), (uint)structData.Count, new UIntPtr((uint)structSize), callback, clientData);
+
+                if (structType == VariableType.Undefined) {
+                    throw new AntTweakBarException("TwDefineStruct failed.");
+                }
+
+                return structType;
+            }
+            finally
+            {
+                foreach (var member in structData) {
+                    Marshal.FreeCoTaskMem(member.Name);
+                    Marshal.FreeCoTaskMem(member.DefString);
+                }
+            }
+        }
+
+        /// <summary>
         /// This function removes a variable, button or separator from a tweak bar.
         /// </summary>
         /// <param name="bar">The tweak bar from which to remove a variable.</param>

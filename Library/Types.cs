@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace AntTweakBar
@@ -149,7 +150,7 @@ namespace AntTweakBar
         internal const int MaxStringLength = 4096;
 
         /// <summary>
-        /// Specifies the different possible variable type, excluding enums.
+        /// Specifies the different possible variable type, excluding enums and structs.
         /// </summary>
         public enum VariableType
         {
@@ -242,6 +243,51 @@ namespace AntTweakBar
             /// </summary>
             CSString                             = 0x30000000 + MaxStringLength,
         };
+
+        /// <summary>
+        /// Specifies information about a member of an AntTweakBar struct variable.
+        /// </summary>
+        public struct StructMemberInfo
+        {
+            /// <summary>
+            /// Gets the AntTweakBar type of this member.
+            /// </summary>
+            public VariableType Type { get { return type; } }
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private readonly VariableType type;
+
+            /// <summary>
+            /// Gets the offset in bytes of this member.
+            /// </summary>
+            public int Offset { get { return offset; } }
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private readonly int offset;
+
+            /// <summary>
+            /// Gets the definition string to use for this member.
+            /// </summary>
+            public String Def { get { return def; } }
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private readonly String def;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="AntTweakBar.Tw.StructMemberInfo"/> struct.
+            /// </summary>
+            /// <param name="type">The struct member's AntTweakBar type.</param>
+            /// <param name="offset">The struct member's offset in bytes.</param>
+            /// <param name="def">A definition string for the struct member.</param>
+            public StructMemberInfo(VariableType type, int offset, String def) : this()
+            {
+                this.type = type;
+                this.offset = offset;
+                this.def = def;
+            }
+
+            public override String ToString()
+            {
+                return String.Format("[StructMemberInfo: Type={0}, Offset={1}, Def={2}]", Type, Offset, Def);
+            }
+        }
 
         /// <summary>
         /// Specifies the possible mouse actions recognized by AntTweakBar.

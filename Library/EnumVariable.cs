@@ -75,7 +75,7 @@ namespace AntTweakBar
             Variable.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
-                        Tw.DefineEnum(Guid.NewGuid().ToString(), GetEnumLabels()),
+                        Tw.DefineEnum(typeof(T).FullName, GetEnumLabels()),
                         Variable.SetCallbacks[id],
                         Variable.GetCallbacks[id],
                         IntPtr.Zero, null);
