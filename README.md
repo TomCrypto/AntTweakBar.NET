@@ -110,6 +110,10 @@ Advanced Usage
 
     By default an `EnumVariable<T>` will graphically display the name of the enum value as defined in your code. You can give it a custom name or summary by tagging your enum values with a `DescriptionAttribute`, it will be picked up by AntTweakBar.NET and displayed instead of the raw enum name.
 
+ - **Multiple windows**
+
+    Each different window you want AntTweakBar to use should have a `Context`, and you should handle events and call the context's `Draw` method as needed on each window. That's really all there is to it. Internally, AntTweakBar directly draws into whatever render target is active, so multiple windows are naturally handled in both OpenGL and DirectX. The wrapper takes care of all necessary context-switching.
+
  - **AntTweakBar bindings**
 
     The bindings are in the `AntTweakBar.Tw` static class. For the most part you cannot interfere with the wrapper's operation with them since the wrapper does not expose its internal AntTweakBar pointers and identifiers for integrity reasons, so it is discouraged to use them to try and subvert the high-level wrapper. You are however encouraged to use them directly if you don't want to or can't use the high-level classes for whatever reason. Have fun! 
@@ -117,6 +121,10 @@ Advanced Usage
  - **Exception safety**
 
     You should avoid throwing exceptions from within delegates subscribed to `Changed`, `Click` and `Validate` events. The reason for this is because they can be called from native code, and the results of throwing a managed exception inside an unmanaged callback is implementation-defined. It is recommended instead to log any exception and safely return.
+
+ - **Thread safety**
+
+    Unfortunately, several AntTweakBar functions are **not** thread safe due to the global state involved in switching AntTweakBar windows/contexts. The only code which has been specifically written to be thread-safe is the constructor (and to some extent the `Dispose` method) of the `Context` class, in order to avoid double initialization/finalization of the AntTweakBar library. In general, assume no function is thread-safe, just like most GUI frameworks.
 
 Contribute
 ----------
@@ -126,10 +134,7 @@ Any issues or pull requests are welcome, I especially need help with verifying m
 **Todo**:
 
  * more/better unit tests
- * test multi-window support exhaustively
- * thread-safety concerns?
  * check it works on OS X
- * add extensions (in a separate assembly) to help interoperate with popular frameworks? (maybe)
 
 Changelog
 ---------
