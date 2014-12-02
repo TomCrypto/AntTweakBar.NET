@@ -112,7 +112,7 @@ Advanced Usage
 
  - **AntTweakBar bindings**
 
-    The bindings are in the `AntTweakBar.Tw` static class. You (mostly) cannot interfere with the wrapper's operation with them since the wrapper does not expose its internal AntTweakBar pointers and identifiers for integrity reasons, so it is discouraged to use them to try and subvert the high-level wrapper. You are however encouraged to use them directly if you don't want to or can't use the high-level classes for whatever reason. Have fun! 
+    The bindings are in the `AntTweakBar.Tw` static class. For the most part you cannot interfere with the wrapper's operation with them since the wrapper does not expose its internal AntTweakBar pointers and identifiers for integrity reasons, so it is discouraged to use them to try and subvert the high-level wrapper. You are however encouraged to use them directly if you don't want to or can't use the high-level classes for whatever reason. Have fun! 
 
  - **Exception safety**
 
@@ -127,12 +127,8 @@ Any issues or pull requests are welcome, I especially need help with verifying m
 
  * more/better unit tests
  * test multi-window support exhaustively
+ * thread-safety concerns?
  * check it works on OS X
- * finish adding all low-level functions (even those we don't use, like the struct stuff) for completeness
-   currently missing:
-    - wrapper function to TwDefineStruct (this one will be tricky)
-    - string copy stuff (ignore, we don't need and never will)
-    - GLFW/GLUT callbacks (maybe...)
  * add extensions (in a separate assembly) to help interoperate with popular frameworks? (maybe)
 
 Changelog
