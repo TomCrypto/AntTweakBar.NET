@@ -25,35 +25,41 @@ The AntTweakBar.NET high-level interface is divided into three main concepts: co
 
 The first context created should be passed the graphics API you are using, which is some version of OpenGL or DirectX. For DirectX, you must also pass a pointer to the native device, which should be available from the graphics framework you are using somehow (for instance, for SharpDX, use `SharpDX.Direct3D11.Device.NativePointer`).
 
-    using AntTweakBar;
+```csharp
+using AntTweakBar;
 
-    /* ... */
+/* ... */
 
-    context = new Context(Tw.GraphicsAPI.Direct3D11, /* pointer to device */);
+context = new Context(Tw.GraphicsAPI.Direct3D11, /* pointer to device */);
+```
 
 Other contexts do not have to provide a graphics API, and can be created as simply `new Context();`. AntTweakBar.NET keeps track of how many contexts are active, and initializes the AntTweakBar library whenever a first one is created, and terminates the library whenever the last one is destroyed.
 
 Once you have a context, you can create bars inside it, and you can create variables inside these bars. To draw the context, call its `Draw()` method at the very end of your rendering pipeline. To handle events, hook up the various `Handle*()` methods to your window events. Keep in mind that you generally do not need to keep references to variables around. In many cases, it is sufficient to set up a delegate on the variable's `Changed` event to automatically modify some property in another class, so that your program automatically responds to variable changes.
 
-    var myBar = new Bar(context);
-    myBar.Label = "Some bar";
-    myBar.Contained = true; // set some bar properties
+```csharp
+var myBar = new Bar(context);
+myBar.Label = "Some bar";
+myBar.Contained = true; // set some bar properties
 
-    var rotationVar = new IntVariable(myBar, 42 /* default value */);
-    rotationVar.Label = "Model rotation";
-    rotationVar.Changed += delegate { model.Rotation = rotationVar.Value; };
+var rotationVar = new IntVariable(myBar, 42 /* default value */);
+rotationVar.Label = "Model rotation";
+rotationVar.Changed += delegate { model.Rotation = rotationVar.Value; };
 
-    /* don't need rotationVar anymore (it will still be held onto by myBar) */
+/* don't need rotationVar anymore (it will still be held onto by myBar) */
+```
 
 Generic event handling example to illustrate (this is not the only event you need to handle):
 
-    protected override void OnResize(EventArgs e)
-    {
-        base.OnResize(e);
-        context.HandleResize(this.ClientSize);
-    }
+```csharp
+protected override void OnResize(EventArgs e)
+{
+    base.OnResize(e);
+    context.HandleResize(this.ClientSize);
+}
+```
 
-The preferred way of doing event handling is by using the `Handle*()` events, which means you have to do some event translation. However, if you are using a particular framework, it may be possible to use ready-made event handlers. For instance, if you are using WinForms and happen to have access to your form's `WndProc` (perhaps because you are already overriding it) then you can use `EventHandlerWin()` to handle all events except perhaps `HandleResize` in a single line of code. There is currently such support for WinForms, SFML (via SFML.Net) and SDL (untested). Using the generic handlers works anywhere, though.
+The preferred way of doing event handling is by using the `Handle*()` events, which means you have to do some event translation. However, if you are using a particular framework, it may be possible to use ready-made event handlers. For instance, if you are using WinForms and happen to have access to your form's `WndProc` (perhaps because you are already overriding it) then you can use `EventHandlerWin()` to handle all events except perhaps `HandleResize` in a single line of code. There is currently such support for WinForms, SFML (via SFML.Net), X11 events and SDL (untested). The other two handlers supported by AntTweakBar (GLFW and GLUT) use per-event callbacks, so it probably does not make much sense wrapping them as your respective GLFW or GLUT wrapper should already convert them into events or delegates for you. Using the generic handlers works anywhere, though.
 
 In general you *do* want to keep references to contexts, because you actually do need to destroy them when you close your windows. The different AntTweakBar.NET classes implement the `IDisposable` interface. When you dispose a bar, all variables inside it are implicitly disposed. When you dispose a context, all bars inside it are implicitly disposed. In other words, it is sufficient to dispose the contexts you create. It is very important to note that you must dispose the last context **before** terminating your graphics API. A symptom of failing to do this is an exception on shutdown pointing to the `Tw.Terminate()` function. Critically, this means you cannot just leave the contexts to be garbage-collected, as it will probably be too late by the time they are. This should not be a problem in most sensible implementations.  
 
@@ -73,8 +79,10 @@ Advanced Usage
 
     You can script the different properties of your bars or variables from e.g. a text file using the `SetDefinition` method. This method takes a definition string containing your parameters. For your convenience, there is an optional `def` parameter in the constructor which automatically calls it as well. This method should be used e.g. as:
 
-        myVariable.SetDefinition("label='New Label' readonly=true");
-        myBar.SetDefinition("contained=true visible=false");
+    ```csharp
+    myVariable.SetDefinition("label='New Label' readonly=true");
+    myBar.SetDefinition("contained=true visible=false");
+    ```
 
     This definition string follows the same format as documented on the AntTweakBar website under `TwDefine`, except it should not contain the variable's name, as you don't know what it is (it is automatically filled in by the method).
 
@@ -84,7 +92,9 @@ Advanced Usage
 
     If user input fails validation, the variable will gracefully revert to its previous value. On the other hand, if you manually try to set an invalid value from code, it will throw an `ArgumentException`. The following example shows how to make the value of `myVar` be a multiple of five: 
 
-        myVar.Validating += (s, e) => { e.Valid = (e.Value % 5 == 0); }; /* for IntVariable */
+    ```csharp
+    myVar.Validating += (s, e) => { e.Valid = (e.Value % 5 == 0); }; /* for IntVariable */
+    ```
 
     You must refer to `e.Value` (or `e.R`, `e.X`, etc. as appropriate) to perform validation, as the variable's value has not yet been updated when the validation handlers are called. Note you can of course refer to external objects in your handler to implement context-sensitive validation logic. Most variables already have built-in validators, for instance numeric variables validate against their `Min` and `Max` properties, `StringVariable` rejects null strings, etc.
 
