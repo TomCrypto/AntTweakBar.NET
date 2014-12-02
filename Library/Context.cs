@@ -150,6 +150,16 @@ namespace AntTweakBar
         }
 
         /// <summary>
+        /// Tests this context for whether a key press would be handled.
+        /// </summary>
+        /// <param name="key">The key character pressed.</param>
+        public bool HandleKeyTest(char key)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            return Tw.KeyTest((int)key, Tw.KeyModifier.None);
+        }
+
+        /// <summary>
         /// Notifies this context of a special key press.
         /// </summary>
         /// <param name="key">The key pressed.</param>
@@ -158,6 +168,17 @@ namespace AntTweakBar
         {
             Tw.SetCurrentWindow(Identifier);
             return Tw.KeyPressed((int)key, modifiers);
+        }
+
+        /// <summary>
+        /// Tests this context for whether a special key press would be handled.
+        /// </summary>
+        /// <param name="key">The key pressed.</param>
+        /// <param name="modifiers">The key modifiers pressed.</param>
+        public bool HandleKeyTest(Tw.SpecialKey key, Tw.KeyModifier modifiers)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            return Tw.KeyTest((int)key, modifiers);
         }
 
         /// <summary>

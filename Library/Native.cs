@@ -64,6 +64,12 @@ namespace AntTweakBar
             [In] Int32 key,
             [In] Tw.KeyModifier modifiers);
 
+        [DllImport(DLLName, EntryPoint = "TwKeyTest")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern Boolean TwKeyTest(
+            [In] Int32 key,
+            [In] Tw.KeyModifier modifiers);
+
         [DllImport(DLLName, EntryPoint = "TwEventSFML")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwEventSFML(
@@ -450,6 +456,17 @@ namespace AntTweakBar
         public static bool KeyPressed(int key, KeyModifier modifiers)
         {
             return NativeMethods.TwKeyPressed(key, modifiers);
+        }
+
+        /// <summary>
+        /// This function checks if a key event would be processed but without processing it. This could be helpful to prevent bad handling report.
+        /// </summary>
+        /// <param name="key">The ASCII code of the pressed key, or one of the <see cref="AntTweakBar.Tw.SpecialKey"/> codes.</param>
+        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifier"/> constants.</param>
+        /// <returns>Whether the key event would have been handled by AntTweakBar.</returns>
+        public static bool KeyTest(int key, KeyModifier modifiers)
+        {
+            return NativeMethods.TwKeyTest(key, modifiers);
         }
 
         /// <summary>
