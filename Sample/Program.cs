@@ -325,6 +325,11 @@ namespace Sample
             configsBar.Label = "Configuration";
             configsBar.Contained = true;
 
+            var thresholdVar = new FloatVariable(configsBar, fractal.Threshold);
+            thresholdVar.Changed += delegate { fractal.Threshold = thresholdVar.Value; };
+            thresholdVar.SetDefinition("min=0 max=5 step=0.01 precision=2)");
+            thresholdVar.Label = "Convergence";
+
             var itersVar = new IntVariable(configsBar, fractal.Iterations);
             itersVar.Changed += delegate { fractal.Iterations = itersVar.Value; };
             itersVar.Label = "Iterations";
@@ -354,7 +359,7 @@ namespace Sample
 
             var intensityVar = new FloatVariable(configsBar, fractal.Intensity);
             intensityVar.Changed += delegate { fractal.Intensity = intensityVar.Value; };
-            intensityVar.SetDefinition("min=0 max=3 step=0.01 precision=3)");
+            intensityVar.SetDefinition("min=0 max=3 step=0.01 precision=2)");
             intensityVar.Label = "Intensity";
 
             var aCoeffVar = new ComplexVariable(configsBar, fractal.ACoeff);

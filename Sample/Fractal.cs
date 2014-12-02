@@ -62,6 +62,16 @@ namespace Sample
             set { GL.Uniform1(GL.GetUniformLocation(shHandle, "iters"), iterations = value); }
         }
 
+        private float threshold;
+        public float Threshold
+        {
+            get { return threshold; }
+            set {
+                threshold = value;
+                GL.Uniform1(GL.GetUniformLocation(shHandle, "threshold"), (float)Math.Pow(10, -threshold));
+            }
+        }
+
         private bool hardcodePolynomial;
         public bool HardcodePolynomial
         {
@@ -158,6 +168,7 @@ namespace Sample
             KCoeff = kCoeff;
 
             Iterations = iterations;
+            Threshold = threshold;
             Palette = palette;
 
             if (!hardcodePolynomial)
@@ -277,6 +288,7 @@ namespace Sample
             hardcodePolynomial = true;
 
             intensity = 1;
+            threshold = 3;
             palette = Color4.Red;
             shading = ShadingType.Standard;
 

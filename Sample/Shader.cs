@@ -143,6 +143,7 @@ namespace Sample
             str.AppendLine("uniform vec2 aCoeff;");
             str.AppendLine("uniform vec2 kCoeff;");
             str.AppendLine("uniform int iters;");
+            str.AppendLine("uniform float threshold;");
             str.AppendLine();
             str.AppendLine("vec4 iterate(vec2 z)");
             str.AppendLine("{");
@@ -155,7 +156,7 @@ namespace Sample
             str.AppendLine("        z -= cmul(cdiv(poly(z), derv(z)), aCoeff) + kCoeff;");
             str.AppendLine("        float l = csqrabs(r - z);");
             str.AppendLine("        speed += exp(-inversesqrt(l));");
-            str.AppendLine("        if (l < 1e-8) break;");
+            str.AppendLine("        if (l <= threshold) break;");
             str.AppendLine("    }");
             str.AppendLine();
             str.AppendLine("    return vec4(z, speed, float(t));");
