@@ -61,6 +61,13 @@ namespace AntTweakBar
         private T value;
 
         /// <summary>
+        /// Gets this enum variable's type.
+        /// </summary>
+        public Tw.VariableType Type { get { ThrowIfDisposed(); return type; } }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Tw.VariableType type;
+
+        /// <summary>
         /// Initialization delegate, which creates the enum variable.
         /// </summary>
         private static void InitEnumVariable(Variable var, String id)
@@ -75,7 +82,7 @@ namespace AntTweakBar
             Variable.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
             Tw.AddVarCB(var.ParentBar.Pointer, id,
-                        Tw.DefineEnum(typeof(T).FullName, GetEnumLabels()),
+                        it.type = Tw.DefineEnum(Guid.NewGuid().ToString(), GetEnumLabels()),
                         Variable.SetCallbacks[id],
                         Variable.GetCallbacks[id],
                         IntPtr.Zero, null);

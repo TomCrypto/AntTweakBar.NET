@@ -276,11 +276,23 @@ namespace AntTweakBar
             /// <param name="type">The struct member's AntTweakBar type.</param>
             /// <param name="offset">The struct member's offset in bytes.</param>
             /// <param name="def">A definition string for the struct member.</param>
-            public StructMemberInfo(VariableType type, int offset, String def) : this()
+            public StructMemberInfo(VariableType type, int offset, String def = "") : this()
             {
+                if (def == null) {
+                    def = "";
+                }
+
                 this.type = type;
                 this.offset = offset;
                 this.def = def;
+            }
+
+            /// <summary>
+            /// Creates a suitable StructMemberInfo from a struct member name.
+            /// </summary>
+            public static StructMemberInfo FromStruct<T>(String member, VariableType type, String def = "") where T : struct
+            {
+                return new StructMemberInfo(type, (int)Marshal.OffsetOf(typeof(T), member), def);
             }
 
             public override String ToString()

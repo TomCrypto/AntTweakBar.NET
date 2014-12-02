@@ -1192,6 +1192,14 @@ namespace AntTweakBar
                     IntPtr namePtr = IntPtr.Zero;
                     IntPtr defPtr = IntPtr.Zero;
 
+                    if (kv.Key == null) {
+                        throw new ArgumentNullException("", "Member name cannot be null.");
+                    }
+
+                    if (kv.Value.Def == null) {
+                        throw new ArgumentNullException("", "Member definition string cannot be null.");
+                    }
+
                     try
                     {
                         namePtr = Helpers.PtrFromStr(kv.Key);
@@ -1218,7 +1226,10 @@ namespace AntTweakBar
                     }
                 }
 
-                Tw.VariableType structType = NativeMethods.TwDefineStruct(name, structData.ToArray(), (uint)structData.Count, new UIntPtr((uint)structSize), callback, clientData);
+                Tw.VariableType structType = NativeMethods.TwDefineStruct(name, structData.ToArray(),
+                                                                          (uint)structData.Count,
+                                                                          new UIntPtr((uint)structSize),
+                                                                          callback, clientData);
 
                 if (structType == VariableType.Undefined) {
                     throw new AntTweakBarException("TwDefineStruct failed.");
