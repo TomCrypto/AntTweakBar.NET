@@ -144,6 +144,7 @@ Next release:
  - added `ReleaseResources` and `ResetResources` methods to the `Context` class (see [#3](https://github.com/TomCrypto/AntTweakBar.NET/issues/3))
  - changed Sample to use GLSL version 120, fixed shader saving overwrite bug and close on Esc.
  - added TwDefineEnum and TwDefineStruct native functions and a DefineEnum low-level wrapper
+ - various miscellaneous fixes and improvements to the Sample
 
 28 November 2014 (v0.4.4)
 
