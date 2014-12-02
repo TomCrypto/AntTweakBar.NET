@@ -59,16 +59,21 @@ namespace Sample
         public int Iterations
         {
             get { return iterations; }
-            set { GL.Uniform1(GL.GetUniformLocation(shHandle, "iters"), iterations = value); }
+            set
+            {
+                iterations = value;
+                SetupShaders();
+            }
         }
 
         private float threshold;
         public float Threshold
         {
             get { return threshold; }
-            set {
+            set
+            {
                 threshold = value;
-                GL.Uniform1(GL.GetUniformLocation(shHandle, "threshold"), (float)Math.Pow(10, -threshold));
+                SetupShaders();
             }
         }
 
@@ -167,8 +172,6 @@ namespace Sample
             ACoeff = aCoeff;
             KCoeff = kCoeff;
 
-            Iterations = iterations;
-            Threshold = threshold;
             Palette = palette;
 
             if (!hardcodePolynomial)
@@ -236,7 +239,7 @@ namespace Sample
             fsHandle = GL.CreateShader(ShaderType.FragmentShader);
 
             GL.ShaderSource(vsHandle, Shader.VertShader());
-            GL.ShaderSource(fsHandle, Shader.FragShader(polynomial, shading, aa, hardcodePolynomial));
+            GL.ShaderSource(fsHandle, Shader.FragShader(polynomial, shading, aa, hardcodePolynomial, iterations, threshold));
 
             GL.CompileShader(vsHandle);
             GL.CompileShader(fsHandle);

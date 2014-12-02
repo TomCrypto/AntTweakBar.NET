@@ -37,7 +37,7 @@ namespace Sample
         /// <summary>
         /// Gets the fragment shader.
         /// </summary>
-        public static String FragShader(Polynomial poly, ShadingType type, AAQuality aa, bool hardcodePoly)
+        public static String FragShader(Polynomial poly, ShadingType type, AAQuality aa, bool hardcodePoly, int iterations, float threshold)
         {
             var shader = String.Join("\n", new[]
             {
@@ -46,9 +46,9 @@ namespace Sample
                 FragArithmetic(),
                 FragPolyRoots(poly, "poly", hardcodePoly),
                 FragPolyRoots(Polynomial.Derivative(poly), "derv", hardcodePoly),
-                FragIterate(),
+                FragIterate(iterations, threshold),
                 FragColorize(type),
-                FragShade(),
+                FragShade(iterations),
                 FragMainSampler(aa)
             });
 
@@ -136,27 +136,25 @@ namespace Sample
             return str.ToString();
         }
 
-        private static String FragIterate()
+        private static String FragIterate(int iterations, float threshold)
         {
             var str = new StringBuilder();
 
             str.AppendLine("uniform vec2 aCoeff;");
             str.AppendLine("uniform vec2 kCoeff;");
-            str.AppendLine("uniform int iters;");
-            str.AppendLine("uniform float threshold;");
             str.AppendLine();
             str.AppendLine("vec4 iterate(vec2 z)");
             str.AppendLine("{");
             str.AppendLine("    float speed = 0;");
             str.AppendLine("    int t;");
             str.AppendLine();
-            str.AppendLine("    for (t = int(0); t < iters; ++t)");
+            str.AppendLine("    for (t = int(0); t < " + iterations + "; ++t)");
             str.AppendLine("    {");
             str.AppendLine("        vec2 r = z;");
             str.AppendLine("        z -= cmul(cdiv(poly(z), derv(z)), aCoeff) + kCoeff;");
             str.AppendLine("        float l = csqrabs(r - z);");
             str.AppendLine("        speed += exp(-inversesqrt(l));");
-            str.AppendLine("        if (l <= threshold) break;");
+            str.AppendLine("        if (l <= " + Math.Pow(10, -threshold) + ") break;");
             str.AppendLine("    }");
             str.AppendLine();
             str.AppendLine("    return vec4(z, speed, float(t));");
@@ -199,7 +197,7 @@ namespace Sample
             return str.ToString();
         }
 
-        private static String FragShade()
+        private static String FragShade(int iterations)
         {
             var str = new StringBuilder();
 
@@ -208,7 +206,7 @@ namespace Sample
             str.AppendLine("vec3 shade(vec2 z)");
             str.AppendLine("{");
             str.AppendLine("    vec4 r = iterate(z);");
-            str.AppendLine("    return colorize(z, r.xy, pow(r.z, intensity), r.w * intensity / iters);");
+            str.AppendLine("    return colorize(z, r.xy, pow(r.z, intensity), r.w * intensity / " + iterations + ");");
             str.AppendLine("}");
 
             return str.ToString();
