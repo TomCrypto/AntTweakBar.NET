@@ -15,13 +15,15 @@ Quick Start
 
 You must obtain and install the native AntTweakBar library itself from its [SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download), if you haven't already. For Windows, download the appropriate prebuilt DLL's and install them on your system or as third party libraries in your C# project. For Linux, simply `make && make install` as usual. Then add the `AntTweakBar.NET.dll` assembly in your project, either by compiling it from the repository or retrieving it from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/). You're good to go!
 
-The AntTweakBar.NET high-level interface is divided into three main concepts: contexts, bars, and variables.
+The AntTweakBar.NET high-level interface is divided into four main concepts: contexts, bars, variables and groups.
 
 - **Context**: An instance of this class conceptually maps to a graphical window in your application: each window that will contain bars should have its own context. Each context holds its own separate set of bars, and has several methods to send window events to AntTweakBar, and, of course, draw the bars into the window.
 
 - **Bar**: An instance of this class represents a graphical bar which holds a set of variables. It has several useful properties to tweak the bar to your application's needs. Each bar belongs to a context passed to its constructor.
  
 - **Variable**: This is the base class from which all other variable types (like `IntVariable` or `StringVariable`) descend from. Just like the `Bar` class, it and its descendants have plenty of properties you can modify to tweak the variable's behavior and graphical appearance. In addition, value variables hold a value property which can be set graphically by the user and can be read on the fly by your code, this is the `Value` property for simple types (like `IntVariable`) or e.g. the `X`, `Y`, `Z` properties for the `VectorVariable`. They also have a `Changed` event to be notified when the user changes the variable's value. The `Button` variable type has a `Clicked` event instead. Each variable belongs to a bar passed to its constructor.
+
+- **Group**: These are used to put a set of variables together in the bar for easy access, you can open (expand) or close (collapse) groups, and can put groups into groups for a hierarchical organization. Please see "Using groups" in the advanced usage section below to find out how to use them. 
 
 The first context created should be passed the graphics API you are using, which is some version of OpenGL or DirectX. For DirectX, you must also pass a pointer to the native device, which should be available from the graphics framework you are using somehow (for instance, for SharpDX, use `SharpDX.Direct3D11.Device.NativePointer`).
 
@@ -86,6 +88,22 @@ Advanced Usage
 
     This definition string follows the same format as documented on the AntTweakBar website under `TwDefine`, except it should not contain the variable's name, as you don't know what it is (it is automatically filled in by the method).
 
+ - **Using groups**
+
+	You can create a group as follows for instance:
+
+	```csharp
+	myVar.Group = new Group(myBar);
+	```
+
+	You can nest groups into groups by using the `Parent` property of groups, and you can change their labels (so you can have two groups with the same label if you want). Note `null` is a valid group which represents the root of the bar (i.e. no group). There are three gotchas to watch out for when using groups:
+
+	\* A group only exists as long as there are variables under said group. This means that until you assign a variable to a group, you cannot modify the group's label or any of its properties. As a result, the `Group` class supports two kinds of initializations: lazy initialization, where you can create a non-existent group, assign it to a bunch of variables (which truly creates it) and configure it afterwards, or direct initialization, where the constructor takes a collection of initial variables to put under the group. Use whichever one is more convenient for you.   
+
+	\* A group ceases to exist as soon as there are no more variables under said group. This is not a big problem, it's just important to keep that in mind when dynamically creating variables as it may invalidate `Group` instances you are holding.
+
+	\* Take care when putting groups into groups: if you put group A into group B, and then put group B into group A, both groups and all variables contained in them will be destroyed (this is done automatically by the native library). In general, avoid circular group references and use the `null` group to break such circular references. 
+
  - **Defining custom variables**
 
     All the classes in the wrapper are sealed. In most cases you should favor composing variables together to extend their functionality, as done for instance in the sample, where a complex variable type is created by composing two `DoubleVariable` instances, and a polynomial variable type is implemented by adding custom validation logic to a `StringVariable` to make it only accept polynomial formulas. In general, the `Validating` event can be used to introduce additional requirements on the contents of the variable. The variable's value will be changed if and only if it passes validation by *all* event handlers attached to the variable's `Validating` event.
@@ -146,6 +164,7 @@ Next release:
  - changed Sample to use GLSL version 120, fixed shader saving overwrite bug and close on Esc.
  - added TwDefineEnum and TwDefineStruct native functions and a DefineEnum low-level wrapper
  - various miscellaneous fixes and improvements to the Sample
+ - added `Group` class and improved code relating to variable groups
 
 28 November 2014 (v0.4.4)
 
