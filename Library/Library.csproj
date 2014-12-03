@@ -47,6 +47,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Group.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="BoolVariable.cs" />
     <Compile Include="Button.cs" />

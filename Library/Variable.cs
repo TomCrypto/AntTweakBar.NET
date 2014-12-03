@@ -87,10 +87,30 @@ namespace AntTweakBar
         /// <summary>
         /// Gets or sets this variable's group.
         /// </summary>
-        public String Group
+        public Group Group
         {
-            get { return Tw.GetStringParam(ParentBar.Pointer, ID, "group"); }
-            set { Tw.SetParam(ParentBar.Pointer, ID, "group", value); }
+            get
+            {
+                var groupID = Tw.GetStringParam(ParentBar.Pointer, ID, "group");
+                if ((groupID != null) && (groupID != "")) {
+                    return new Group(ParentBar, groupID);
+                } else {
+                    return null;
+                }
+            }
+
+            set
+            {
+                if ((value != null) && (value.ParentBar != ParentBar)) {
+                    throw new ArgumentException("Cannot move groups across bars.");
+                }
+
+                if (value != null) {
+                    Tw.SetParam(ParentBar.Pointer, ID, "group", value.ID);
+                } else {
+                    Tw.SetParam(ParentBar.Pointer, ID, "group", "");
+                }
+            }
         }
 
         /// <summary>

@@ -61,7 +61,7 @@ namespace Sample
     /// </summary>
     class ComplexVariable : IDisposable
     {
-        private readonly DoubleVariable re, im;
+        public readonly DoubleVariable re, im;
 
         /// <summary>
         /// Occurs when the user changes the variable.
@@ -104,7 +104,7 @@ namespace Sample
             re.Label = "Real";
             im.Label = "Imaginary";
 
-            Label = "undef";
+            Label = new Group(bar, "undef", re);
         }
 
         public Double Step
@@ -127,7 +127,7 @@ namespace Sample
             }
         }
 
-        public String Label
+        public Group Label
         {
             get { return re.Group; }
             set
@@ -304,7 +304,13 @@ namespace Sample
                 }
             };
 
-            Mouse.WheelChanged += (sender, e) => fractal.ZoomIn(e.DeltaPrecise);
+            Mouse.WheelChanged += (sender, e) =>
+            {
+                if (!context.HandleMouseWheel(e.Value)) {
+                    fractal.ZoomIn(e.DeltaPrecise);
+                }
+            };
+
             Mouse.Move += (sender, e) => context.HandleMouseMove(e.Position);
             Mouse.ButtonUp += (sender, e) => HandleMouseClick(context, e);
             Mouse.ButtonDown += (sender, e) =>
@@ -364,13 +370,13 @@ namespace Sample
 
             var aCoeffVar = new ComplexVariable(configsBar, fractal.ACoeff);
             aCoeffVar.Changed += delegate { fractal.ACoeff = aCoeffVar.Value; };
-            aCoeffVar.Label = "Relaxation Coeff.";
+            aCoeffVar.Label = new Group(configsBar, "Relaxation Coeff.", aCoeffVar.re);
             aCoeffVar.Step = 0.0002;
             aCoeffVar.Precision = 4;
 
             var kcoeff = new ComplexVariable(configsBar, fractal.KCoeff);
             kcoeff.Changed += delegate { fractal.KCoeff = kcoeff.Value; };
-            kcoeff.Label = "Nova Coeff.";
+            kcoeff.Label = new Group(configsBar, "Nova Coeff.", kcoeff.re);
             kcoeff.Step = 0.0002;
             kcoeff.Precision = 4;
 
@@ -413,10 +419,11 @@ namespace Sample
              * keeping a reference to them. That way we don't need to track them at all.
             */
 
+            var symbolicVariables = new List<Variable>();
+
             for (char symbol = 'A'; symbol <= 'F'; ++symbol)
             {
                 var symbolVar = new DoubleVariable(fractalBar);
-                symbolVar.Group = "Symbolic Variables";
                 symbolVar.Label = symbol.ToString();
                 symbolVar.Step = 0.0002f;
                 symbolVar.Precision = 4;
@@ -429,10 +436,15 @@ namespace Sample
 
                 // also add the symbol initially, so that it exists on startup
                 poly[symbolVar.Label] = symbolVar.Value;
+                symbolicVariables.Add(symbolVar);
             }
 
+            var grp = symbolicVariables[0].Group;
+
+            var symbolicVarGroup = new Group(fractalBar, "Symbolic Variables", symbolicVariables);
+
             /* Start the symbol list closed to avoid clutter */
-            fractalBar.OpenGroup("Symbolic Variables", false);
+            symbolicVarGroup.Open = false;
         }
 
         private enum FractalPreset

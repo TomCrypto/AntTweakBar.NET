@@ -72,28 +72,6 @@ namespace AntTweakBar
         #region Customization
 
         /// <summary>
-        /// Shows or hides a variable group in this bar.
-        /// </summary>
-        /// <param name="group">The name of the group to show or hide.</param>
-        /// <param name="visible">Whether the group should be visible.</param>
-        public void ShowGroup(String group, Boolean visible)
-        {
-            Tw.SetCurrentWindow(ParentContext.Identifier);
-            Tw.Define(String.Format("{0}/`{1}` visible={2}", ID, group, visible ? "true" : "false"));
-        }
-
-        /// <summary>
-        /// Opens or closes a variable group in this bar.
-        /// </summary>
-        /// <param name="group">The name of the group to open or close.</param>
-        /// <param name="opened">Whether the group should be open.</param>
-        public void OpenGroup(String group, Boolean opened)
-        {
-            Tw.SetCurrentWindow(ParentContext.Identifier);
-            Tw.Define(String.Format("{0}/`{1}` opened={2}", ID, group, opened ? "true" : "false"));
-        }
-
-        /// <summary>
         /// Moves a variable group into another group.
         /// </summary>
         /// <param name="group">The name of the group to move.</param>
