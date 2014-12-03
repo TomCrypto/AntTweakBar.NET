@@ -93,7 +93,11 @@ Advanced Usage
 	You can create a group as follows for instance:
 
 	```csharp
-	myVar.Group = new Group(myBar);
+	var myGroup = new Group(myBar, "A group", myVar);
+	/* or */
+	var myGroup = new Group(myBar);
+	myVar.Group = myGroup;
+	myGroup.Label = "A group";
 	```
 
 	You can nest groups into groups by using the `Parent` property of groups, and you can change their labels (so you can have two groups with the same label if you want). Note `null` is a valid group which represents the root of the bar (i.e. no group). There are three gotchas to watch out for when using groups:
