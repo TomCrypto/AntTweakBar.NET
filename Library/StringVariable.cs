@@ -24,7 +24,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar variable which can hold a string.
     /// </summary>
-    public sealed class StringVariable : Variable
+    public sealed class StringVariable : Variable, IValueVariable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.

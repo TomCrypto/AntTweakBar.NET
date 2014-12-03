@@ -55,112 +55,49 @@ namespace Sample
         }
     }
 
-    /// <summary>
-    /// Not a real variable (just contains two variables for the
-    /// real/imaginary parts and puts them in a single group).
-    /// </summary>
-    class ComplexVariable : IDisposable
+    class ComplexVariable : StructVariable<Complex>
     {
-        public readonly DoubleVariable re, im;
-
-        /// <summary>
-        /// Occurs when the user changes the variable.
-        /// </summary>
-        public event EventHandler Changed;
-
-        /// <summary>
-        /// Raises the Changed event.
-        /// </summary>
-        public void OnChanged(EventArgs e)
+        public ComplexVariable(Bar bar, Complex initialValue) : base(bar, new DoubleVariable(bar, 0, "label=Real"), new DoubleVariable(bar, 0, "label=Imaginary"))
         {
-            if (Changed != null)
-                Changed(this, e);
+            Value = initialValue;
         }
 
-        /// <summary>
-        /// Gets or sets the value of this variable.
-        /// </summary>
-        public Complex Value
+        public override Complex Value
         {
-            get { return new Complex(re.Value, im.Value); }
+            get
+            {
+                return new Complex(
+                    (variables[0] as DoubleVariable).Value,
+                    (variables[1] as DoubleVariable).Value
+                );
+            }
+
             set
             {
-                re.Value = value.Real;
-                im.Value = value.Imaginary;
+                (variables[0] as DoubleVariable).Value = value.Real;
+                (variables[1] as DoubleVariable).Value = value.Imaginary;
             }
-        }
-
-        public ComplexVariable(Bar bar, Complex initialValue)
-        {
-            re = new DoubleVariable(bar, initialValue.Real);
-            im = new DoubleVariable(bar, initialValue.Imaginary);
-
-            re.Changed += (sender, e) => OnChanged(EventArgs.Empty);
-            im.Changed += (sender, e) => OnChanged(EventArgs.Empty);
-
-            re.Label = "Real";
-            im.Label = "Imaginary";
-
-            Label = new Group(bar, "undef", re);
         }
 
         public Double Step
         {
-            get { return re.Step; }
+            get { return (variables[0] as DoubleVariable).Step; }
             set
             {
-                re.Step = value;
-                im.Step = value;
+                (variables[0] as DoubleVariable).Step = value;
+                (variables[1] as DoubleVariable).Step = value;
             }
         }
 
         public Double Precision
         {
-            get { return re.Precision; }
+            get { return (variables[0] as DoubleVariable).Precision; }
             set
             {
-                re.Precision = value;
-                im.Precision = value;
+                (variables[0] as DoubleVariable).Precision = value;
+                (variables[1] as DoubleVariable).Precision = value;
             }
         }
-
-        public Group Label
-        {
-            get { return re.Group; }
-            set
-            {
-                re.Group = value;
-                im.Group = value;
-            }
-        }
-
-        #region IDisposable
-
-        ~ComplexVariable()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-                return;
-
-            re.Dispose();
-            im.Dispose();
-
-            disposed = true;
-        }
-
-        private bool disposed = false;
-
-        #endregion
     }
 
     class Program : GameWindow
@@ -365,17 +302,23 @@ namespace Sample
             intensityVar.SetDefinition("min=0 max=3 step=0.01 precision=2)");
             intensityVar.Label = "Intensity";
 
+            var aCoeffGroup = new Group(configsBar);
             var aCoeffVar = new ComplexVariable(configsBar, fractal.ACoeff);
             aCoeffVar.Changed += delegate { fractal.ACoeff = aCoeffVar.Value; };
-            aCoeffVar.Label = new Group(configsBar, "Relaxation Coeff.", aCoeffVar.re);
+            aCoeffVar.Group = aCoeffGroup;
             aCoeffVar.Step = 0.0002;
             aCoeffVar.Precision = 4;
 
+            aCoeffGroup.Label = "Relaxation Coefficient";
+
+            var kCoeffGroup = new Group(configsBar);
             var kcoeff = new ComplexVariable(configsBar, fractal.KCoeff);
             kcoeff.Changed += delegate { fractal.KCoeff = kcoeff.Value; };
-            kcoeff.Label = new Group(configsBar, "Nova Coeff.", kcoeff.re);
+            kcoeff.Group = kCoeffGroup;
             kcoeff.Step = 0.0002;
             kcoeff.Precision = 4;
+
+            kCoeffGroup.Label = "Nova Coefficient";
 
             /* Set up a bar for the user to play with the equation */
 

@@ -22,7 +22,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar variable which can hold a boolean value.
     /// </summary>
-    public sealed class BoolVariable : Variable
+    public sealed class BoolVariable : Variable, IValueVariable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.

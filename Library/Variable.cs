@@ -7,9 +7,36 @@ using System.Linq;
 namespace AntTweakBar
 {
     /// <summary>
+    /// The interface implemented by all AntTweakBar variables.
+    /// </summary>
+    public interface IVariable : IDisposable
+    {
+        /// <summary>
+        /// Gets this variable's parent bar.
+        /// </summary>
+        Bar ParentBar { get; }
+    }
+
+    /// <summary>
+    /// The interface implemented by all AntTweakBar value variables.
+    /// </summary>
+    public interface IValueVariable : IVariable
+    {
+        /// <summary>
+        /// Occurs when the user changes this variable's value.
+        /// </summary>
+        event EventHandler Changed;
+
+        /// <summary>
+        /// Raises the Changed event.
+        /// </summary>
+        void OnChanged(EventArgs e);
+    }
+
+    /// <summary>
     /// The base class for all AntTweakBar variables.
     /// </summary>
-    public abstract class Variable : IDisposable
+    public abstract class Variable : IVariable
     {
         /// <summary>
         /// The default label for unnamed variables.
@@ -173,7 +200,7 @@ namespace AntTweakBar
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposed && (ParentBar != null))
             {

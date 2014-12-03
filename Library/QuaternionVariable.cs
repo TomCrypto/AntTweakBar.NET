@@ -29,7 +29,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar variable which can hold a quaternion.
     /// </summary>
-    public sealed class QuaternionVariable : Variable
+    public sealed class QuaternionVariable : Variable, IValueVariable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.

@@ -10,7 +10,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar bar, which holds a set of variables.
     /// </summary>
-    public sealed class Bar : IEnumerable<Variable>, IDisposable
+    public sealed class Bar : IEnumerable<IVariable>, IDisposable
     {
         /// <summary>
         /// The default label for unnamed bars.
@@ -190,14 +190,14 @@ namespace AntTweakBar
 
         #region IEnumerable
 
-        private readonly ICollection<Variable> variables = new HashSet<Variable>();
+        private readonly ICollection<IVariable> variables = new HashSet<IVariable>();
 
-        internal void Add(Variable variable)
+        internal void Add(IVariable variable)
         {
             variables.Add(variable);
         }
 
-        internal void Remove(Variable variable)
+        internal void Remove(IVariable variable)
         {
             variables.Remove(variable);
         }
@@ -214,7 +214,7 @@ namespace AntTweakBar
             }
         }
 
-        public IEnumerator<Variable> GetEnumerator()
+        public IEnumerator<IVariable> GetEnumerator()
         {
             return variables.GetEnumerator();
         }

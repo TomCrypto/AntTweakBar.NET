@@ -27,7 +27,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar variable which can hold a 3D vector.
     /// </summary>
-    public sealed class VectorVariable : Variable
+    public sealed class VectorVariable : Variable, IValueVariable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.
