@@ -72,17 +72,6 @@ namespace AntTweakBar
         #region Customization
 
         /// <summary>
-        /// Moves a variable group into another group.
-        /// </summary>
-        /// <param name="group">The name of the group to move.</param>
-        /// <param name="into">The name of the group to move it into.</param>
-        public void MoveGroup(String group, String into)
-        {
-            Tw.SetCurrentWindow(ParentContext.Identifier);
-            Tw.Define(String.Format("{0}/`{1}` group=`{2}`", ID, group, into));
-        }
-
-        /// <summary>
         /// Gets or sets this bar's label.
         /// </summary>
         public String Label

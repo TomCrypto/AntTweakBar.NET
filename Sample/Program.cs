@@ -85,11 +85,8 @@ namespace Sample
             get { return new Complex(re.Value, im.Value); }
             set
             {
-                bool changed = !value.Equals(Value);
                 re.Value = value.Real;
                 im.Value = value.Imaginary;
-                if (changed)
-                    OnChanged(EventArgs.Empty);
             }
         }
 
@@ -419,12 +416,13 @@ namespace Sample
              * keeping a reference to them. That way we don't need to track them at all.
             */
 
-            var symbolicVariables = new List<Variable>();
+            var symbolicVarGroup = new Group(fractalBar);
 
             for (char symbol = 'A'; symbol <= 'F'; ++symbol)
             {
                 var symbolVar = new DoubleVariable(fractalBar);
                 symbolVar.Label = symbol.ToString();
+                symbolVar.Group = symbolicVarGroup;
                 symbolVar.Step = 0.0002f;
                 symbolVar.Precision = 4;
 
@@ -436,14 +434,10 @@ namespace Sample
 
                 // also add the symbol initially, so that it exists on startup
                 poly[symbolVar.Label] = symbolVar.Value;
-                symbolicVariables.Add(symbolVar);
             }
 
-            var grp = symbolicVariables[0].Group;
-
-            var symbolicVarGroup = new Group(fractalBar, "Symbolic Variables", symbolicVariables);
-
             /* Start the symbol list closed to avoid clutter */
+            symbolicVarGroup.Label = "Symbolic Variables";
             symbolicVarGroup.Open = false;
         }
 

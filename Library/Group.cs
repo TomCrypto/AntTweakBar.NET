@@ -36,23 +36,33 @@ namespace AntTweakBar
         }
 
         /// <summary>
+        /// Lazily creates a new group in a given bar. The group is not
+        /// usable until it is assigned to contain at least one variable.
+        /// </summary>
+        /// <param name="parentBar">The bar the new group should belong to.</param>
+        public Group(Bar parentBar)
+        {
+            if (parentBar == null) {
+                throw new ArgumentNullException("parentBar");
+            }
+
+            id = Guid.NewGuid().ToString();
+            this.parentBar = parentBar;
+        }
+
+        /// <summary>
         /// Creates a new group in a given bar and puts variables in it.
         /// </summary>
         /// <param name="parentBar">The bar the new group should belong to.</param>
         /// <param name="label">A label to display for the new group.</param>
         /// <param name="variables">Variables to put in the new group.</param>
-        public Group(Bar parentBar, String label, params Variable[] variables)
+        public Group(Bar parentBar, String label, params Variable[] variables) : this(parentBar)
         {
-            if (parentBar == null) {
-                throw new ArgumentNullException("parentBar");
-            } else if (label == null) {
+            if (label == null) {
                 throw new ArgumentNullException("label");
             } else if (variables == null) {
                 throw new ArgumentNullException("variables");
             }
-
-            id = Guid.NewGuid().ToString();
-            this.parentBar = parentBar;
 
             foreach (var variable in variables) {
                 variable.Group = this;
