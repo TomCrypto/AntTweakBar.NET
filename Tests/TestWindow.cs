@@ -81,7 +81,7 @@ namespace Tests
                 return false;
         }
 
-        public Context Context { get { return context; } }
+        public Context ATBCtx { get { return context; } }
 
         private Context context;
 
@@ -100,19 +100,42 @@ namespace Tests
             Mouse.ButtonUp += (sender, e) => HandleMouseClick(context, e);
             Mouse.ButtonDown += (sender, e) => HandleMouseClick(context, e);
             Mouse.Move += (sender, e) => context.HandleMouseMove(e.Position);
+
+            context.HandleResize(ClientSize);
+
+            Visible = true;
         }
+
+        private long lastTime = DateTime.Now.Ticks;
+        private int frameCount = 0;
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            Console.WriteLine("DRAWING!");
-
-            MakeCurrent();
-
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+        }
 
-            context.Draw();
+        public new void ProcessEvents()
+        {
+            base.ProcessEvents();
 
-            SwapBuffers();
+            long now = DateTime.Now.Ticks;
+
+            double elapsed = (now - lastTime) / 10000000.0;
+
+            if (elapsed >= 1.0 / 60.0) {
+                MakeCurrent();
+
+                if (frameCount == 0) {
+                    OnLoad(EventArgs.Empty);
+                }
+
+                OnRenderFrame(new FrameEventArgs(elapsed));
+
+                context.Draw();
+                lastTime = now;
+                SwapBuffers();
+                ++frameCount;
+            }
         }
 
         protected override void Dispose(bool manual)
