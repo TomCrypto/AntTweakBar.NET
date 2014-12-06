@@ -69,6 +69,7 @@
     <Compile Include="StringVariable.cs" />
     <Compile Include="VectorVariable.cs" />
     <Compile Include="StructVariable.cs" />
+    <Compile Include="Mappings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

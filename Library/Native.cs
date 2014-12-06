@@ -62,13 +62,13 @@ namespace AntTweakBar
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwKeyPressed(
             [In] Int32 key,
-            [In] Tw.KeyModifier modifiers);
+            [In] Tw.KeyModifiers modifiers);
 
         [DllImport(DLLName, EntryPoint = "TwKeyTest")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwKeyTest(
             [In] Int32 key,
-            [In] Tw.KeyModifier modifiers);
+            [In] Tw.KeyModifiers modifiers);
 
         [DllImport(DLLName, EntryPoint = "TwEventSFML")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -453,7 +453,7 @@ namespace AntTweakBar
         /// <param name="key">The ASCII code of the pressed key, or one of the <see cref="AntTweakBar.Tw.SpecialKey"/> codes.</param>
         /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifier"/> constants.</param>
         /// <returns>Whether the key event has been handled by AntTweakBar.</returns>
-        public static bool KeyPressed(int key, KeyModifier modifiers)
+        public static bool KeyPressed(int key, KeyModifiers modifiers)
         {
             return NativeMethods.TwKeyPressed(key, modifiers);
         }
@@ -464,7 +464,7 @@ namespace AntTweakBar
         /// <param name="key">The ASCII code of the pressed key, or one of the <see cref="AntTweakBar.Tw.SpecialKey"/> codes.</param>
         /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifier"/> constants.</param>
         /// <returns>Whether the key event would have been handled by AntTweakBar.</returns>
-        public static bool KeyTest(int key, KeyModifier modifiers)
+        public static bool KeyTest(int key, KeyModifiers modifiers)
         {
             return NativeMethods.TwKeyTest(key, modifiers);
         }

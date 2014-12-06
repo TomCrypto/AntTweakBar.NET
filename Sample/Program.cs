@@ -145,69 +145,45 @@ namespace Sample
         {
             var action = e.IsPressed ? Tw.MouseAction.Pressed : Tw.MouseAction.Released;
 
-            switch (e.Button)
-            {
-                case MouseButton.Left:
-                    return context.HandleMouseClick(action, Tw.MouseButton.Left);
-                case MouseButton.Right:
-                    return context.HandleMouseClick(action, Tw.MouseButton.Right);
-                case MouseButton.Middle:
-                    return context.HandleMouseClick(action, Tw.MouseButton.Middle);
+            if (Tw.Mappings.OpenTK.Buttons.ContainsKey((int)e.Button)) {
+                return context.HandleMouseClick(action, Tw.Mappings.OpenTK.Buttons[(int)e.Button]);
+            } else {
+                return false;
             }
-
-            return false;
         }
 
-        private static bool HandleKeyPress(Context context, KeyboardKeyEventArgs e)
+        private static bool HandleKeyDown(Context context, KeyboardKeyEventArgs e)
         {
-            var modifier = Tw.KeyModifier.None;
+            var modifiers = Tw.KeyModifiers.None;
             if (e.Modifiers.HasFlag(KeyModifiers.Alt))
-                modifier |= Tw.KeyModifier.Alt;
+                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Alt];
             if (e.Modifiers.HasFlag(KeyModifiers.Shift))
-                modifier |= Tw.KeyModifier.Shift;
+                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Shift];
             if (e.Modifiers.HasFlag(KeyModifiers.Control))
-                modifier |= Tw.KeyModifier.Ctrl;
+                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Control];
 
-            var mapping = new Dictionary<Key, Tw.SpecialKey>()
-            {
-                { Key.Back,          Tw.SpecialKey.Backspace },
-                { Key.Tab,           Tw.SpecialKey.Tab },
-                { Key.Clear,         Tw.SpecialKey.Clear },
-                { Key.Enter,         Tw.SpecialKey.Return },
-                { Key.Pause,         Tw.SpecialKey.Pause },
-                { Key.Escape,        Tw.SpecialKey.Escape },
-                //{ Key.Space,         TW.SpecialKey.Space }, // already handled by KeyPress
-                { Key.Delete,        Tw.SpecialKey.Delete },
-                { Key.Up,            Tw.SpecialKey.Up },
-                { Key.Left,          Tw.SpecialKey.Left },
-                { Key.Down,          Tw.SpecialKey.Down },
-                { Key.Right,         Tw.SpecialKey.Right },
-                { Key.Insert,        Tw.SpecialKey.Insert },
-                { Key.Home,          Tw.SpecialKey.Home },
-                { Key.End,           Tw.SpecialKey.End },
-                { Key.PageUp,        Tw.SpecialKey.PageUp },
-                { Key.PageDown,      Tw.SpecialKey.PageDown },
-                { Key.F1,            Tw.SpecialKey.F1 },
-                { Key.F2,            Tw.SpecialKey.F2 },
-                { Key.F3,            Tw.SpecialKey.F3 },
-                { Key.F4,            Tw.SpecialKey.F4 },
-                { Key.F5,            Tw.SpecialKey.F5 },
-                { Key.F6,            Tw.SpecialKey.F6 },
-                { Key.F7,            Tw.SpecialKey.F7 },
-                { Key.F8,            Tw.SpecialKey.F8 },
-                { Key.F9,            Tw.SpecialKey.F9 },
-                { Key.F10,           Tw.SpecialKey.F10 },
-                { Key.F11,           Tw.SpecialKey.F11 },
-                { Key.F12,           Tw.SpecialKey.F12 },
-                { Key.F13,           Tw.SpecialKey.F13 },
-                { Key.F14,           Tw.SpecialKey.F14 },
-                { Key.F15,           Tw.SpecialKey.F15 },
-            };
-
-            if (mapping.ContainsKey(e.Key))
-                return context.HandleKeyPress(mapping[e.Key], modifier);
-            else
+            if (Tw.Mappings.OpenTK.Keys.ContainsKey((int)e.Key)) {
+                return context.HandleKeyDown(Tw.Mappings.OpenTK.Keys[(int)e.Key], modifiers);
+            } else {
                 return false;
+            }
+        }
+
+        private static bool HandleKeyUp(Context context, KeyboardKeyEventArgs e)
+        {
+            var modifiers = Tw.KeyModifiers.None;
+            if (e.Modifiers.HasFlag(KeyModifiers.Alt))
+                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Alt];
+            if (e.Modifiers.HasFlag(KeyModifiers.Shift))
+                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Shift];
+            if (e.Modifiers.HasFlag(KeyModifiers.Control))
+                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Control];
+
+            if (Tw.Mappings.OpenTK.Keys.ContainsKey((int)e.Key)) {
+                return context.HandleKeyUp(Tw.Mappings.OpenTK.Keys[(int)e.Key], modifiers);
+            } else {
+                return false;
+            }
         }
 
         #endregion
@@ -226,38 +202,6 @@ namespace Sample
 
             context = new Context(Tw.GraphicsAPI.OpenGL);
             fractal = new Fractal();
-
-            /* Hook up the different events to the AntTweakBar.NET context, and
-             * allow the user to navigate the fractal using the keyboard/mouse. */
-
-            KeyPress += (sender, e) => context.HandleKeyPress(e.KeyChar);
-            Resize += (sender, e) => context.HandleResize(ClientSize);
-            KeyDown += (sender, e) => {
-                if (!HandleKeyPress(context, e) && (e.Key == Key.Escape)) {
-                    Close(); // Close program on Esc when appropriate
-                }
-            };
-
-            Mouse.WheelChanged += (sender, e) =>
-            {
-                if (!context.HandleMouseWheel(e.Value)) {
-                    fractal.ZoomIn(e.DeltaPrecise);
-                }
-            };
-
-            Mouse.Move += (sender, e) => context.HandleMouseMove(e.Position);
-            Mouse.ButtonUp += (sender, e) => HandleMouseClick(context, e);
-            Mouse.ButtonDown += (sender, e) =>
-            {
-                if (!HandleMouseClick(context, e))
-                {
-                    if (e.Button == MouseButton.Left)
-                        fractal.Pan(0.5f * (2.0f * e.X -  Width) / Height,
-                                    0.5f * (2.0f * e.Y - Height) / Height);
-                    else if (e.Button == MouseButton.Right)
-                        fractal.ZoomIn(1);
-                }
-            };
 
             /* Add AntTweakBar variables and events */
 
@@ -399,10 +343,86 @@ namespace Sample
             ExpIz,
         }
 
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            if (HandleMouseClick(context, e)) {
+                return;
+            }
+
+            if (e.Button == MouseButton.Left)
+                fractal.Pan(0.5f * (2.0f * e.X -  Width) / Height,
+                            0.5f * (2.0f * e.Y - Height) / Height);
+            else if (e.Button == MouseButton.Right)
+                fractal.ZoomIn(1);
+        }
+
+        protected override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            if (HandleMouseClick(context, e)) {
+                return;
+            }
+        }
+
+        protected override void OnMouseMove(MouseMoveEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            if (context.HandleMouseMove(e.Position)) {
+                return;
+            }
+        }
+
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            if (context.HandleMouseWheel(e.Value)) {
+                return;
+            }
+
+            fractal.ZoomIn(e.DeltaPrecise);
+        }
+
+        protected override void OnKeyDown(KeyboardKeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (HandleKeyDown(context, e)) {
+                return;
+            }
+
+            if (e.Key == Key.Escape) {
+                Close();
+            }
+        }
+
+        protected override void OnKeyUp(KeyboardKeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+
+            if (HandleKeyUp(context, e)) {
+                return;
+            }
+        }
+
+        protected override void OnKeyPress(KeyPressEventArgs e)
+        {
+            base.OnKeyPress(e);
+
+            if (context.HandleKeyPress(e.KeyChar)) {
+                return;
+            }
+        }
+
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
             fractal.Dimensions = ClientSize;
+            context.HandleResize(ClientSize);
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)

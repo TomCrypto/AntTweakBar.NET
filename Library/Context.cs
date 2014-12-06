@@ -139,15 +139,60 @@ namespace AntTweakBar
             return Tw.MouseClick(action, button);
         }
 
+        private bool ignoreKeyPress = false;
+
         /// <summary>
-        /// Notifies this context of a key press.
+        /// Notifies this context that a character has been typed.
         /// </summary>
-        /// <param name="key">The key character pressed.</param>
-        public bool HandleKeyPress(char key)
+        /// <param name="key">The character typed.</param>
+        public bool HandleKeyPress(char character)
         {
             Tw.SetCurrentWindow(Identifier);
-            return Tw.KeyPressed((int)key, Tw.KeyModifier.None);
+
+            if (!ignoreKeyPress) {
+                return Tw.KeyPressed((int)character, Tw.KeyModifiers.None);
+            } else {
+                return false;
+            }
         }
+
+        /// <summary>
+        /// Notifies this context that a key has been pressed.
+        /// </summary>
+        /// <param name="key">The key pressed.</param>
+        /// <param name="modifiers">The key modifiers.</param>
+        public bool HandleKeyDown(Tw.Key key, Tw.KeyModifiers modifiers)
+        {
+            // TODO
+
+            Tw.SetCurrentWindow(Identifier);
+
+            var handled = Tw.KeyPressed((int)key, modifiers);
+
+            if (handled) {
+                if (((int)key >= (int)'A') && ((int)key <= (int)'Z')) {
+                    ignoreKeyPress = true;
+                }
+
+                if (key == Tw.Key.Space) {
+                    ignoreKeyPress = true;
+                }
+            }
+
+            return handled;
+        }
+
+        /// <summary>
+        /// Notifies this context that a key has been released.
+        /// </summary>
+        /// <param name="key">The key released.</param>
+        /// <param name="modifiers">The key modifiers.</param>
+        public bool HandleKeyUp(Tw.Key key, Tw.KeyModifiers modifiers)
+        {
+            return (ignoreKeyPress = false);
+        }
+
+#if false
 
         /// <summary>
         /// Tests this context for whether a key press would be handled.
@@ -156,18 +201,7 @@ namespace AntTweakBar
         public bool HandleKeyTest(char key)
         {
             Tw.SetCurrentWindow(Identifier);
-            return Tw.KeyTest((int)key, Tw.KeyModifier.None);
-        }
-
-        /// <summary>
-        /// Notifies this context of a special key press.
-        /// </summary>
-        /// <param name="key">The key pressed.</param>
-        /// <param name="modifiers">The key modifiers pressed.</param>
-        public bool HandleKeyPress(Tw.SpecialKey key, Tw.KeyModifier modifiers)
-        {
-            Tw.SetCurrentWindow(Identifier);
-            return Tw.KeyPressed((int)key, modifiers);
+            return Tw.KeyTest((int)key, Tw.KeyModifiers.None);
         }
 
         /// <summary>
@@ -175,11 +209,13 @@ namespace AntTweakBar
         /// </summary>
         /// <param name="key">The key pressed.</param>
         /// <param name="modifiers">The key modifiers pressed.</param>
-        public bool HandleKeyTest(Tw.SpecialKey key, Tw.KeyModifier modifiers)
+        public bool HandleKeyTest(Tw.SpecialKey key, Tw.KeyModifiers modifiers)
         {
             Tw.SetCurrentWindow(Identifier);
             return Tw.KeyTest((int)key, modifiers);
         }
+
+#endif
 
         /// <summary>
         /// The SFML event handler.

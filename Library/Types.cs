@@ -340,7 +340,7 @@ namespace AntTweakBar
         /// Specifies the possible key modifiers recognized by AntTweakBar.
         /// </summary>
         [Flags]
-        public enum KeyModifier
+        public enum KeyModifiers
         {
             /// <summary>
             /// Represents no key modifier.
@@ -367,7 +367,7 @@ namespace AntTweakBar
         /// <summary>
         /// Specifies the possible special keys recognized by AntTweakBar.
         /// </summary>
-        public enum SpecialKey
+        public enum Key
         {
             None                                 = 0,
             Backspace                            = '\b',
@@ -402,6 +402,32 @@ namespace AntTweakBar
             F13                                  = 294,
             F14                                  = 295,
             F15                                  = 296,
+            A                                    = 'A',
+            B                                    = 'B',
+            C                                    = 'C',
+            D                                    = 'D',
+            E                                    = 'E',
+            F                                    = 'F',
+            G                                    = 'G',
+            H                                    = 'H',
+            I                                    = 'I',
+            J                                    = 'J',
+            K                                    = 'K',
+            L                                    = 'L',
+            M                                    = 'M',
+            N                                    = 'N',
+            O                                    = 'O',
+            P                                    = 'P',
+            Q                                    = 'Q',
+            R                                    = 'R',
+            S                                    = 'S',
+            T                                    = 'T',
+            U                                    = 'U',
+            V                                    = 'V',
+            W                                    = 'W',
+            X                                    = 'X',
+            Y                                    = 'Y',
+            Z                                    = 'Z',
         }
     }
 }
