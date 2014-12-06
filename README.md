@@ -1,3 +1,13 @@
+DEV BRANCH
+==========
+
+v0.5.0 milestones:
+
+ * fix input handling (see #4)
+ * implement a good StructVariable or delay to next release (not critical)
+ * check that the groups work properly, and maybe add a circular reference check
+ * document all low-level functions, check all native functions are there
+
 AntTweakBar.NET 0.4.4
 =====================
 
