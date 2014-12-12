@@ -17,10 +17,12 @@ namespace Sample
     /// This variable will hold a polynomial (if an invalid formula
     /// is entered by the user, it will simply refuse to accept it).
     /// </summary>
-    class PolynomialVariable
+    class PolynomialVariable : IValueVariable
     {
         // Used to hold optional symbols used during polynomial parsing
         private readonly IDictionary<String, Double> symbols = new Dictionary<String, Double>();
+
+        public IDictionary<String, Double> Symbols { get { return symbols; } }
 
         /// <summary>
         /// Gets or sets a polynomial symbol.
@@ -38,64 +40,93 @@ namespace Sample
             }
         }
 
+        public Bar ParentBar { get { return polyString.ParentBar; } }
+
+        public event EventHandler Changed
+        {
+            add { polyString.Changed += value; }
+            remove { polyString.Changed -= value; }
+        }
+
+        public void OnChanged(EventArgs e)
+        {
+            polyString.OnChanged(e);
+        }
+
         /// <summary>
         /// The actual backing variable.
         /// </summary>
-        public StringVariable PolyString { get; set; }
+        private StringVariable polyString { get; set; }
 
-        public PolynomialVariable(Bar bar, String poly, String def = null)
+        public PolynomialVariable(Bar bar, Polynomial poly, String def = null)
         {
-            PolyString = new StringVariable(bar, poly, def);
-            PolyString.Validating += (s, e) => { e.Valid = (Polynomial.Parse(e.Value, symbols) != null); };
+            polyString = new StringVariable(bar, poly.ToString(), def);
+            polyString.Validating += (s, e) => {
+                e.Valid = (Polynomial.Parse(e.Value, symbols) != null);
+            };
         }
 
-        public Polynomial Polynomial
+        public String Label
         {
-            get { return Polynomial.Parse(PolyString.Value, symbols); }
+            get { return polyString.Label; }
+            set { polyString.Label = value; }
+        }
+
+        public Polynomial Value
+        {
+            get { return Polynomial.Parse(polyString.Value, symbols); }
+            set { polyString.Value = value.ToString(); }
+        }
+
+        public void Dispose()
+        {
+            polyString.Dispose();
         }
     }
 
     class ComplexVariable : StructVariable<Complex>
     {
-        public ComplexVariable(Bar bar, Complex initialValue) : base(bar, new DoubleVariable(bar, 0, "label=Real"), new DoubleVariable(bar, 0, "label=Imaginary"))
+        private DoubleVariable re { get { return (variables[0] as DoubleVariable); } }
+        private DoubleVariable im { get { return (variables[1] as DoubleVariable); } }
+
+        public ComplexVariable(Bar bar, Complex initialValue)
+            : base(bar, initialValue,
+                   new DoubleVariable(bar, 0, "label=Real"),
+                   new DoubleVariable(bar, 0, "label=Imaginary"))
         {
-            Value = initialValue;
         }
 
         public override Complex Value
         {
             get
             {
-                return new Complex(
-                    (variables[0] as DoubleVariable).Value,
-                    (variables[1] as DoubleVariable).Value
-                );
+                return new Complex(re.Value, im.Value);
             }
 
             set
             {
-                (variables[0] as DoubleVariable).Value = value.Real;
-                (variables[1] as DoubleVariable).Value = value.Imaginary;
+                re.Value = value.Real;
+                im.Value = value.Imaginary;
             }
         }
 
         public Double Step
         {
-            get { return (variables[0] as DoubleVariable).Step; }
+            get { return re.Step; }
             set
             {
-                (variables[0] as DoubleVariable).Step = value;
-                (variables[1] as DoubleVariable).Step = value;
+                re.Step = value;
+                im.Step = value;
             }
         }
 
         public Double Precision
         {
-            get { return (variables[0] as DoubleVariable).Precision; }
+            get { return re.Precision; }
             set
             {
-                (variables[0] as DoubleVariable).Precision = value;
-                (variables[1] as DoubleVariable).Precision = value;
+                re.Precision = value;
+                im.Precision = value;
             }
         }
     }
@@ -271,30 +302,30 @@ namespace Sample
             fractalBar.Position = new Point(Width - 500 - 20, 20);
             fractalBar.Size = new Size(500, 150);
 
-            var poly = new PolynomialVariable(fractalBar, "z^3 - 1");
+            var poly = new PolynomialVariable(fractalBar, Polynomial.Parse("z^3 - 1"));
             var preset = new EnumVariable<FractalPreset>(fractalBar, FractalPreset.Cubic);
-            poly.PolyString.Changed += delegate { fractal.Polynomial = poly.Polynomial; };
-            poly.PolyString.Label = "Equation";
+            poly.Changed += delegate { fractal.Polynomial = poly.Value; };
+            poly.Label = "Equation";
             preset.Label = "Presets";
             preset.Changed += delegate
             {
                 switch (preset.Value)
                 {
                     case FractalPreset.Cubic:
-                        poly.PolyString.Value = "z^3 - 1";
+                        poly.Value = Polynomial.Parse("z^3 - 1", poly.Symbols);
                         break;
                     case FractalPreset.OtherCubic:
-                        poly.PolyString.Value = "z^3 - 2z + 2";
+                        poly.Value = Polynomial.Parse("z^3 - 2z + 2", poly.Symbols);
                         break;
                     case FractalPreset.SineTaylor:
-                        poly.PolyString.Value = "z - 1/6z^3 + 1/120z^5 - 1/5040z^7 + 1/362880z^9";
+                        poly.Value = Polynomial.Parse("z - 1/6z^3 + 1/120z^5 - 1/5040z^7 + 1/362880z^9", poly.Symbols);
                         break;
                     case FractalPreset.ExpIz:
-                        poly.PolyString.Value = "1 + iz - 1/2z^2 + (1/6i)z^3";
+                        poly.Value = Polynomial.Parse("1 + iz - 1/2z^2 + (1/6i)z^3", poly.Symbols);
                         break;
                 }
 
-                fractal.Polynomial = poly.Polynomial;
+                fractal.Polynomial = poly.Value;
             };
 
             /* This is where you can use the Changed event to great advantage: we are
@@ -316,7 +347,7 @@ namespace Sample
                 symbolVar.Changed += delegate
                 {
                     poly[symbolVar.Label] = symbolVar.Value; // update symbol
-                    fractal.Polynomial = poly.Polynomial; // update fractal
+                    fractal.Polynomial = poly.Value; // update fractal
                 };
 
                 // also add the symbol initially, so that it exists on startup
