@@ -5,6 +5,10 @@ using System.Linq;
 
 namespace AntTweakBar
 {
+    /// <summary>
+    /// A pseudo-variable acting as a container for a structured group of related variables.
+    /// </summary>
+    /// <typeparam name="T">The type of this variable's value.</typeparam>
     public abstract class StructVariable<T> : IValueVariable
     {
         /// <summary>
@@ -38,28 +42,39 @@ namespace AntTweakBar
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         protected IList<IValueVariable> variables;
 
-        public StructVariable(Bar bar, params IValueVariable[] variables)
+        /// <summary>
+        /// Creates a new struct variable in a given bar.
+        /// </summary>
+        /// <param name="bar">The bar to create the struct variable in.</param>
+        /// <param name="initialValue">The initial value of the variable.</param>
+        /// <param name="members">The set of member variables.</param>
+        public StructVariable(Bar bar, T initialValue = default(T), params IValueVariable[] members)
         {
             if (bar == null) {
                 throw new ArgumentNullException("bar");
-            } else if (variables == null) {
-                throw new ArgumentNullException("variables");
-            } else if (variables.Length == 0) {
+            } else if (members == null) {
+                throw new ArgumentNullException("members");
+            } else if (members.Length == 0) {
                 throw new ArgumentException("At least one variable.");
-            } else if (variables.Any((var) => (var.ParentBar != bar))) {
+            } else if (members.Any((var) => (var.ParentBar != bar))) {
                 throw new ArgumentException("All variables must be in the same bar.");
             }
 
-            this.variables = new List<IValueVariable>(variables);
-            this.parentBar = bar;
+            variables = new List<IValueVariable>(members);
+            parentBar = bar;
 
-            foreach (var variable in this.variables) {
+            foreach (var variable in variables) {
                 variable.Changed += (s, e) => {
                     OnChanged(e);
                 };
             }
+
+            Value = initialValue;
         }
 
+        /// <summary>
+        /// Gets or sets the group this variable represents.
+        /// </summary>
         public Group Group
         {
             get { return (variables.First() as Variable).Group; }
@@ -73,15 +88,9 @@ namespace AntTweakBar
 
         #region IDisposable
 
-        ~StructVariable()
-        {
-            Dispose(false);
-        }
-
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         private void Dispose(bool disposing)
@@ -114,7 +123,7 @@ namespace AntTweakBar
 
         public override String ToString()
         {
-            return String.Format("[StructVariable<{0}>: Label={1}, Value={2}]", typeof(T).Name, null /* TODO */, Value);
+            return String.Format("[StructVariable<{0}>: Group={1}, Value={2}]", typeof(T).Name, Group, Value);
         }
     }
 }

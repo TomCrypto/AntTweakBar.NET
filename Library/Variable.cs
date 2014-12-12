@@ -7,7 +7,7 @@ using System.Linq;
 namespace AntTweakBar
 {
     /// <summary>
-    /// The interface implemented by all AntTweakBar variables.
+    /// Implemented by all AntTweakBar variables.
     /// </summary>
     public interface IVariable : IDisposable
     {
@@ -18,7 +18,7 @@ namespace AntTweakBar
     }
 
     /// <summary>
-    /// The interface implemented by all AntTweakBar value variables.
+    /// Implemented by all AntTweakBar value variables.
     /// </summary>
     public interface IValueVariable : IVariable
     {
