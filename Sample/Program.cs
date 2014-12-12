@@ -139,7 +139,7 @@ namespace Sample
 
         // Because OpenTK does not use an event loop, the native AntTweakBar library
         // has no provisions for directly handling user events. Therefore we need to
-        // convert polled OpenTK events to AntTweakBar events before handling them.
+        // convert any OpenTK events to AntTweakBar events before handling them.
 
         private static bool HandleMouseClick(Context context, MouseButtonEventArgs e)
         {
