@@ -5,22 +5,22 @@ using System.Runtime.InteropServices;
 namespace AntTweakBar
 {
     /// <summary>
-    /// Specifies the possible color selection modes.
+    /// The possible color selection modes.
     /// </summary>
     public enum ColorMode
     {
         /// <summary>
-        /// Color selection is in RGB mode.
+        /// RGB color selection mode.
         /// </summary>
         RGB,
         /// <summary>
-        /// Color selection is in HLS (HSL) mode.
+        /// HLS (HSL) color selection mode.
         /// </summary>
         HLS,
     }
 
     /// <summary>
-    /// Specifies the possible (axis-aligned) axis orientations.
+    /// The possible (axis-aligned) axis orientations.
     /// </summary>
     public enum AxisOrientation
     {
@@ -91,7 +91,7 @@ namespace AntTweakBar
             [In] IntPtr message);
 
         /// <summary>
-        /// Specifies the graphics API's AntTweakBar supports.
+        /// The graphics API's AntTweakBar supports.
         /// </summary>
         public enum GraphicsAPI
         {
@@ -122,7 +122,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Specifies the valid parameter value types to SetParam.
+        /// The valid parameter value types to SetParam.
         /// </summary>
         public enum ParamValueType
         {
@@ -145,12 +145,12 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Defines the maximum static string length.
+        /// The maximum static string length.
         /// </summary>
         internal const int MaxStringLength = 4096;
 
         /// <summary>
-        /// Specifies the different possible variable type, excluding enums and structs.
+        /// The different possible variable type, excluding enums and structs.
         /// </summary>
         public enum VariableType
         {
@@ -245,7 +245,7 @@ namespace AntTweakBar
         };
 
         /// <summary>
-        /// Specifies information about a member of an AntTweakBar struct variable.
+        /// Information about a member of an AntTweakBar struct variable.
         /// </summary>
         public struct StructMemberInfo
         {
@@ -302,7 +302,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Specifies the possible mouse actions recognized by AntTweakBar.
+        /// The possible mouse actions recognized by AntTweakBar.
         /// </summary>
         public enum MouseAction
         {
@@ -317,55 +317,55 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Specifies the possible mouse buttons recognized by AntTweakBar.
+        /// The possible mouse buttons recognized by AntTweakBar.
         /// </summary>
         public enum MouseButton
         {
             None                                 = 0,
             /// <summary>
-            /// Represents the left mouse button.
+            /// The left mouse button.
             /// </summary>
             Left                                 = 1,
             /// <summary>
-            /// Represents the middle mouse button.
+            /// The middle mouse button.
             /// </summary>
             Middle                               = 2,
             /// <summary>
-            /// Represents the right mouse button.
+            /// The right mouse button.
             /// </summary>
             Right                                = 3,
         }
 
         /// <summary>
-        /// Specifies the possible key modifiers recognized by AntTweakBar.
+        /// The possible key modifiers recognized by AntTweakBar.
         /// </summary>
         [Flags]
         public enum KeyModifiers
         {
             /// <summary>
-            /// Represents no key modifier.
+            /// No key modifier.
             /// </summary>
             None                                 = 0x0000,
             /// <summary>
-            /// Represents the shift key modifier.
+            /// The shift key modifier.
             /// </summary>
             Shift                                = 0x0003,
             /// <summary>
-            /// Represents the ctrl key modifier.
+            /// The ctrl key modifier.
             /// </summary>
             Ctrl                                 = 0x00c0,
             /// <summary>
-            /// Represents the alt key modifier.
+            /// The alt key modifier.
             /// </summary>
             Alt                                  = 0x0100,
             /// <summary>
-            /// Represents the meta key modifier.
+            /// The meta key modifier.
             /// </summary>
             Meta                                 = 0x0c00,
         }
 
         /// <summary>
-        /// Specifies the possible special keys recognized by AntTweakBar.
+        /// The possible keys recognized by AntTweakBar.
         /// </summary>
         public enum Key
         {

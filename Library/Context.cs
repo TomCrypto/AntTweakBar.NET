@@ -162,7 +162,7 @@ namespace AntTweakBar
         /// <summary>
         /// Notifies this context that a character has been typed.
         /// </summary>
-        /// <param name="key">The character typed.</param>
+        /// <param name="character">The character typed.</param>
         public bool HandleKeyPress(char character)
         {
             Tw.SetCurrentWindow(Identifier);
@@ -173,9 +173,11 @@ namespace AntTweakBar
                 } else { // this is supposed to handle the Ctrl+letter combination properly (somehow)
                     return Tw.KeyPressed((char)(character & 0xFF), Tw.KeyModifiers.None);
                 }
+            } else {
+                ignoreKeyPress = false;
             }
 
-            return (ignoreKeyPress = false);
+            return false;
         }
 
         /// <summary>
@@ -217,7 +219,8 @@ namespace AntTweakBar
         public bool HandleKeyUp(Tw.Key key, Tw.KeyModifiers modifiers)
         {
             lastModifiers = Tw.KeyModifiers.None;
-            return (ignoreKeyPress = false);
+            ignoreKeyPress = false;
+            return false;
         }
 
         /// <summary>

@@ -450,8 +450,8 @@ namespace AntTweakBar
         /// <summary>
         /// Call this function to inform AntTweakBar when a keyboard event occurs.
         /// </summary>
-        /// <param name="key">The ASCII code of the pressed key, or one of the <see cref="AntTweakBar.Tw.SpecialKey"/> codes.</param>
-        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifier"/> constants.</param>
+        /// <param name="key">The ASCII code of the pressed key.</param>
+        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifiers"/> constants.</param>
         /// <returns>Whether the key event has been handled by AntTweakBar.</returns>
         public static bool KeyPressed(char key, KeyModifiers modifiers)
         {
@@ -461,8 +461,8 @@ namespace AntTweakBar
         /// <summary>
         /// Call this function to inform AntTweakBar when a keyboard event occurs.
         /// </summary>
-        /// <param name="key">The ASCII code of the pressed key, or one of the <see cref="AntTweakBar.Tw.SpecialKey"/> codes.</param>
-        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifier"/> constants.</param>
+        /// <param name="key">One of the <see cref="AntTweakBar.Tw.Key"/> codes.</param>
+        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifiers"/> constants.</param>
         /// <returns>Whether the key event has been handled by AntTweakBar.</returns>
         public static bool KeyPressed(Tw.Key key, KeyModifiers modifiers)
         {
@@ -472,8 +472,8 @@ namespace AntTweakBar
         /// <summary>
         /// This function checks if a key event would be processed but without processing it. This could be helpful to prevent bad handling report.
         /// </summary>
-        /// <param name="key">The ASCII code of the pressed key, or one of the <see cref="AntTweakBar.Tw.SpecialKey"/> codes.</param>
-        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifier"/> constants.</param>
+        /// <param name="key">The ASCII code of the pressed key.</param>
+        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifiers"/> constants.</param>
         /// <returns>Whether the key event would have been handled by AntTweakBar.</returns>
         public static bool KeyTest(char key, KeyModifiers modifiers)
         {
@@ -483,8 +483,8 @@ namespace AntTweakBar
         /// <summary>
         /// This function checks if a key event would be processed but without processing it. This could be helpful to prevent bad handling report.
         /// </summary>
-        /// <param name="key">The ASCII code of the pressed key, or one of the <see cref="AntTweakBar.Tw.SpecialKey"/> codes.</param>
-        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifier"/> constants.</param>
+        /// <param name="key">One of the <see cref="AntTweakBar.Tw.Key"/> codes.</param>
+        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifiers"/> constants.</param>
         /// <returns>Whether the key event would have been handled by AntTweakBar.</returns>
         public static bool KeyTest(Tw.Key key, KeyModifiers modifiers)
         {
