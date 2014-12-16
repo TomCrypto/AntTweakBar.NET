@@ -17,7 +17,7 @@ namespace Sample
     /// This variable will hold a polynomial (if an invalid formula
     /// is entered by the user, it will simply refuse to accept it).
     /// </summary>
-    class PolynomialVariable : IValueVariable
+    sealed class PolynomialVariable : IValueVariable
     {
         // Used to hold optional symbols used during polynomial parsing
         private readonly IDictionary<String, Double> symbols = new Dictionary<String, Double>();
@@ -84,49 +84,50 @@ namespace Sample
         }
     }
 
-    class ComplexVariable : StructVariable<Complex>
+    sealed class ComplexVariable : StructVariable<Complex>
     {
-        private DoubleVariable re { get { return (variables[0] as DoubleVariable); } }
-        private DoubleVariable im { get { return (variables[1] as DoubleVariable); } }
+        private DoubleVariable Re { get { return (variables[0] as DoubleVariable); } }
+        private DoubleVariable Im { get { return (variables[1] as DoubleVariable); } }
 
         public ComplexVariable(Bar bar, Complex initialValue)
-            : base(bar, initialValue,
-                   new DoubleVariable(bar, 0, "label=Real"),
-                   new DoubleVariable(bar, 0, "label=Imaginary"))
+            : base(bar, new DoubleVariable(bar, initialValue.Real),
+                        new DoubleVariable(bar, initialValue.Imaginary))
         {
+            Re.Label = "Real";
+            Im.Label = "Imaginary";
         }
 
         public override Complex Value
         {
             get
             {
-                return new Complex(re.Value, im.Value);
+                return new Complex(Re.Value, Im.Value);
             }
 
             set
             {
-                re.Value = value.Real;
-                im.Value = value.Imaginary;
+                Re.Value = value.Real;
+                Im.Value = value.Imaginary;
             }
         }
 
         public Double Step
         {
-            get { return re.Step; }
+            get { return Re.Step; }
             set
             {
-                re.Step = value;
-                im.Step = value;
+                Re.Step = value;
+                Im.Step = value;
             }
         }
 
         public Double Precision
         {
-            get { return re.Precision; }
+            get { return Re.Precision; }
             set
             {
-                re.Precision = value;
-                im.Precision = value;
+                Re.Precision = value;
+                Im.Precision = value;
             }
         }
     }
@@ -183,7 +184,7 @@ namespace Sample
             }
         }
 
-        private static bool HandleKeyDown(Context context, KeyboardKeyEventArgs e)
+        private static bool HandleKeyInput(Context context, KeyboardKeyEventArgs e, bool down)
         {
             var modifiers = Tw.KeyModifiers.None;
             if (e.Modifiers.HasFlag(KeyModifiers.Alt))
@@ -194,24 +195,11 @@ namespace Sample
                 modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Control];
 
             if (Tw.Mappings.OpenTK.Keys.ContainsKey((int)e.Key)) {
-                return context.HandleKeyDown(Tw.Mappings.OpenTK.Keys[(int)e.Key], modifiers);
-            } else {
-                return false;
-            }
-        }
-
-        private static bool HandleKeyUp(Context context, KeyboardKeyEventArgs e)
-        {
-            var modifiers = Tw.KeyModifiers.None;
-            if (e.Modifiers.HasFlag(KeyModifiers.Alt))
-                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Alt];
-            if (e.Modifiers.HasFlag(KeyModifiers.Shift))
-                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Shift];
-            if (e.Modifiers.HasFlag(KeyModifiers.Control))
-                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Control];
-
-            if (Tw.Mappings.OpenTK.Keys.ContainsKey((int)e.Key)) {
-                return context.HandleKeyUp(Tw.Mappings.OpenTK.Keys[(int)e.Key], modifiers);
+                if (down) {
+                    return context.HandleKeyDown(Tw.Mappings.OpenTK.Keys[(int)e.Key], modifiers);
+                } else {
+                    return context.HandleKeyUp(Tw.Mappings.OpenTK.Keys[(int)e.Key], modifiers);
+                }
             } else {
                 return false;
             }
@@ -422,7 +410,7 @@ namespace Sample
         {
             base.OnKeyDown(e);
 
-            if (HandleKeyDown(context, e)) {
+            if (HandleKeyInput(context, e, true)) {
                 return;
             }
 
@@ -435,7 +423,7 @@ namespace Sample
         {
             base.OnKeyUp(e);
 
-            if (HandleKeyUp(context, e)) {
+            if (HandleKeyInput(context, e, false)) {
                 return;
             }
         }

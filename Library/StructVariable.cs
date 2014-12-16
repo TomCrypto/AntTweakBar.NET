@@ -46,9 +46,8 @@ namespace AntTweakBar
         /// Creates a new struct variable in a given bar.
         /// </summary>
         /// <param name="bar">The bar to create the struct variable in.</param>
-        /// <param name="initialValue">The initial value of the variable.</param>
         /// <param name="members">The set of member variables.</param>
-        public StructVariable(Bar bar, T initialValue = default(T), params IValueVariable[] members)
+        public StructVariable(Bar bar, params IValueVariable[] members)
         {
             if (bar == null) {
                 throw new ArgumentNullException("bar");
@@ -68,8 +67,6 @@ namespace AntTweakBar
                     OnChanged(e);
                 };
             }
-
-            Value = initialValue;
         }
 
         /// <summary>
