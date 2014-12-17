@@ -274,6 +274,59 @@ namespace AntTweakBar
             Tw.Define("GLOBAL overlap=" + (overlap ? "true" : "false"));
         }
 
+        /// <summary>
+        /// Sets the font size for all bars. Note the fixed style font is not resizable.
+        /// </summary>
+        /// <param name="fontSize">The font size to use (default is medium).</param>
+        public void SetFontSize(BarFontSize fontSize)
+        {
+            int index = 0;
+
+            switch (fontSize) {
+                case BarFontSize.Small:
+                    index = 1;
+                    break;
+                case BarFontSize.Medium:
+                    index = 2;
+                    break;
+                case BarFontSize.Large:
+                    index = 3;
+                    break;
+            }
+
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define("GLOBAL fontsize=" + index);
+        }
+
+        /// <summary>
+        /// Sets the font style for all bars.
+        /// </summary>
+        /// <param name="fontStyle">The font style to use.</param>
+        public void SetFontStyle(BarFontStyle fontStyle)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define("GLOBAL fontstyle=" + (fontStyle == BarFontStyle.Default ? "default" : "fixed"));
+        }
+
+        /// <summary>
+        /// Sets whether the bar font can be resized by the user.
+        /// </summary>
+        /// <param name="resizable">Whether the font can be resized.</param>
+        public void SetFontResizable(Boolean resizable)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define("GLOBAL fontresizable=" + (resizable ? "true" : "false"));
+        }
+
+        /// <summary>
+        /// Sets a font scaling coefficient. Must be called once before initializing the first context.
+        /// </summary>
+        /// <param name="scale">The font scale to use.</param>
+        public static void SetFontScaling(Double scale)
+        {
+            Tw.Define("GLOBAL fontscaling=" + scale);
+        }
+
         #endregion
 
         #region IEnumerable

@@ -39,6 +39,40 @@ namespace AntTweakBar
     }
 
     /// <summary>
+    /// The possible bar font sizes.
+    /// </summary>
+    public enum BarFontSize
+    {
+        /// <summary>
+        /// Small font.
+        /// </summary>
+        Small,
+        /// <summary>
+        /// Nedium font.
+        /// </summary>
+        Medium,
+        /// <summary>
+        /// Large font.
+        /// </summary>
+        Large,
+    }
+
+    /// <summary>
+    /// The possible bar font styles.
+    /// </summary>
+    public enum BarFontStyle
+    {
+        /// <summary>
+        /// Default (proportional) font.
+        /// </summary>
+        Default,
+        /// <summary>
+        /// Fixed (monospace) font.
+        /// </summary>
+        Fixed,
+    }
+
+    /// <summary>
     /// The possible color selection modes.
     /// </summary>
     public enum ColorMode
