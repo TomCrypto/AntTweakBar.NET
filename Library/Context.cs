@@ -275,6 +275,36 @@ namespace AntTweakBar
         }
 
         /// <summary>
+        /// Sets the icon position for all bars.
+        /// </summary>
+        /// <param name="position">The icon position (default is bottom left).</param>
+        public void SetIconPosition(BarIconPosition position)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define("GLOBAL iconpos=" + position.ToString().ToLower());
+        }
+
+        /// <summary>
+        /// Sets the icon alignment for all bars.
+        /// </summary>
+        /// <param name="alignment">The icon alignment (default is vertical).</param>
+        public void SetIconAlignment(BarIconAlignment alignment)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define("GLOBAL iconalign=" + alignment.ToString().ToLower());
+        }
+
+        /// <summary>
+        /// Sets the icon margin for all bars.
+        /// </summary>
+        /// <param name="margin">The icon margin as an x-y offset in pixels.</param>
+        public void SetIconMargin(Size margin)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define(String.Format("GLOBAL iconmargin='{0} {1}'", margin.Width, margin.Height));
+        }
+
+        /// <summary>
         /// Sets the font size for all bars. Note the fixed style font is not resizable.
         /// </summary>
         /// <param name="fontSize">The font size to use (default is medium).</param>

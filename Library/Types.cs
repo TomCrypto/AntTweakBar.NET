@@ -73,6 +73,44 @@ namespace AntTweakBar
     }
 
     /// <summary>
+    /// THe possible bar icon positions.
+    /// </summary>
+    public enum BarIconPosition
+    {
+        /// <summary>
+        /// Icons in the bottom left.
+        /// </summary>
+        BottomLeft,
+        /// <summary>
+        /// Icons in the bottom right.
+        /// </summary>
+        BottomRight,
+        /// <summary>
+        /// Icons in the top left.
+        /// </summary>
+        TopLeft,
+        /// <summary>
+        /// Icons in the top right.
+        /// </summary>
+        TopRight,
+    }
+
+    /// <summary>
+    /// The possible bar icon alignments.
+    /// </summary>
+    public enum BarIconAlignment
+    {
+        /// <summary>
+        /// Bar icons arranged vertically.
+        /// </summary>
+        Vertical,
+        /// <summary>
+        /// Bars icons arranged horizontally.
+        /// </summary>
+        Horizontal,
+    }
+
+    /// <summary>
     /// The possible color selection modes.
     /// </summary>
     public enum ColorMode

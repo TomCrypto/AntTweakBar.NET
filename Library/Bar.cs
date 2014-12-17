@@ -162,6 +162,15 @@ namespace AntTweakBar
         }
 
         /// <summary>
+        /// Gets or sets whether this bar is iconified.
+        /// </summary>
+        public Boolean Iconified
+        {
+            get { return Tw.GetBooleanParam(Pointer, null, "iconified"); }
+            set { Tw.SetParam(Pointer, null, "iconified", value); }
+        }
+
+        /// <summary>
         /// Gets or sets whether this bar can be iconified by the user.
         /// </summary>
         public Boolean Iconifiable
