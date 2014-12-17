@@ -95,6 +95,7 @@ Changelog
  - added `StructVariable` abstract class
  - improved input handling (see [#4](https://github.com/TomCrypto/AntTweakBar.NET/issues/4))
  - added `ListVariable` variable type
+ - added some more bar properties (still missing a few relating to fonts and icons)
 
 28 November 2014 (v0.4.4)
 
