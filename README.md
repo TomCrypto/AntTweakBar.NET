@@ -1,14 +1,4 @@
-DEV BRANCH
-==========
-
-v0.5.0 milestones:
-
- * fix input handling (see #4)
- * implement a good StructVariable or delay to next release (not critical)
- * check that the groups work properly, and maybe add a circular reference check
- * document all low-level functions, check all native functions are there
-
-AntTweakBar.NET 0.4.4
+AntTweakBar.NET 0.5.0
 =====================
 
 AntTweakBar.NET is an MIT-licensed C# wrapper for Philippe Decaudin's [AntTweakBar](http://anttweakbar.sourceforge.net) C/C++ GUI library. It allows C# developers to enhance their tech demos or games with an easy-to-use graphical widget for modifying application parameters in realtime. AntTweakBar.NET offers a high-level interface to the widget which will feel natural to any C# programmer, and also provides access to exception-safe bindings to the native AntTweakBar calls for those who might want them.
@@ -23,7 +13,7 @@ The AntTweakBar.NET wrapper is distributed under the MIT license, while AntTweak
 Quick Start
 -----------
 
-You must obtain and install the native AntTweakBar library itself from its [SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download), if you haven't already. For Windows, download the appropriate prebuilt DLL's and install them on your system or as third party libraries in your C# project. For Linux, simply `make && make install` as usual. Then add the `AntTweakBar.NET.dll` assembly in your project, either by compiling it from the repository or retrieving it from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/). You're good to go!
+You must obtain and install the native AntTweakBar library itself from its [SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download), if you haven't already. For Windows, download the appropriate prebuilt DLL's and install them on your system or as third party libraries in your C# project. For Linux, simply `make && make install` as usual (note: the 64-bit Windows DLL is called AntTweakBar64.dll, remove the "64" prefix). Then add the `AntTweakBar.NET.dll` assembly in your project, either by compiling it from the repository or retrieving it from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/). You're good to go!
 
 The AntTweakBar.NET high-level interface is divided into four main concepts: contexts, bars, variables and groups.
 
@@ -75,6 +65,8 @@ The preferred way of doing event handling is by using the `Handle*()` events, wh
 
 In general you *do* want to keep references to contexts, because you actually do need to destroy them when you close your windows. The different AntTweakBar.NET classes implement the `IDisposable` interface. When you dispose a bar, all variables inside it are implicitly disposed. When you dispose a context, all bars inside it are implicitly disposed. In other words, it is sufficient to dispose the contexts you create. It is very important to note that you must dispose the last context **before** terminating your graphics API. A symptom of failing to do this is an exception on shutdown pointing to the `Tw.Terminate()` function. Critically, this means you cannot just leave the contexts to be garbage-collected, as it will probably be too late by the time they are. This should not be a problem in most sensible implementations.  
 
+For more information, make sure to check out the [wiki](wiki) (it's not finished, but already has some helpful content).
+
 Notes on the Sample
 -------------------
 
@@ -84,94 +76,15 @@ This repository contains a sample, among other things, which is intended to show
 <img src="Screenshot.png" alt="Screenshot of the sample program"></img> 
 </p>
 
-Advanced Usage
---------------
-
- - **Bar/variable property scripting**
-
-    You can script the different properties of your bars or variables from e.g. a text file using the `SetDefinition` method. This method takes a definition string containing your parameters. For your convenience, there is an optional `def` parameter in the constructor which automatically calls it as well. This method should be used e.g. as:
-
-    ```csharp
-    myVariable.SetDefinition("label='New Label' readonly=true");
-    myBar.SetDefinition("contained=true visible=false");
-    ```
-
-    This definition string follows the same format as documented on the AntTweakBar website under `TwDefine`, except it should not contain the variable's name, as you don't know what it is (it is automatically filled in by the method).
-
- - **Using groups**
-
-	You can create a group as follows for instance:
-
-	```csharp
-	var myGroup = new Group(myBar, "A group", myVar);
-	/* or */
-	var myGroup = new Group(myBar);
-	myVar.Group = myGroup;
-	myGroup.Label = "A group";
-	```
-
-	You can nest groups into groups by using the `Parent` property of groups, and you can change their labels (so you can have two groups with the same label if you want). Note `null` is a valid group which represents the root of the bar (i.e. no group). There are three gotchas to watch out for when using groups:
-
-	\* A group only exists as long as there are variables under said group. This means that until you assign a variable to a group, you cannot modify the group's label or any of its properties. As a result, the `Group` class supports two kinds of initializations: lazy initialization, where you can create a non-existent group, assign it to a bunch of variables (which truly creates it) and configure it afterwards, or direct initialization, where the constructor takes a collection of initial variables to put under the group. Use whichever one is more convenient for you.   
-
-	\* A group ceases to exist as soon as there are no more variables under said group. This is not a big problem, it's just important to keep that in mind when dynamically creating variables as it may invalidate `Group` instances you are holding.
-
-	\* Take care when putting groups into groups: if you put group A into group B, and then put group B into group A, both groups and all variables contained in them will be destroyed (this is done automatically by the native library). In general, avoid circular group references and use the `null` group to break such circular references. 
-
- - **Defining custom variables**
-
-    All the classes in the wrapper are sealed. In most cases you should favor composing variables together to extend their functionality, as done for instance in the sample, where a complex variable type is created by composing two `DoubleVariable` instances, and a polynomial variable type is implemented by adding custom validation logic to a `StringVariable` to make it only accept polynomial formulas. In general, the `Validating` event can be used to introduce additional requirements on the contents of the variable. The variable's value will be changed if and only if it passes validation by *all* event handlers attached to the variable's `Validating` event.
-
-    If user input fails validation, the variable will gracefully revert to its previous value. On the other hand, if you manually try to set an invalid value from code, it will throw an `ArgumentException`. The following example shows how to make the value of `myVar` be a multiple of five: 
-
-    ```csharp
-    myVar.Validating += (s, e) => { e.Valid = (e.Value % 5 == 0); }; /* for IntVariable */
-    ```
-
-    You must refer to `e.Value` (or `e.R`, `e.X`, etc. as appropriate) to perform validation, as the variable's value has not yet been updated when the validation handlers are called. Note you can of course refer to external objects in your handler to implement context-sensitive validation logic. Most variables already have built-in validators, for instance numeric variables validate against their `Min` and `Max` properties, `StringVariable` rejects null strings, etc.
-
- - **Defining struct variables**
-
-    Struct variables as defined by AntTweakBar are not yet available in AntTweakBar.NET *per se*. However, you can currently emulate this functionality by composing together the different variables in said struct and putting them all in the same group. This group is then possibly nested into another group using the bar's `MoveGroup` method. This is somewhat awkward, and there may be first-class support for this type of aggregate variable in a future version. Also see the `Complex` type in the sample, which represents a complex number as two double variables (but it's not a great example, as it was written for a very early AntTweakBar.NET version, it will be improved eventually)
-
- - **Error handling**
-
-    All AntTweakBar errors will be translated into `AntTweakBarException` instances. But you can also intercept errors via the `Tw.Error` event. It is probably not too useful to reason on the error messages received, but you can use this to log them, for example.
-
- - **More descriptive enums**
-
-    By default an `EnumVariable<T>` will graphically display the name of the enum value as defined in your code. You can give it a custom name or summary by tagging your enum values with a `DescriptionAttribute`, it will be picked up by AntTweakBar.NET and displayed instead of the raw enum name.
-
- - **Multiple windows**
-
-    Each different window you want AntTweakBar to use should have a `Context`, and you should handle events and call the context's `Draw` method as needed on each window. That's really all there is to it. Internally, AntTweakBar directly draws into whatever render target is active, so multiple windows are naturally handled in both OpenGL and DirectX. The wrapper takes care of all necessary context-switching.
-
- - **AntTweakBar bindings**
-
-    The bindings are in the `AntTweakBar.Tw` static class. For the most part you cannot interfere with the wrapper's operation with them since the wrapper does not expose its internal AntTweakBar pointers and identifiers for integrity reasons, so it is discouraged to use them to try and subvert the high-level wrapper. You are however encouraged to use them directly if you don't want to or can't use the high-level classes for whatever reason. Have fun! 
-
- - **Exception safety**
-
-    You should avoid throwing exceptions from within delegates subscribed to `Changed`, `Click` and `Validate` events. The reason for this is because they can be called from native code, and the results of throwing a managed exception inside an unmanaged callback is implementation-defined. It is recommended instead to log any exception and safely return.
-
- - **Thread safety**
-
-    Unfortunately, several AntTweakBar functions are **not** thread safe due to the global state involved in switching AntTweakBar windows/contexts. The only code which has been specifically written to be thread-safe is the constructor (and to some extent the `Dispose` method) of the `Context` class, in order to avoid double initialization/finalization of the AntTweakBar library. In general, assume no function is thread-safe, just like most GUI frameworks.
-
 Contribute
 ----------
 
 Any issues or pull requests are welcome, I especially need help with verifying multi-window support, thread safety, and OS X testing, but any contribution is greatly appreciated. Thanks to *Ilkka Jahnukainen* for helping in testing AntTweakBar.NET throughout its ongoing development and providing valuable feedback to guide its design.
 
-**Todo**:
-
- * more/better unit tests
- * check it works on OS X
-
 Changelog
 ---------
 
-Next release:
+16 December 2014 (v0.5.0):
 
  - changed `Tw.WindowSize` to accept sizes of (0, 0) to allow AntTweakBar resource cleanup (see [#3](https://github.com/TomCrypto/AntTweakBar.NET/issues/3))
  - added `ReleaseResources` and `ResetResources` methods to the `Context` class (see [#3](https://github.com/TomCrypto/AntTweakBar.NET/issues/3))
@@ -179,6 +92,8 @@ Next release:
  - added TwDefineEnum and TwDefineStruct native functions and a DefineEnum low-level wrapper
  - various miscellaneous fixes and improvements to the Sample
  - added `Group` class and improved code relating to variable groups
+ - added `StructVariable` abstract class
+ - improved input handling (see [#4](https://github.com/TomCrypto/AntTweakBar.NET/issues/4))
 
 28 November 2014 (v0.4.4)
 
