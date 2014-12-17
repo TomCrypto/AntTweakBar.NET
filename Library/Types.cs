@@ -5,6 +5,40 @@ using System.Runtime.InteropServices;
 namespace AntTweakBar
 {
     /// <summary>
+    /// The possible bar text colors.
+    /// </summary>
+    public enum BarTextColor
+    {
+        /// <summary>
+        /// Darker text.
+        /// </summary>
+        Dark,
+        /// <summary>
+        /// Lighter text.
+        /// </summary>
+        Light,
+    }
+
+    /// <summary>
+    /// The possible button alignments in a bar.
+    /// </summary>
+    public enum BarButtonAlignment
+    {
+        /// <summary>
+        /// Left-aligned.
+        /// </summary>
+        Left,
+        /// <summary>
+        /// Center-aligned.
+        /// </summary>
+        Center,
+        /// <summary>
+        /// Right-aligned.
+        /// </summary>
+        Right,
+    }
+
+    /// <summary>
     /// The possible color selection modes.
     /// </summary>
     public enum ColorMode

@@ -264,6 +264,16 @@ namespace AntTweakBar
             Tw.Define("TW_HELP visible=" + (visible ? "true" : "false"));
         }
 
+        /// <summary>
+        /// Sets whether to draw or clip overlapping bars.
+        /// </summary>
+        /// <param name="overlap">If false, clips the contents of overlapping region (default).</param>
+        public void SetOverlap(Boolean overlap)
+        {
+            Tw.SetCurrentWindow(Identifier); // applies to this context
+            Tw.Define("GLOBAL overlap=" + (overlap ? "true" : "false"));
+        }
+
         #endregion
 
         #region IEnumerable

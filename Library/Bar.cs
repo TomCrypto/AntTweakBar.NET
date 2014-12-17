@@ -108,6 +108,15 @@ namespace AntTweakBar
         }
 
         /// <summary>
+        /// Gets or sets this bar's text color.
+        /// </summary>
+        public BarTextColor TextColor
+        {
+            get { return Tw.GetStringParam(Pointer, null, "text") == "dark" ? BarTextColor.Dark : BarTextColor.Light; }
+            set { Tw.SetParam(Pointer, null, "text", value == BarTextColor.Dark ? "dark" : "light"); }
+        }
+
+        /// <summary>
         /// Gets or sets this bar's position.
         /// </summary>
         public Point Position
@@ -123,6 +132,33 @@ namespace AntTweakBar
         {
             get { return Tw.GetSizeParam(Pointer, null, "size"); }
             set { Tw.SetParam(Pointer, null, "size", value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the width in pixels of this bar's value column. Set to zero for auto-fit.
+        /// </summary>
+        public Int32 ValueColumnWidth
+        {
+            get { return Math.Max(0, Tw.GetIntParam(Pointer, null, "valueswidth")[0]); }
+            set { Tw.SetParam(Pointer, null, "valueswidth", value == 0 ? "fit" : value.ToString()); }
+        }
+
+        /// <summary>
+        /// Gets or sets this bar's refresh rate in seconds.
+        /// </summary>
+        public Int32 RefreshRate
+        {
+            get { return Tw.GetIntParam(Pointer, null, "refresh")[0]; }
+            set { Tw.SetParam(Pointer, null, "refresh", value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the alignment of buttons in this bar.
+        /// </summary>
+        public BarButtonAlignment ButtonAlignment
+        {
+            get { return (BarButtonAlignment)Enum.Parse(typeof(BarButtonAlignment), Tw.GetStringParam(Pointer, null, "buttonalign"), true); }
+            set { Tw.SetParam(Pointer, null, "buttonalign", value.ToString().ToLower()); }
         }
 
         /// <summary>
@@ -168,6 +204,24 @@ namespace AntTweakBar
         {
             get { return Tw.GetBooleanParam(Pointer, null, "visible"); }
             set { Tw.SetParam(Pointer, null, "visible", value); }
+        }
+
+        /// <summary>
+        /// Gets or sets whether this bar is always at the front.
+        /// </summary>
+        public Boolean AlwaysFront
+        {
+            get { return Tw.GetBooleanParam(Pointer, null, "alwaystop"); }
+            set { Tw.SetParam(Pointer, null, "alwaystop", value); }
+        }
+
+        /// <summary>
+        /// Gets or sets whether this bar is always at the back.
+        /// </summary>
+        public Boolean AlwaysBack
+        {
+            get { return Tw.GetBooleanParam(Pointer, null, "alwaysbottom"); }
+            set { Tw.SetParam(Pointer, null, "alwaysbottom", value); }
         }
 
         /// <summary>
