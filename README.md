@@ -84,7 +84,7 @@ Any issues or pull requests are welcome, I especially need help with verifying m
 Changelog
 ---------
 
-16 December 2014 (v0.5.0):
+?? December 2014 (v0.5.0):
 
  - changed `Tw.WindowSize` to accept sizes of (0, 0) to allow AntTweakBar resource cleanup (see [#3](https://github.com/TomCrypto/AntTweakBar.NET/issues/3))
  - added `ReleaseResources` and `ResetResources` methods to the `Context` class (see [#3](https://github.com/TomCrypto/AntTweakBar.NET/issues/3))
@@ -94,6 +94,7 @@ Changelog
  - added `Group` class and improved code relating to variable groups
  - added `StructVariable` abstract class
  - improved input handling (see [#4](https://github.com/TomCrypto/AntTweakBar.NET/issues/4))
+ - added `ListVariable` variable type
 
 28 November 2014 (v0.4.4)
 
