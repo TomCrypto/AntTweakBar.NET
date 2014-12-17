@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Group.cs" />
+    <Compile Include="ListVariable.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="BoolVariable.cs" />
     <Compile Include="Button.cs" />
