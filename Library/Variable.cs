@@ -15,6 +15,11 @@ namespace AntTweakBar
         /// Gets this variable's parent bar.
         /// </summary>
         Bar ParentBar { get; }
+
+        /// <summary>
+        /// Gets or sets this variable's group.
+        /// </summary>
+        Group Group { get; set; }
     }
 
     /// <summary>

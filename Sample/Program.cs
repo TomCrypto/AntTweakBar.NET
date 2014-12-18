@@ -78,6 +78,12 @@ namespace Sample
             set { polyString.Value = value.ToString(); }
         }
 
+        public Group Group
+        {
+            get { return polyString.Group; }
+            set { polyString.Group = value; }
+        }
+
         public void Dispose()
         {
             polyString.Dispose();
@@ -265,23 +271,17 @@ namespace Sample
             intensityVar.SetDefinition("min=0 max=3 step=0.01 precision=2)");
             intensityVar.Label = "Intensity";
 
-            var aCoeffGroup = new Group(configsBar);
             var aCoeffVar = new ComplexVariable(configsBar, fractal.ACoeff);
             aCoeffVar.Changed += delegate { fractal.ACoeff = aCoeffVar.Value; };
-            aCoeffVar.Group = aCoeffGroup;
+            aCoeffVar.Group.Label = "Relaxation Coefficient";
             aCoeffVar.Step = 0.0002;
             aCoeffVar.Precision = 4;
 
-            aCoeffGroup.Label = "Relaxation Coefficient";
-
-            var kCoeffGroup = new Group(configsBar);
             var kcoeff = new ComplexVariable(configsBar, fractal.KCoeff);
             kcoeff.Changed += delegate { fractal.KCoeff = kcoeff.Value; };
-            kcoeff.Group = kCoeffGroup;
+            kcoeff.Group.Label = "Nova Coefficient";
             kcoeff.Step = 0.0002;
             kcoeff.Precision = 4;
-
-            kCoeffGroup.Label = "Nova Coefficient";
 
             /* Set up a bar for the user to play with the equation */
 

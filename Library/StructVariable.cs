@@ -67,6 +67,9 @@ namespace AntTweakBar
                     OnChanged(e);
                 };
             }
+
+            Group = new Group(parentBar);
+            Group.Label = "unnamed";
         }
 
         /// <summary>
@@ -78,7 +81,7 @@ namespace AntTweakBar
             set
             {
                 foreach (var variable in variables) {
-                    (variable as Variable).Group = value;
+                    variable.Group = value;
                 }
             }
         }
@@ -90,7 +93,7 @@ namespace AntTweakBar
             Dispose(true);
         }
 
-        private void Dispose(bool disposing)
+        protected void Dispose(bool disposing)
         {
             if (!disposed)
             {

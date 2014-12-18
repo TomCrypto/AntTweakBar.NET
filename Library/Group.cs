@@ -56,7 +56,7 @@ namespace AntTweakBar
         /// <param name="parentBar">The bar the new group should belong to.</param>
         /// <param name="label">A label to display for the new group.</param>
         /// <param name="variables">Variables to put in the new group.</param>
-        public Group(Bar parentBar, String label, params Variable[] variables) : this(parentBar)
+        public Group(Bar parentBar, String label, params IVariable[] variables) : this(parentBar)
         {
             if (label == null) {
                 throw new ArgumentNullException("label");
@@ -77,7 +77,7 @@ namespace AntTweakBar
         /// <param name="parentBar">The bar the new group should belong to.</param>
         /// <param name="label">A label to display for the new group.</param>
         /// <param name="variables">Variables to put in the new group.</param>
-        public Group(Bar parentBar, String label, IEnumerable<Variable> variables)
+        public Group(Bar parentBar, String label, IEnumerable<IVariable> variables)
             : this(parentBar, label, variables.ToArray())
         {
 
