@@ -28,7 +28,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar variable which can hold an RGBA color value.
     /// </summary>
-    public sealed class Color4Variable : Variable
+    public sealed class Color4Variable : Variable, IValueVariable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.

@@ -13,6 +13,7 @@ namespace Sample
     public class Polynomial : IEquatable<Polynomial>
     {
         private readonly Dictionary<UInt32, Complex> terms;
+        private String repr;
 
         /// <summary>
         /// Creates a new zero polynomial.
@@ -340,10 +341,37 @@ namespace Sample
 
         public override String ToString()
         {
-            return String.Join("+", terms.Keys.Where(p => terms[p] != Complex.Zero).OrderByDescending(x => x).Select(power =>
+            if (repr != null) {
+                return repr;
+            }
+
+            return String.Join(" + ", terms.Keys.Where(p => terms[p] != Complex.Zero).OrderByDescending(x => x).Select(power =>
             {
-                return String.Format("{0}z^{1}", terms[power], power);
+                String exponent;
+
+                if (power == 0) {
+                    exponent = "";
+                } else {
+                    exponent = String.Format("z^{0}", power);
+                }
+
+                if (terms[power].Real == 0) {
+                    return String.Format("{0}{1}", ParseDouble(terms[power].Imaginary), exponent);
+                } else if (terms[power].Imaginary == 0) {
+                    return String.Format("{0}{1}", ParseDouble(terms[power].Real), exponent);
+                } else {
+                    return String.Format("({0} + {1}i){2}", ParseDouble(terms[power].Real), ParseDouble(terms[power].Imaginary), exponent);
+                }
             }));
+        }
+
+        private String ParseDouble(Double x)
+        {
+            if (x != 1) {
+                return "(" + x.ToString() + ")";
+            } else {
+                return "";
+            }
         }
 
         #endregion
@@ -353,14 +381,20 @@ namespace Sample
         /// <summary>
         /// Parses an expression into a complex polynomial.
         /// </summary>
-        public static Polynomial Parse(String str, IDictionary<String, Double> symbols)
+        public static Polynomial Parse(String str, IDictionary<String, Double> symbols = null)
         {
+            if (symbols == null) {
+                symbols = new Dictionary<String, Double>();
+            }
+
             try
             {
+                var inputString = str; // for repr field
                 str = Regex.Replace(str, @"\s+", "");
                 int pos; bool negate = str[0] == '-';
                 if (negate) str = str.Substring(1);
                 var polynomial = new Polynomial();
+                polynomial.repr = inputString;
 
                 do
                 {

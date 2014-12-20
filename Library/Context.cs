@@ -139,25 +139,88 @@ namespace AntTweakBar
             return Tw.MouseClick(action, button);
         }
 
+        /* I don't know if this input handling code is correct. It is actually NOT straightforward to
+         * convert from conventional KeyDown/KeyPressed/KeyUp events to AntTweakBar key presses. This
+         * may or may not be correct and was inspired from TwEventSFML.cpp, if you know how to fix it
+         * please issue a pull request or a patch, until then it looks satisfactory. Kind of.
+        */
+
+        private Tw.KeyModifiers lastModifiers;
+        private bool ignoreKeyPress;
+
         /// <summary>
-        /// Notifies this context of a key press.
+        /// All the special keys supported by AntTweakBar.
         /// </summary>
-        /// <param name="key">The key character pressed.</param>
-        public bool HandleKeyPress(char key)
+        private static IList<Tw.Key> SpecialKeys = new List<Tw.Key>() {
+            Tw.Key.Escape, Tw.Key.Return, Tw.Key.Tab, Tw.Key.Backspace, Tw.Key.PageUp, Tw.Key.PageDown,
+            Tw.Key.Up, Tw.Key.Down, Tw.Key.Left, Tw.Key.Right, Tw.Key.End, Tw.Key.Home, Tw.Key.Insert,
+            Tw.Key.Delete, Tw.Key.Space, Tw.Key.F1, Tw.Key.F2, Tw.Key.F3, Tw.Key.F4, Tw.Key.F5,
+            Tw.Key.F6, Tw.Key.F7, Tw.Key.F8, Tw.Key.F9, Tw.Key.F10, Tw.Key.F11, Tw.Key.F12,
+            Tw.Key.F13, Tw.Key.F14, Tw.Key.F15,
+        };
+
+        /// <summary>
+        /// Notifies this context that a character has been typed.
+        /// </summary>
+        /// <param name="character">The character typed.</param>
+        public bool HandleKeyPress(char character)
         {
             Tw.SetCurrentWindow(Identifier);
-            return Tw.KeyPressed((int)key, Tw.KeyModifier.None);
+
+            if (!ignoreKeyPress) {
+                if (((character & 0xFF) < 32) && (character != 0) && ((character & 0xFF00) == 0)) {
+                    return Tw.KeyPressed((char)((character & 0xFF) + 'a' - 1), Tw.KeyModifiers.Ctrl | lastModifiers);
+                } else { // this is supposed to handle the Ctrl+letter combination properly (somehow)
+                    return Tw.KeyPressed((char)(character & 0xFF), Tw.KeyModifiers.None);
+                }
+            } else {
+                ignoreKeyPress = false;
+            }
+
+            return false;
         }
 
         /// <summary>
-        /// Notifies this context of a special key press.
+        /// Notifies this context that a key has been pressed.
         /// </summary>
         /// <param name="key">The key pressed.</param>
-        /// <param name="modifiers">The key modifiers pressed.</param>
-        public bool HandleKeyPress(Tw.SpecialKey key, Tw.KeyModifier modifiers)
+        /// <param name="modifiers">The key modifiers.</param>
+        public bool HandleKeyDown(Tw.Key key, Tw.KeyModifiers modifiers)
         {
             Tw.SetCurrentWindow(Identifier);
-            return Tw.KeyPressed((int)key, modifiers);
+            lastModifiers = modifiers;
+
+            if (SpecialKeys.Contains(key)) {
+                ignoreKeyPress = true; // special keys
+                return Tw.KeyPressed(key, modifiers);
+            }
+
+            if (modifiers.HasFlag(Tw.KeyModifiers.Alt)) {
+                if ((key >= Tw.Key.A) && (key <= Tw.Key.Z)) {
+                    ignoreKeyPress = true; // normal key shortcuts?
+                    if (modifiers.HasFlag(Tw.KeyModifiers.Shift)) {
+                        key = (Tw.Key)('A' + key - Tw.Key.A);
+                        return Tw.KeyPressed(key, modifiers);
+                    } else {
+                        key = (Tw.Key)('a' + key - Tw.Key.A);
+                        return Tw.KeyPressed(key, modifiers);
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Notifies this context that a key has been released.
+        /// </summary>
+        /// <param name="key">The key released.</param>
+        /// <param name="modifiers">The key modifiers.</param>
+        public bool HandleKeyUp(Tw.Key key, Tw.KeyModifiers modifiers)
+        {
+            lastModifiers = Tw.KeyModifiers.None;
+            ignoreKeyPress = false;
+            return false;
         }
 
         /// <summary>
@@ -199,6 +262,99 @@ namespace AntTweakBar
         {
             Tw.SetCurrentWindow(Identifier); // one help bar per context
             Tw.Define("TW_HELP visible=" + (visible ? "true" : "false"));
+        }
+
+        /// <summary>
+        /// Sets whether to draw or clip overlapping bars.
+        /// </summary>
+        /// <param name="overlap">If false, clips the contents of overlapping region (default).</param>
+        public void SetOverlap(Boolean overlap)
+        {
+            Tw.SetCurrentWindow(Identifier); // applies to this context
+            Tw.Define("GLOBAL overlap=" + (overlap ? "true" : "false"));
+        }
+
+        /// <summary>
+        /// Sets the icon position for all bars.
+        /// </summary>
+        /// <param name="position">The icon position (default is bottom left).</param>
+        public void SetIconPosition(BarIconPosition position)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define("GLOBAL iconpos=" + position.ToString().ToLower());
+        }
+
+        /// <summary>
+        /// Sets the icon alignment for all bars.
+        /// </summary>
+        /// <param name="alignment">The icon alignment (default is vertical).</param>
+        public void SetIconAlignment(BarIconAlignment alignment)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define("GLOBAL iconalign=" + alignment.ToString().ToLower());
+        }
+
+        /// <summary>
+        /// Sets the icon margin for all bars.
+        /// </summary>
+        /// <param name="margin">The icon margin as an x-y offset in pixels.</param>
+        public void SetIconMargin(Size margin)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define(String.Format("GLOBAL iconmargin='{0} {1}'", margin.Width, margin.Height));
+        }
+
+        /// <summary>
+        /// Sets the font size for all bars. Note the fixed style font is not resizable.
+        /// </summary>
+        /// <param name="fontSize">The font size to use (default is medium).</param>
+        public void SetFontSize(BarFontSize fontSize)
+        {
+            int index = 0;
+
+            switch (fontSize) {
+                case BarFontSize.Small:
+                    index = 1;
+                    break;
+                case BarFontSize.Medium:
+                    index = 2;
+                    break;
+                case BarFontSize.Large:
+                    index = 3;
+                    break;
+            }
+
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define("GLOBAL fontsize=" + index);
+        }
+
+        /// <summary>
+        /// Sets the font style for all bars.
+        /// </summary>
+        /// <param name="fontStyle">The font style to use.</param>
+        public void SetFontStyle(BarFontStyle fontStyle)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define("GLOBAL fontstyle=" + (fontStyle == BarFontStyle.Default ? "default" : "fixed"));
+        }
+
+        /// <summary>
+        /// Sets whether the bar font can be resized by the user.
+        /// </summary>
+        /// <param name="resizable">Whether the font can be resized.</param>
+        public void SetFontResizable(Boolean resizable)
+        {
+            Tw.SetCurrentWindow(Identifier);
+            Tw.Define("GLOBAL fontresizable=" + (resizable ? "true" : "false"));
+        }
+
+        /// <summary>
+        /// Sets a font scaling coefficient. Must be called once before initializing the first context.
+        /// </summary>
+        /// <param name="scale">The font scale to use.</param>
+        public static void SetFontScaling(Double scale)
+        {
+            Tw.Define("GLOBAL fontscaling=" + scale);
         }
 
         #endregion

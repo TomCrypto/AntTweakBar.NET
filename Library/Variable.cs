@@ -7,9 +7,41 @@ using System.Linq;
 namespace AntTweakBar
 {
     /// <summary>
+    /// Implemented by all AntTweakBar variables.
+    /// </summary>
+    public interface IVariable : IDisposable
+    {
+        /// <summary>
+        /// Gets this variable's parent bar.
+        /// </summary>
+        Bar ParentBar { get; }
+
+        /// <summary>
+        /// Gets or sets this variable's group.
+        /// </summary>
+        Group Group { get; set; }
+    }
+
+    /// <summary>
+    /// Implemented by all AntTweakBar value variables.
+    /// </summary>
+    public interface IValueVariable : IVariable
+    {
+        /// <summary>
+        /// Occurs when the user changes this variable's value.
+        /// </summary>
+        event EventHandler Changed;
+
+        /// <summary>
+        /// Raises the Changed event.
+        /// </summary>
+        void OnChanged(EventArgs e);
+    }
+
+    /// <summary>
     /// The base class for all AntTweakBar variables.
     /// </summary>
-    public abstract class Variable : IDisposable
+    public abstract class Variable : IVariable
     {
         /// <summary>
         /// The default label for unnamed variables.
@@ -87,10 +119,30 @@ namespace AntTweakBar
         /// <summary>
         /// Gets or sets this variable's group.
         /// </summary>
-        public String Group
+        public Group Group
         {
-            get { return Tw.GetStringParam(ParentBar.Pointer, ID, "group"); }
-            set { Tw.SetParam(ParentBar.Pointer, ID, "group", value); }
+            get
+            {
+                var groupID = Tw.GetStringParam(ParentBar.Pointer, ID, "group");
+                if ((groupID != null) && (groupID != "")) {
+                    return new Group(ParentBar, groupID);
+                } else {
+                    return null;
+                }
+            }
+
+            set
+            {
+                if ((value != null) && (value.ParentBar != ParentBar)) {
+                    throw new ArgumentException("Cannot move groups across bars.");
+                }
+
+                if (value != null) {
+                    Tw.SetParam(ParentBar.Pointer, ID, "group", value.ID);
+                } else {
+                    Tw.SetParam(ParentBar.Pointer, ID, "group", "");
+                }
+            }
         }
 
         /// <summary>
@@ -153,7 +205,7 @@ namespace AntTweakBar
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposed && (ParentBar != null))
             {

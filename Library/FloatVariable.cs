@@ -22,7 +22,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar variable which can hold a single-precision floating-point number.
     /// </summary>
-    public sealed class FloatVariable : Variable
+    public sealed class FloatVariable : Variable, IValueVariable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.

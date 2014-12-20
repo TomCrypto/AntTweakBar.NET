@@ -29,7 +29,6 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <OutputPath>bin\Debug</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <NoWarn>1591</NoWarn>
     <DocumentationFile>bin\Debug\AntTweakBar.NET.xml</DocumentationFile>
     <CodeAnalysisRuleSet>ExtendedCorrectnessRules.ruleset</CodeAnalysisRuleSet>
@@ -38,7 +37,6 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <GenerateDocumentation>true</GenerateDocumentation>
     <NoWarn>1591</NoWarn>
     <DocumentationFile>bin\Release\AntTweakBar.NET.xml</DocumentationFile>
@@ -49,6 +47,8 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Group.cs" />
+    <Compile Include="ListVariable.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="BoolVariable.cs" />
     <Compile Include="Button.cs" />
@@ -69,6 +69,8 @@
     <Compile Include="EnumVariable.cs" />
     <Compile Include="StringVariable.cs" />
     <Compile Include="VectorVariable.cs" />
+    <Compile Include="StructVariable.cs" />
+    <Compile Include="Mappings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

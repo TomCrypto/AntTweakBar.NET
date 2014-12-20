@@ -205,8 +205,8 @@ namespace Tests
         [Test()]
         public void Group()
         {
-            Variable.Group = "testing";
-            Assert.AreEqual("testing", Variable.Group);
+            var group = new Group(Bar, "Test Group", Variable);
+            Assert.AreEqual(group, Variable.Group);
         }
 
         [Test()]

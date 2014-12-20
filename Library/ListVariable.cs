@@ -1,30 +1,40 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace AntTweakBar
 {
-    public sealed class EnumValidationEventArgs<T> : EventArgs where T : struct
+    /// <summary>
+    /// Helper class for the ListVariable items.
+    /// </summary>
+    public class TupleList<T1, T2> : List<Tuple<T1, T2>>
+    {
+        public void Add(T1 item, T2 item2)
+        {
+            Add(new Tuple<T1, T2>(item, item2));
+        }
+    }
+
+    public sealed class ListValidationEventArgs<T> : EventArgs
     {
         /// <summary>
-        /// Whether to accept this enum value.
+        /// Whether to accept this list value.
         /// </summary>
         public bool Valid { get; set; }
         public T Value { get; private set; }
 
-        public EnumValidationEventArgs(T value)
+        public ListValidationEventArgs(T value)
         {
             Value = value;
         }
     }
 
     /// <summary>
-    /// An AntTweakBar variable which can hold an enum.
+    /// An AntTweakBar variable which can hold a value from a list.
     /// </summary>
-    public sealed class EnumVariable<T> : Variable, IValueVariable where T : struct
+    public sealed class ListVariable<T> : Variable, IValueVariable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.
@@ -34,7 +44,7 @@ namespace AntTweakBar
         /// <summary>
         /// Occurs when the new value of this variable is validated.
         /// </summary>
-        public event EventHandler<EnumValidationEventArgs<T>> Validating;
+        public event EventHandler<ListValidationEventArgs<T>> Validating;
 
         /// <summary>
         /// Raises the Changed event.
@@ -60,44 +70,65 @@ namespace AntTweakBar
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private T value;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private IDictionary<T, String> itemToDescr = new Dictionary<T, String>();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private IDictionary<String, T> descrToItem = new Dictionary<String, T>();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private IList<String> descrIndices = new List<String>();
+
         /// <summary>
-        /// Gets this enum variable's type.
+        /// Gets this list variable's type.
         /// </summary>
         public Tw.VariableType Type { get { ThrowIfDisposed(); return type; } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Tw.VariableType type;
 
         /// <summary>
-        /// Initialization delegate, which creates the enum variable.
+        /// Initialization delegate, which creates the list variable.
         /// </summary>
-        private static void InitEnumVariable(Variable var, String id)
+        private static void InitListVariable(Variable var, String id, IList<Tuple<T, String>> items)
         {
-            if (!typeof(T).IsEnum) {
-                throw new ArgumentException(String.Format("Type {0} is not an enumeration.", typeof(T).FullName));
-            }
-
-            var it = var as EnumVariable<T>;
+            var it = var as ListVariable<T>;
 
             Variable.SetCallbacks.Add(id, new Tw.SetVarCallback(it.SetCallback));
             Variable.GetCallbacks.Add(id, new Tw.GetVarCallback(it.GetCallback));
 
+            if (items.Count != items.Select(kv => kv.Item1).Distinct().Count()) {
+                throw new ArgumentException("Duplicate items in list.");
+            }
+
+            var descr = new Dictionary<int, String>();
+            int t = 0;
+
+            foreach (var kv in items) {
+                descr.Add(t++, kv.Item2);
+            }
+
             Tw.AddVarCB(var.ParentBar.Pointer, id,
-                        it.type = Tw.DefineEnum(Guid.NewGuid().ToString(), GetEnumLabels()),
+                        it.type = Tw.DefineEnum(Guid.NewGuid().ToString(), descr),
                         Variable.SetCallbacks[id],
                         Variable.GetCallbacks[id],
                         IntPtr.Zero, null);
         }
 
         /// <summary>
-        /// Creates a new enum variable in a given bar.
+        /// Creates a new list variable in a given bar.
         /// </summary>
-        /// <param name="bar">The bar to create the enum variable in.</param>
+        /// <param name="bar">The bar to create the list variable in.</param>
+        /// <param name="items">The list of items and their descriptions.</param>
         /// <param name="initialValue">The initial value of the variable.</param>
         /// <param name="def">An optional definition string for the new variable.</param>
-        public EnumVariable(Bar bar, T initialValue, String def = null)
-            : base(bar, InitEnumVariable, def)
+        public ListVariable(Bar bar, IList<Tuple<T, String>> items, T initialValue, String def = null)
+            : base(bar, (var, id) => InitListVariable(var, id, items), def)
         {
-            Validating += (s, e) => { e.Valid = Enum.IsDefined(typeof(T), e.Value); };
+            foreach (var kv in items) {
+                itemToDescr.Add(kv.Item1, kv.Item2);
+                descrToItem.Add(kv.Item2, kv.Item1);
+                descrIndices.Add(kv.Item2);
+            }
+
+            Validating += (s, e) => { e.Valid = itemToDescr.ContainsKey(e.Value); };
             ValidateAndSet(initialValue);
         }
 
@@ -109,7 +140,7 @@ namespace AntTweakBar
             ThrowIfDisposed();
 
             return !Validating.GetInvocationList().Select(h => {
-                var check = new EnumValidationEventArgs<T>(value);
+                var check = new ListValidationEventArgs<T>(value);
                 h.DynamicInvoke(new object[] { this, check });
                 return !check.Valid;
             }).Any(failed => failed);
@@ -132,12 +163,12 @@ namespace AntTweakBar
         /// </summary>
         private void SetCallback(IntPtr pointer, IntPtr clientData)
         {
-            int data = Marshal.ReadInt32(pointer);
+            T data = descrToItem[descrIndices[Marshal.ReadInt32(pointer)]];
 
             if (IsValid((T)(object)data))
             {
-                bool changed = (data != (int)(object)value);
-                value = (T)(object)data;
+                bool changed = !value.Equals(data);
+                value = data;
 
                 if (changed) {
                     OnChanged(EventArgs.Empty);
@@ -150,28 +181,12 @@ namespace AntTweakBar
         /// </summary>
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
-            Marshal.WriteInt32(pointer, (int)(object)Value);
-        }
-
-        /// <summary>
-        /// Returns the enum type's values and labels/descriptions.
-        /// </summary>
-        private static IDictionary<int, String> GetEnumLabels()
-        {
-            var labels = new Dictionary<int, String>();
-
-            foreach (var kv in ((int[])Enum.GetValues(typeof(T))).Zip(typeof(T).GetEnumNames(), (i, n) => new Tuple<int, string>(i, n)))
-            {
-                var attr = typeof(T).GetMember(kv.Item2)[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
-                labels.Add(kv.Item1, attr.Any() ? ((DescriptionAttribute)attr.First()).Description : kv.Item2);
-            }
-
-            return labels;
+            Marshal.WriteInt32(pointer, descrIndices.IndexOf(itemToDescr[Value]));
         }
 
         public override String ToString()
         {
-            return String.Format("[EnumVariable<{0}>: Label={1}, Value={2}]", typeof(T).Name, Label, Value);
+            return String.Format("[ListVariable<{0}>: Label={1}, Value={2}]", typeof(T).Name, Label, Value);
         }
     }
 }

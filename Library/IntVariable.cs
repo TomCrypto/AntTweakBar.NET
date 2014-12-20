@@ -22,7 +22,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar variable which can hold an integer.
     /// </summary>
-    public sealed class IntVariable : Variable
+    public sealed class IntVariable : Variable, IValueVariable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.

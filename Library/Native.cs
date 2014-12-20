@@ -62,7 +62,13 @@ namespace AntTweakBar
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwKeyPressed(
             [In] Int32 key,
-            [In] Tw.KeyModifier modifiers);
+            [In] Tw.KeyModifiers modifiers);
+
+        [DllImport(DLLName, EntryPoint = "TwKeyTest")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern Boolean TwKeyTest(
+            [In] Int32 key,
+            [In] Tw.KeyModifiers modifiers);
 
         [DllImport(DLLName, EntryPoint = "TwEventSFML")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -85,6 +91,11 @@ namespace AntTweakBar
             [In] Int32 msg,
             [In] IntPtr wParam,
             [In] IntPtr lParam);
+
+        [DllImport(DLLName, EntryPoint = "TwEventX11")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern Boolean TwEventX11(
+            [In] IntPtr xEvent);
 
         [DllImport(DLLName, EntryPoint = "TwSetCurrentWindow")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -274,10 +285,25 @@ namespace AntTweakBar
             [In] IntPtr clientData,
             [In, MarshalAs(UnmanagedType.LPStr)] String def);
 
+        [DllImport(DLLName, EntryPoint = "TwDefineEnum", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        public static extern Tw.VariableType TwDefineEnum(
+            [In, MarshalAs(UnmanagedType.LPStr)] String name,
+            [In] EnumVal[] enumValues,
+            [In] uint numValues);
+
         [DllImport(DLLName, EntryPoint = "TwDefineEnumFromString", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         public static extern Tw.VariableType TwDefineEnumFromString(
             [In, MarshalAs(UnmanagedType.LPStr)] String name,
             [In, MarshalAs(UnmanagedType.LPStr)] String enumString);
+
+        [DllImport(DLLName, EntryPoint = "TwDefineStruct", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        public static extern Tw.VariableType TwDefineStruct(
+            [In, MarshalAs(UnmanagedType.LPStr)] String name,
+            [In] StructMember[] structMembers,
+            [In] uint numMembers,
+            [In] UIntPtr structSize,
+            [In] Tw.SummaryCallback callback,
+            [In] IntPtr clientData);
 
         [DllImport(DLLName, EntryPoint = "TwRemoveVar", CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -289,6 +315,36 @@ namespace AntTweakBar
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean TwRemoveAllVars(
             [In] IntPtr bar);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct EnumVal
+        {
+            public int Value;
+            public IntPtr Label;
+
+            public EnumVal(int value, IntPtr label) : this()
+            {
+                Value = value;
+                Label = label;
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct StructMember
+        {
+            public IntPtr Name;
+            public Tw.VariableType Type;
+            public UIntPtr Offset;
+            public IntPtr DefString;
+
+            public StructMember(IntPtr name, Tw.VariableType type, UIntPtr offset, IntPtr defString) : this()
+            {
+                Name = name;
+                Type = type;
+                Offset = offset;
+                DefString = defString;
+            }
+        }
     }
 
     /// <summary>
@@ -394,12 +450,45 @@ namespace AntTweakBar
         /// <summary>
         /// Call this function to inform AntTweakBar when a keyboard event occurs.
         /// </summary>
-        /// <param name="key">The ASCII code of the pressed key, or one of the <see cref="AntTweakBar.Tw.SpecialKey"/> codes.</param>
-        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifier"/> constants.</param>
+        /// <param name="key">The ASCII code of the pressed key.</param>
+        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifiers"/> constants.</param>
         /// <returns>Whether the key event has been handled by AntTweakBar.</returns>
-        public static bool KeyPressed(int key, KeyModifier modifiers)
+        public static bool KeyPressed(char key, KeyModifiers modifiers)
         {
-            return NativeMethods.TwKeyPressed(key, modifiers);
+            return NativeMethods.TwKeyPressed((int)key, modifiers);
+        }
+
+        /// <summary>
+        /// Call this function to inform AntTweakBar when a keyboard event occurs.
+        /// </summary>
+        /// <param name="key">One of the <see cref="AntTweakBar.Tw.Key"/> codes.</param>
+        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifiers"/> constants.</param>
+        /// <returns>Whether the key event has been handled by AntTweakBar.</returns>
+        public static bool KeyPressed(Tw.Key key, KeyModifiers modifiers)
+        {
+            return KeyPressed((char)key, modifiers);
+        }
+
+        /// <summary>
+        /// This function checks if a key event would be processed but without processing it. This could be helpful to prevent bad handling report.
+        /// </summary>
+        /// <param name="key">The ASCII code of the pressed key.</param>
+        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifiers"/> constants.</param>
+        /// <returns>Whether the key event would have been handled by AntTweakBar.</returns>
+        public static bool KeyTest(char key, KeyModifiers modifiers)
+        {
+            return NativeMethods.TwKeyTest((int)key, modifiers);
+        }
+
+        /// <summary>
+        /// This function checks if a key event would be processed but without processing it. This could be helpful to prevent bad handling report.
+        /// </summary>
+        /// <param name="key">One of the <see cref="AntTweakBar.Tw.Key"/> codes.</param>
+        /// <param name="modifiers">One or a combination of the <see cref="AntTweakBar.Tw.KeyModifiers"/> constants.</param>
+        /// <returns>Whether the key event would have been handled by AntTweakBar.</returns>
+        public static bool KeyTest(Tw.Key key, KeyModifiers modifiers)
+        {
+            return KeyTest((char)key, modifiers);
         }
 
         /// <summary>
@@ -439,6 +528,19 @@ namespace AntTweakBar
             }
 
             return NativeMethods.TwEventWin(wnd, msg, wParam, lParam);
+        }
+
+        /// <summary>
+        /// The X11 event handler.
+        /// </summary>
+        /// <returns>Whether the event has been handled by AntTweakBar.</returns>
+        public static bool EventX11(IntPtr xEvent)
+        {
+            if (xEvent == IntPtr.Zero) {
+                throw new ArgumentOutOfRangeException("xEvent");
+            }
+
+            return NativeMethods.TwEventX11(xEvent);
         }
 
         /// <summary>
@@ -1035,9 +1137,45 @@ namespace AntTweakBar
         /// <summary>
         /// This function creates a new variable type corresponding to an enum.
         /// </summary>
+        /// <param name="name"> Specify a name for the enum type (must be unique).</param>
+        /// <param name="labels">A mapping from admissible values to their labels.</param>
+        public static VariableType DefineEnum(String name, IDictionary<Int32, String> labels)
+        {
+            if (name == null) {
+                throw new ArgumentNullException("name");
+            } else if (labels == null) {
+                throw new ArgumentNullException("labels");
+            }
+
+            var values = new List<NativeMethods.EnumVal>();
+
+            try
+            {
+                foreach (var kv in labels) {
+                    values.Add(new NativeMethods.EnumVal(kv.Key, Helpers.PtrFromStr(kv.Value)));
+                }
+
+                VariableType enumType = NativeMethods.TwDefineEnum(name, values.ToArray(), (uint)values.Count);
+
+                if (enumType == VariableType.Undefined) {
+                    throw new AntTweakBarException("TwDefineEnum failed.");
+                }
+
+                return enumType;
+            }
+            finally
+            {
+                foreach (var value in values) {
+                    Marshal.FreeCoTaskMem(value.Label);
+                }
+            }
+        }
+
+        /// <summary>
+        /// This function creates a new variable type corresponding to an enum.
+        /// </summary>
         /// <param name="name">Specify a name for the enum type (must be unique).</param>
         /// <param name="enumString">Comma-separated list of labels.</param>
-        /// <returns></returns>
         public static VariableType DefineEnumFromString(String name, String enumString)
         {
             if (name == null) {
@@ -1046,13 +1184,88 @@ namespace AntTweakBar
                 throw new ArgumentNullException("enumString");
             }
 
-            VariableType enumType;
+            VariableType enumType = NativeMethods.TwDefineEnumFromString(name, enumString);
 
-            if ((enumType = NativeMethods.TwDefineEnumFromString(name, enumString)) == VariableType.Undefined) {
+            if (enumType == VariableType.Undefined) {
                 throw new AntTweakBarException("TwDefineEnumFromString failed.");
             }
              
             return enumType;
+        }
+
+        /// <summary>
+        /// This function creates a new <see cref="AntTweakBar.Tw.VariableType"/> corresponding to a structure.
+        /// </summary>
+        public static VariableType DefineStruct(String name, IDictionary<String, StructMemberInfo> structMembers, int structSize, Tw.SummaryCallback callback, IntPtr clientData)
+        {
+            if (name == null) {
+                throw new ArgumentNullException("name");
+            } else if (structMembers == null) {
+                throw new ArgumentNullException("structMembers");
+            } else if (structSize == 0) {
+                throw new ArgumentOutOfRangeException("structSize");
+            }
+
+            var structData = new List<NativeMethods.StructMember>();
+
+            try
+            {
+                foreach (var kv in structMembers) {
+                    IntPtr namePtr = IntPtr.Zero;
+                    IntPtr defPtr = IntPtr.Zero;
+
+                    if (kv.Key == null) {
+                        throw new ArgumentNullException("", "Member name cannot be null.");
+                    }
+
+                    if (kv.Value.Def == null) {
+                        throw new ArgumentNullException("", "Member definition string cannot be null.");
+                    }
+
+                    try
+                    {
+                        namePtr = Helpers.PtrFromStr(kv.Key);
+                        defPtr = Helpers.PtrFromStr(kv.Value.Def);
+
+                        structData.Add(new NativeMethods.StructMember(
+                            namePtr,
+                            kv.Value.Type,
+                            new UIntPtr((uint)kv.Value.Offset),
+                            defPtr
+                            ));
+                    }
+                    catch (Exception)
+                    {
+                        if (namePtr != IntPtr.Zero) {
+                            Marshal.FreeCoTaskMem(namePtr);
+                        }
+
+                        if (defPtr != IntPtr.Zero) {
+                            Marshal.FreeCoTaskMem(defPtr);
+                        }
+
+                        throw;
+                    }
+                }
+
+                Tw.VariableType structType = NativeMethods.TwDefineStruct(name, structData.ToArray(),
+                                                                          (uint)structData.Count,
+                                                                          new UIntPtr((uint)structSize),
+                                                                          callback, clientData);
+
+                if (structType == VariableType.Undefined) {
+                    throw new AntTweakBarException("TwDefineStruct failed.");
+                }
+
+                return structType;
+            }
+            finally
+            {
+                foreach (var member in structData) {
+                    Marshal.FreeCoTaskMem(member.Name);
+                    Marshal.FreeCoTaskMem(member.DefString);
+                }
+            }
         }
 
         /// <summary>
@@ -1090,6 +1303,9 @@ namespace AntTweakBar
     /// </summary>
     internal static class Helpers
     {
+        /// <summary>
+        /// Decodes a UTF-8 string from a pointer.
+        /// </summary>
         public static String StrFromPtr(IntPtr ptr)
         {
             var strBytes = new List<byte>();
@@ -1102,6 +1318,30 @@ namespace AntTweakBar
             }
 
             return Encoding.UTF8.GetString(strBytes.ToArray());
+        }
+
+        /// <summary>
+        /// Allocates a new pointer containing the UTF-8 string.
+        /// </summary>
+        /// <remarks>
+        /// The pointer must be freed later with FreeCoTaskMem.
+        /// </remarks>
+        public static IntPtr PtrFromStr(String str)
+        {
+            var cnt = Encoding.UTF8.GetByteCount(str);
+            var ptr = Marshal.AllocCoTaskMem(cnt + 1);
+            CopyStrToPtr(ptr, str);
+            return ptr;
+        }
+
+        /// <summary>
+        /// Encodes a UTF-8 string into a pointer.
+        /// </summary>
+        public static void CopyStrToPtr(IntPtr ptr, String str)
+        {
+            var bytes = new List<byte>(Encoding.UTF8.GetBytes(str));
+            bytes.Add(0); // append the null-terminated character
+            Marshal.Copy(bytes.ToArray(), 0, ptr, bytes.Count);
         }
     }
 }

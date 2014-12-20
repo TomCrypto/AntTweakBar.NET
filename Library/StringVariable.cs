@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace AntTweakBar
 {
@@ -24,7 +21,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar variable which can hold a string.
     /// </summary>
-    public sealed class StringVariable : Variable
+    public sealed class StringVariable : Variable, IValueVariable
     {
         /// <summary>
         /// Occurs when the user changes this variable's value.
@@ -140,9 +137,7 @@ namespace AntTweakBar
         /// </summary>
         private void GetCallback(IntPtr pointer, IntPtr clientData)
         {
-            var bytes = new List<byte>(Encoding.UTF8.GetBytes(Value));
-            bytes.Add(0); /* Append the null-terminated character. */
-            Marshal.Copy(bytes.ToArray(), 0, pointer, bytes.Count);
+            Helpers.CopyStrToPtr(pointer, Value);
         }
 
         public override String ToString()

@@ -17,10 +17,12 @@ namespace Sample
     /// This variable will hold a polynomial (if an invalid formula
     /// is entered by the user, it will simply refuse to accept it).
     /// </summary>
-    class PolynomialVariable
+    sealed class PolynomialVariable : IValueVariable
     {
         // Used to hold optional symbols used during polynomial parsing
         private readonly IDictionary<String, Double> symbols = new Dictionary<String, Double>();
+
+        public IDictionary<String, Double> Symbols { get { return symbols; } }
 
         /// <summary>
         /// Gets or sets a polynomial symbol.
@@ -38,132 +40,102 @@ namespace Sample
             }
         }
 
+        public Bar ParentBar { get { return polyString.ParentBar; } }
+
+        public event EventHandler Changed
+        {
+            add { polyString.Changed += value; }
+            remove { polyString.Changed -= value; }
+        }
+
+        public void OnChanged(EventArgs e)
+        {
+            polyString.OnChanged(e);
+        }
+
         /// <summary>
         /// The actual backing variable.
         /// </summary>
-        public StringVariable PolyString { get; set; }
+        private StringVariable polyString { get; set; }
 
-        public PolynomialVariable(Bar bar, String poly, String def = null)
+        public PolynomialVariable(Bar bar, Polynomial poly, String def = null)
         {
-            PolyString = new StringVariable(bar, poly, def);
-            PolyString.Validating += (s, e) => { e.Valid = (Polynomial.Parse(e.Value, symbols) != null); };
+            polyString = new StringVariable(bar, poly.ToString(), def);
+            polyString.Validating += (s, e) => {
+                e.Valid = (Polynomial.Parse(e.Value, symbols) != null);
+            };
         }
 
-        public Polynomial Polynomial
+        public String Label
         {
-            get { return Polynomial.Parse(PolyString.Value, symbols); }
+            get { return polyString.Label; }
+            set { polyString.Label = value; }
+        }
+
+        public Polynomial Value
+        {
+            get { return Polynomial.Parse(polyString.Value, symbols); }
+            set { polyString.Value = value.ToString(); }
+        }
+
+        public Group Group
+        {
+            get { return polyString.Group; }
+            set { polyString.Group = value; }
+        }
+
+        public void Dispose()
+        {
+            polyString.Dispose();
         }
     }
 
-    /// <summary>
-    /// Not a real variable (just contains two variables for the
-    /// real/imaginary parts and puts them in a single group).
-    /// </summary>
-    class ComplexVariable : IDisposable
+    sealed class ComplexVariable : StructVariable<Complex>
     {
-        private readonly DoubleVariable re, im;
-
-        /// <summary>
-        /// Occurs when the user changes the variable.
-        /// </summary>
-        public event EventHandler Changed;
-
-        /// <summary>
-        /// Raises the Changed event.
-        /// </summary>
-        public void OnChanged(EventArgs e)
-        {
-            if (Changed != null)
-                Changed(this, e);
-        }
-
-        /// <summary>
-        /// Gets or sets the value of this variable.
-        /// </summary>
-        public Complex Value
-        {
-            get { return new Complex(re.Value, im.Value); }
-            set
-            {
-                bool changed = !value.Equals(Value);
-                re.Value = value.Real;
-                im.Value = value.Imaginary;
-                if (changed)
-                    OnChanged(EventArgs.Empty);
-            }
-        }
+        private DoubleVariable Re { get { return (variables[0] as DoubleVariable); } }
+        private DoubleVariable Im { get { return (variables[1] as DoubleVariable); } }
 
         public ComplexVariable(Bar bar, Complex initialValue)
+            : base(bar, new DoubleVariable(bar, initialValue.Real),
+                        new DoubleVariable(bar, initialValue.Imaginary))
         {
-            re = new DoubleVariable(bar, initialValue.Real);
-            im = new DoubleVariable(bar, initialValue.Imaginary);
+            Re.Label = "Real";
+            Im.Label = "Imaginary";
+        }
 
-            re.Changed += (sender, e) => OnChanged(EventArgs.Empty);
-            im.Changed += (sender, e) => OnChanged(EventArgs.Empty);
+        public override Complex Value
+        {
+            get
+            {
+                return new Complex(Re.Value, Im.Value);
+            }
 
-            re.Label = "Real";
-            im.Label = "Imaginary";
-
-            Label = "undef";
+            set
+            {
+                Re.Value = value.Real;
+                Im.Value = value.Imaginary;
+            }
         }
 
         public Double Step
         {
-            get { return re.Step; }
+            get { return Re.Step; }
             set
             {
-                re.Step = value;
-                im.Step = value;
+                Re.Step = value;
+                Im.Step = value;
             }
         }
 
         public Double Precision
         {
-            get { return re.Precision; }
+            get { return Re.Precision; }
             set
             {
-                re.Precision = value;
-                im.Precision = value;
+                Re.Precision = value;
+                Im.Precision = value;
             }
         }
-
-        public String Label
-        {
-            get { return re.Group; }
-            set
-            {
-                re.Group = value;
-                im.Group = value;
-            }
-        }
-
-        #region IDisposable
-
-        ~ComplexVariable()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-                return;
-
-            re.Dispose();
-            im.Dispose();
-
-            disposed = true;
-        }
-
-        private bool disposed = false;
-
-        #endregion
     }
 
     class Program : GameWindow
@@ -205,75 +177,38 @@ namespace Sample
 
         // Because OpenTK does not use an event loop, the native AntTweakBar library
         // has no provisions for directly handling user events. Therefore we need to
-        // convert polled OpenTK events to AntTweakBar events before handling them.
+        // convert any OpenTK events to AntTweakBar events before handling them.
 
         private static bool HandleMouseClick(Context context, MouseButtonEventArgs e)
         {
             var action = e.IsPressed ? Tw.MouseAction.Pressed : Tw.MouseAction.Released;
 
-            switch (e.Button)
-            {
-                case MouseButton.Left:
-                    return context.HandleMouseClick(action, Tw.MouseButton.Left);
-                case MouseButton.Right:
-                    return context.HandleMouseClick(action, Tw.MouseButton.Right);
-                case MouseButton.Middle:
-                    return context.HandleMouseClick(action, Tw.MouseButton.Middle);
+            if (Tw.Mappings.OpenTK.Buttons.ContainsKey((int)e.Button)) {
+                return context.HandleMouseClick(action, Tw.Mappings.OpenTK.Buttons[(int)e.Button]);
+            } else {
+                return false;
             }
-
-            return false;
         }
 
-        private static bool HandleKeyPress(Context context, KeyboardKeyEventArgs e)
+        private static bool HandleKeyInput(Context context, KeyboardKeyEventArgs e, bool down)
         {
-            var modifier = Tw.KeyModifier.None;
+            var modifiers = Tw.KeyModifiers.None;
             if (e.Modifiers.HasFlag(KeyModifiers.Alt))
-                modifier |= Tw.KeyModifier.Alt;
+                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Alt];
             if (e.Modifiers.HasFlag(KeyModifiers.Shift))
-                modifier |= Tw.KeyModifier.Shift;
+                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Shift];
             if (e.Modifiers.HasFlag(KeyModifiers.Control))
-                modifier |= Tw.KeyModifier.Ctrl;
+                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Control];
 
-            var mapping = new Dictionary<Key, Tw.SpecialKey>()
-            {
-                { Key.Back,          Tw.SpecialKey.Backspace },
-                { Key.Tab,           Tw.SpecialKey.Tab },
-                { Key.Clear,         Tw.SpecialKey.Clear },
-                { Key.Enter,         Tw.SpecialKey.Return },
-                { Key.Pause,         Tw.SpecialKey.Pause },
-                { Key.Escape,        Tw.SpecialKey.Escape },
-                //{ Key.Space,         TW.SpecialKey.Space }, // already handled by KeyPress
-                { Key.Delete,        Tw.SpecialKey.Delete },
-                { Key.Up,            Tw.SpecialKey.Up },
-                { Key.Left,          Tw.SpecialKey.Left },
-                { Key.Down,          Tw.SpecialKey.Down },
-                { Key.Right,         Tw.SpecialKey.Right },
-                { Key.Insert,        Tw.SpecialKey.Insert },
-                { Key.Home,          Tw.SpecialKey.Home },
-                { Key.End,           Tw.SpecialKey.End },
-                { Key.PageUp,        Tw.SpecialKey.PageUp },
-                { Key.PageDown,      Tw.SpecialKey.PageDown },
-                { Key.F1,            Tw.SpecialKey.F1 },
-                { Key.F2,            Tw.SpecialKey.F2 },
-                { Key.F3,            Tw.SpecialKey.F3 },
-                { Key.F4,            Tw.SpecialKey.F4 },
-                { Key.F5,            Tw.SpecialKey.F5 },
-                { Key.F6,            Tw.SpecialKey.F6 },
-                { Key.F7,            Tw.SpecialKey.F7 },
-                { Key.F8,            Tw.SpecialKey.F8 },
-                { Key.F9,            Tw.SpecialKey.F9 },
-                { Key.F10,           Tw.SpecialKey.F10 },
-                { Key.F11,           Tw.SpecialKey.F11 },
-                { Key.F12,           Tw.SpecialKey.F12 },
-                { Key.F13,           Tw.SpecialKey.F13 },
-                { Key.F14,           Tw.SpecialKey.F14 },
-                { Key.F15,           Tw.SpecialKey.F15 },
-            };
-
-            if (mapping.ContainsKey(e.Key))
-                return context.HandleKeyPress(mapping[e.Key], modifier);
-            else
+            if (Tw.Mappings.OpenTK.Keys.ContainsKey((int)e.Key)) {
+                if (down) {
+                    return context.HandleKeyDown(Tw.Mappings.OpenTK.Keys[(int)e.Key], modifiers);
+                } else {
+                    return context.HandleKeyUp(Tw.Mappings.OpenTK.Keys[(int)e.Key], modifiers);
+                }
+            } else {
                 return false;
+            }
         }
 
         #endregion
@@ -293,37 +228,16 @@ namespace Sample
             context = new Context(Tw.GraphicsAPI.OpenGL);
             fractal = new Fractal();
 
-            /* Hook up the different events to the AntTweakBar.NET context, and
-             * allow the user to navigate the fractal using the keyboard/mouse. */
-
-            KeyPress += (sender, e) => context.HandleKeyPress(e.KeyChar);
-            Resize += (sender, e) => context.HandleResize(ClientSize);
-            KeyDown += (sender, e) => {
-                if (!HandleKeyPress(context, e) && (e.Key == Key.Escape)) {
-                    Close(); // Close program on Esc when appropriate
-                }
-            };
-
-            Mouse.WheelChanged += (sender, e) => fractal.ZoomIn(e.DeltaPrecise);
-            Mouse.Move += (sender, e) => context.HandleMouseMove(e.Position);
-            Mouse.ButtonUp += (sender, e) => HandleMouseClick(context, e);
-            Mouse.ButtonDown += (sender, e) =>
-            {
-                if (!HandleMouseClick(context, e))
-                {
-                    if (e.Button == MouseButton.Left)
-                        fractal.Pan(0.5f * (2.0f * e.X -  Width) / Height,
-                                    0.5f * (2.0f * e.Y - Height) / Height);
-                    else if (e.Button == MouseButton.Right)
-                        fractal.ZoomIn(1);
-                }
-            };
-
             /* Add AntTweakBar variables and events */
 
             var configsBar = new Bar(context);
             configsBar.Label = "Configuration";
             configsBar.Contained = true;
+
+            var thresholdVar = new FloatVariable(configsBar, fractal.Threshold);
+            thresholdVar.Changed += delegate { fractal.Threshold = thresholdVar.Value; };
+            thresholdVar.SetDefinition("min=0 max=5 step=0.01 precision=2)");
+            thresholdVar.Label = "Convergence";
 
             var itersVar = new IntVariable(configsBar, fractal.Iterations);
             itersVar.Changed += delegate { fractal.Iterations = itersVar.Value; };
@@ -354,18 +268,18 @@ namespace Sample
 
             var intensityVar = new FloatVariable(configsBar, fractal.Intensity);
             intensityVar.Changed += delegate { fractal.Intensity = intensityVar.Value; };
-            intensityVar.SetDefinition("min=0 max=3 step=0.01 precision=3)");
+            intensityVar.SetDefinition("min=0 max=3 step=0.01 precision=2)");
             intensityVar.Label = "Intensity";
 
             var aCoeffVar = new ComplexVariable(configsBar, fractal.ACoeff);
             aCoeffVar.Changed += delegate { fractal.ACoeff = aCoeffVar.Value; };
-            aCoeffVar.Label = "Relaxation Coeff.";
+            aCoeffVar.Group.Label = "Relaxation Coefficient";
             aCoeffVar.Step = 0.0002;
             aCoeffVar.Precision = 4;
 
             var kcoeff = new ComplexVariable(configsBar, fractal.KCoeff);
             kcoeff.Changed += delegate { fractal.KCoeff = kcoeff.Value; };
-            kcoeff.Label = "Nova Coeff.";
+            kcoeff.Group.Label = "Nova Coefficient";
             kcoeff.Step = 0.0002;
             kcoeff.Precision = 4;
 
@@ -376,30 +290,30 @@ namespace Sample
             fractalBar.Position = new Point(Width - 500 - 20, 20);
             fractalBar.Size = new Size(500, 150);
 
-            var poly = new PolynomialVariable(fractalBar, "z^3 - 1");
+            var poly = new PolynomialVariable(fractalBar, Polynomial.Parse("z^3 - 1"));
             var preset = new EnumVariable<FractalPreset>(fractalBar, FractalPreset.Cubic);
-            poly.PolyString.Changed += delegate { fractal.Polynomial = poly.Polynomial; };
-            poly.PolyString.Label = "Equation";
+            poly.Changed += delegate { fractal.Polynomial = poly.Value; };
+            poly.Label = "Equation";
             preset.Label = "Presets";
             preset.Changed += delegate
             {
                 switch (preset.Value)
                 {
                     case FractalPreset.Cubic:
-                        poly.PolyString.Value = "z^3 - 1";
+                        poly.Value = Polynomial.Parse("z^3 - 1", poly.Symbols);
                         break;
                     case FractalPreset.OtherCubic:
-                        poly.PolyString.Value = "z^3 - 2z + 2";
+                        poly.Value = Polynomial.Parse("z^3 - 2z + 2", poly.Symbols);
                         break;
                     case FractalPreset.SineTaylor:
-                        poly.PolyString.Value = "z - 1/6z^3 + 1/120z^5 - 1/5040z^7 + 1/362880z^9";
+                        poly.Value = Polynomial.Parse("z - 1/6z^3 + 1/120z^5 - 1/5040z^7 + 1/362880z^9", poly.Symbols);
                         break;
                     case FractalPreset.ExpIz:
-                        poly.PolyString.Value = "1 + iz - 1/2z^2 + (1/6i)z^3";
+                        poly.Value = Polynomial.Parse("1 + iz - 1/2z^2 + (1/6i)z^3", poly.Symbols);
                         break;
                 }
 
-                fractal.Polynomial = poly.Polynomial;
+                fractal.Polynomial = poly.Value;
             };
 
             /* This is where you can use the Changed event to great advantage: we are
@@ -408,18 +322,20 @@ namespace Sample
              * keeping a reference to them. That way we don't need to track them at all.
             */
 
+            var symbolicVarGroup = new Group(fractalBar);
+
             for (char symbol = 'A'; symbol <= 'F'; ++symbol)
             {
                 var symbolVar = new DoubleVariable(fractalBar);
-                symbolVar.Group = "Symbolic Variables";
                 symbolVar.Label = symbol.ToString();
+                symbolVar.Group = symbolicVarGroup;
                 symbolVar.Step = 0.0002f;
                 symbolVar.Precision = 4;
 
                 symbolVar.Changed += delegate
                 {
                     poly[symbolVar.Label] = symbolVar.Value; // update symbol
-                    fractal.Polynomial = poly.Polynomial; // update fractal
+                    fractal.Polynomial = poly.Value; // update fractal
                 };
 
                 // also add the symbol initially, so that it exists on startup
@@ -427,7 +343,8 @@ namespace Sample
             }
 
             /* Start the symbol list closed to avoid clutter */
-            fractalBar.OpenGroup("Symbolic Variables", false);
+            symbolicVarGroup.Label = "Symbolic Variables";
+            symbolicVarGroup.Open = false;
         }
 
         private enum FractalPreset
@@ -445,10 +362,86 @@ namespace Sample
             ExpIz,
         }
 
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            if (HandleMouseClick(context, e)) {
+                return;
+            }
+
+            if (e.Button == MouseButton.Left)
+                fractal.Pan(0.5f * (2.0f * e.X -  Width) / Height,
+                            0.5f * (2.0f * e.Y - Height) / Height);
+            else if (e.Button == MouseButton.Right)
+                fractal.ZoomIn(1);
+        }
+
+        protected override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            if (HandleMouseClick(context, e)) {
+                return;
+            }
+        }
+
+        protected override void OnMouseMove(MouseMoveEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            if (context.HandleMouseMove(e.Position)) {
+                return;
+            }
+        }
+
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            if (context.HandleMouseWheel(e.Value)) {
+                return;
+            }
+
+            fractal.ZoomIn(e.DeltaPrecise);
+        }
+
+        protected override void OnKeyDown(KeyboardKeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (HandleKeyInput(context, e, true)) {
+                return;
+            }
+
+            if (e.Key == Key.Escape) {
+                Close();
+            }
+        }
+
+        protected override void OnKeyUp(KeyboardKeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+
+            if (HandleKeyInput(context, e, false)) {
+                return;
+            }
+        }
+
+        protected override void OnKeyPress(KeyPressEventArgs e)
+        {
+            base.OnKeyPress(e);
+
+            if (context.HandleKeyPress(e.KeyChar)) {
+                return;
+            }
+        }
+
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
             fractal.Dimensions = ClientSize;
+            context.HandleResize(ClientSize);
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)

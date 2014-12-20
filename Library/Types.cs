@@ -1,25 +1,132 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace AntTweakBar
 {
     /// <summary>
-    /// Specifies the possible color selection modes.
+    /// The possible bar text colors.
+    /// </summary>
+    public enum BarTextColor
+    {
+        /// <summary>
+        /// Darker text.
+        /// </summary>
+        Dark,
+        /// <summary>
+        /// Lighter text.
+        /// </summary>
+        Light,
+    }
+
+    /// <summary>
+    /// The possible button alignments in a bar.
+    /// </summary>
+    public enum BarButtonAlignment
+    {
+        /// <summary>
+        /// Left-aligned.
+        /// </summary>
+        Left,
+        /// <summary>
+        /// Center-aligned.
+        /// </summary>
+        Center,
+        /// <summary>
+        /// Right-aligned.
+        /// </summary>
+        Right,
+    }
+
+    /// <summary>
+    /// The possible bar font sizes.
+    /// </summary>
+    public enum BarFontSize
+    {
+        /// <summary>
+        /// Small font.
+        /// </summary>
+        Small,
+        /// <summary>
+        /// Nedium font.
+        /// </summary>
+        Medium,
+        /// <summary>
+        /// Large font.
+        /// </summary>
+        Large,
+    }
+
+    /// <summary>
+    /// The possible bar font styles.
+    /// </summary>
+    public enum BarFontStyle
+    {
+        /// <summary>
+        /// Default (proportional) font.
+        /// </summary>
+        Default,
+        /// <summary>
+        /// Fixed (monospace) font.
+        /// </summary>
+        Fixed,
+    }
+
+    /// <summary>
+    /// THe possible bar icon positions.
+    /// </summary>
+    public enum BarIconPosition
+    {
+        /// <summary>
+        /// Icons in the bottom left.
+        /// </summary>
+        BottomLeft,
+        /// <summary>
+        /// Icons in the bottom right.
+        /// </summary>
+        BottomRight,
+        /// <summary>
+        /// Icons in the top left.
+        /// </summary>
+        TopLeft,
+        /// <summary>
+        /// Icons in the top right.
+        /// </summary>
+        TopRight,
+    }
+
+    /// <summary>
+    /// The possible bar icon alignments.
+    /// </summary>
+    public enum BarIconAlignment
+    {
+        /// <summary>
+        /// Bar icons arranged vertically.
+        /// </summary>
+        Vertical,
+        /// <summary>
+        /// Bars icons arranged horizontally.
+        /// </summary>
+        Horizontal,
+    }
+
+    /// <summary>
+    /// The possible color selection modes.
     /// </summary>
     public enum ColorMode
     {
         /// <summary>
-        /// Color selection is in RGB mode.
+        /// RGB color selection mode.
         /// </summary>
         RGB,
         /// <summary>
-        /// Color selection is in HLS (HSL) mode.
+        /// HLS (HSL) color selection mode.
         /// </summary>
         HLS,
     }
 
     /// <summary>
-    /// Specifies the possible (axis-aligned) axis orientations.
+    /// The possible (axis-aligned) axis orientations.
     /// </summary>
     public enum AxisOrientation
     {
@@ -57,25 +164,40 @@ namespace AntTweakBar
         /// <summary>
         /// Called by AntTweakBar when the user changes a variable's value.
         /// </summary>
-        public delegate void SetVarCallback([In] IntPtr value, [In] IntPtr clientData);
+        public delegate void SetVarCallback(
+            [In] IntPtr value,
+            [In] IntPtr clientData);
 
         /// <summary>
         /// Called by AntTweakBar when AntTweakBar needs a variable's value.
         /// </summary>
-        public delegate void GetVarCallback([In] IntPtr value, [In] IntPtr clientData);
+        public delegate void GetVarCallback(
+            [In] IntPtr value,
+            [In] IntPtr clientData);
 
         /// <summary>
         /// Called by AntTweakBar when the user clicks on a button.
         /// </summary>
-        public delegate void ButtonCallback([In] IntPtr clientData);
+        public delegate void ButtonCallback(
+            [In] IntPtr clientData);
+
+        /// <summary>
+        /// Called by AntTweakBar to retrieve a summary of a struct variable.
+        /// </summary>
+        public delegate void SummaryCallback(
+            [In] IntPtr summaryString,
+            [In] IntPtr summaryMaxLength,
+            [In] IntPtr value,
+            [In] IntPtr clientData);
 
         /// <summary>
         /// Called by AntTweakBar when an error occurs.
         /// </summary>
-        public delegate void ErrorHandler([In] IntPtr message);
+        public delegate void ErrorHandler(
+            [In] IntPtr message);
 
         /// <summary>
-        /// Specifies the graphics API's AntTweakBar supports.
+        /// The graphics API's AntTweakBar supports.
         /// </summary>
         public enum GraphicsAPI
         {
@@ -106,7 +228,7 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Specifies the valid parameter value types to SetParam.
+        /// The valid parameter value types to SetParam.
         /// </summary>
         public enum ParamValueType
         {
@@ -129,12 +251,12 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Defines the maximum static string length.
+        /// The maximum static string length.
         /// </summary>
         internal const int MaxStringLength = 4096;
 
         /// <summary>
-        /// Specifies the different possible variable type, excluding enums.
+        /// The different possible variable type, excluding enums and structs.
         /// </summary>
         public enum VariableType
         {
@@ -229,7 +351,64 @@ namespace AntTweakBar
         };
 
         /// <summary>
-        /// Specifies the possible mouse actions recognized by AntTweakBar.
+        /// Information about a member of an AntTweakBar struct variable.
+        /// </summary>
+        public struct StructMemberInfo
+        {
+            /// <summary>
+            /// Gets the AntTweakBar type of this member.
+            /// </summary>
+            public VariableType Type { get { return type; } }
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private readonly VariableType type;
+
+            /// <summary>
+            /// Gets the offset in bytes of this member.
+            /// </summary>
+            public int Offset { get { return offset; } }
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private readonly int offset;
+
+            /// <summary>
+            /// Gets the definition string to use for this member.
+            /// </summary>
+            public String Def { get { return def; } }
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private readonly String def;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="AntTweakBar.Tw.StructMemberInfo"/> struct.
+            /// </summary>
+            /// <param name="type">The struct member's AntTweakBar type.</param>
+            /// <param name="offset">The struct member's offset in bytes.</param>
+            /// <param name="def">A definition string for the struct member.</param>
+            public StructMemberInfo(VariableType type, int offset, String def = "") : this()
+            {
+                if (def == null) {
+                    def = "";
+                }
+
+                this.type = type;
+                this.offset = offset;
+                this.def = def;
+            }
+
+            /// <summary>
+            /// Creates a suitable StructMemberInfo from a struct member name.
+            /// </summary>
+            public static StructMemberInfo FromStruct<T>(String member, VariableType type, String def = "") where T : struct
+            {
+                return new StructMemberInfo(type, (int)Marshal.OffsetOf(typeof(T), member), def);
+            }
+
+            public override String ToString()
+            {
+                return String.Format("[StructMemberInfo: Type={0}, Offset={1}, Def={2}]", Type, Offset, Def);
+            }
+        }
+
+        /// <summary>
+        /// The possible mouse actions recognized by AntTweakBar.
         /// </summary>
         public enum MouseAction
         {
@@ -244,57 +423,57 @@ namespace AntTweakBar
         }
 
         /// <summary>
-        /// Specifies the possible mouse buttons recognized by AntTweakBar.
+        /// The possible mouse buttons recognized by AntTweakBar.
         /// </summary>
         public enum MouseButton
         {
             None                                 = 0,
             /// <summary>
-            /// Represents the left mouse button.
+            /// The left mouse button.
             /// </summary>
             Left                                 = 1,
             /// <summary>
-            /// Represents the middle mouse button.
+            /// The middle mouse button.
             /// </summary>
             Middle                               = 2,
             /// <summary>
-            /// Represents the right mouse button.
+            /// The right mouse button.
             /// </summary>
             Right                                = 3,
         }
 
         /// <summary>
-        /// Specifies the possible key modifiers recognized by AntTweakBar.
+        /// The possible key modifiers recognized by AntTweakBar.
         /// </summary>
         [Flags]
-        public enum KeyModifier
+        public enum KeyModifiers
         {
             /// <summary>
-            /// Represents no key modifier.
+            /// No key modifier.
             /// </summary>
             None                                 = 0x0000,
             /// <summary>
-            /// Represents the shift key modifier.
+            /// The shift key modifier.
             /// </summary>
             Shift                                = 0x0003,
             /// <summary>
-            /// Represents the ctrl key modifier.
+            /// The ctrl key modifier.
             /// </summary>
             Ctrl                                 = 0x00c0,
             /// <summary>
-            /// Represents the alt key modifier.
+            /// The alt key modifier.
             /// </summary>
             Alt                                  = 0x0100,
             /// <summary>
-            /// Represents the meta key modifier.
+            /// The meta key modifier.
             /// </summary>
             Meta                                 = 0x0c00,
         }
 
         /// <summary>
-        /// Specifies the possible special keys recognized by AntTweakBar.
+        /// The possible keys recognized by AntTweakBar.
         /// </summary>
-        public enum SpecialKey
+        public enum Key
         {
             None                                 = 0,
             Backspace                            = '\b',
@@ -329,6 +508,32 @@ namespace AntTweakBar
             F13                                  = 294,
             F14                                  = 295,
             F15                                  = 296,
+            A                                    = 'A',
+            B                                    = 'B',
+            C                                    = 'C',
+            D                                    = 'D',
+            E                                    = 'E',
+            F                                    = 'F',
+            G                                    = 'G',
+            H                                    = 'H',
+            I                                    = 'I',
+            J                                    = 'J',
+            K                                    = 'K',
+            L                                    = 'L',
+            M                                    = 'M',
+            N                                    = 'N',
+            O                                    = 'O',
+            P                                    = 'P',
+            Q                                    = 'Q',
+            R                                    = 'R',
+            S                                    = 'S',
+            T                                    = 'T',
+            U                                    = 'U',
+            V                                    = 'V',
+            W                                    = 'W',
+            X                                    = 'X',
+            Y                                    = 'Y',
+            Z                                    = 'Z',
         }
     }
 }

@@ -10,7 +10,7 @@ namespace AntTweakBar
     /// <summary>
     /// An AntTweakBar bar, which holds a set of variables.
     /// </summary>
-    public sealed class Bar : IEnumerable<Variable>, IDisposable
+    public sealed class Bar : IEnumerable<IVariable>, IDisposable
     {
         /// <summary>
         /// The default label for unnamed bars.
@@ -72,39 +72,6 @@ namespace AntTweakBar
         #region Customization
 
         /// <summary>
-        /// Shows or hides a variable group in this bar.
-        /// </summary>
-        /// <param name="group">The name of the group to show or hide.</param>
-        /// <param name="visible">Whether the group should be visible.</param>
-        public void ShowGroup(String group, Boolean visible)
-        {
-            Tw.SetCurrentWindow(ParentContext.Identifier);
-            Tw.Define(String.Format("{0}/`{1}` visible={2}", ID, group, visible ? "true" : "false"));
-        }
-
-        /// <summary>
-        /// Opens or closes a variable group in this bar.
-        /// </summary>
-        /// <param name="group">The name of the group to open or close.</param>
-        /// <param name="opened">Whether the group should be open.</param>
-        public void OpenGroup(String group, Boolean opened)
-        {
-            Tw.SetCurrentWindow(ParentContext.Identifier);
-            Tw.Define(String.Format("{0}/`{1}` opened={2}", ID, group, opened ? "true" : "false"));
-        }
-
-        /// <summary>
-        /// Moves a variable group into another group.
-        /// </summary>
-        /// <param name="group">The name of the group to move.</param>
-        /// <param name="into">The name of the group to move it into.</param>
-        public void MoveGroup(String group, String into)
-        {
-            Tw.SetCurrentWindow(ParentContext.Identifier);
-            Tw.Define(String.Format("{0}/`{1}` group=`{2}`", ID, group, into));
-        }
-
-        /// <summary>
         /// Gets or sets this bar's label.
         /// </summary>
         public String Label
@@ -141,6 +108,15 @@ namespace AntTweakBar
         }
 
         /// <summary>
+        /// Gets or sets this bar's text color.
+        /// </summary>
+        public BarTextColor TextColor
+        {
+            get { return Tw.GetStringParam(Pointer, null, "text") == "dark" ? BarTextColor.Dark : BarTextColor.Light; }
+            set { Tw.SetParam(Pointer, null, "text", value == BarTextColor.Dark ? "dark" : "light"); }
+        }
+
+        /// <summary>
         /// Gets or sets this bar's position.
         /// </summary>
         public Point Position
@@ -156,6 +132,42 @@ namespace AntTweakBar
         {
             get { return Tw.GetSizeParam(Pointer, null, "size"); }
             set { Tw.SetParam(Pointer, null, "size", value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the width in pixels of this bar's value column. Set to zero for auto-fit.
+        /// </summary>
+        public Int32 ValueColumnWidth
+        {
+            get { return Math.Max(0, Tw.GetIntParam(Pointer, null, "valueswidth")[0]); }
+            set { Tw.SetParam(Pointer, null, "valueswidth", value == 0 ? "fit" : value.ToString()); }
+        }
+
+        /// <summary>
+        /// Gets or sets this bar's refresh rate in seconds.
+        /// </summary>
+        public Int32 RefreshRate
+        {
+            get { return Tw.GetIntParam(Pointer, null, "refresh")[0]; }
+            set { Tw.SetParam(Pointer, null, "refresh", value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the alignment of buttons in this bar.
+        /// </summary>
+        public BarButtonAlignment ButtonAlignment
+        {
+            get { return (BarButtonAlignment)Enum.Parse(typeof(BarButtonAlignment), Tw.GetStringParam(Pointer, null, "buttonalign"), true); }
+            set { Tw.SetParam(Pointer, null, "buttonalign", value.ToString().ToLower()); }
+        }
+
+        /// <summary>
+        /// Gets or sets whether this bar is iconified.
+        /// </summary>
+        public Boolean Iconified
+        {
+            get { return Tw.GetBooleanParam(Pointer, null, "iconified"); }
+            set { Tw.SetParam(Pointer, null, "iconified", value); }
         }
 
         /// <summary>
@@ -204,6 +216,24 @@ namespace AntTweakBar
         }
 
         /// <summary>
+        /// Gets or sets whether this bar is always at the front.
+        /// </summary>
+        public Boolean AlwaysFront
+        {
+            get { return Tw.GetBooleanParam(Pointer, null, "alwaystop"); }
+            set { Tw.SetParam(Pointer, null, "alwaystop", value); }
+        }
+
+        /// <summary>
+        /// Gets or sets whether this bar is always at the back.
+        /// </summary>
+        public Boolean AlwaysBack
+        {
+            get { return Tw.GetBooleanParam(Pointer, null, "alwaysbottom"); }
+            set { Tw.SetParam(Pointer, null, "alwaysbottom", value); }
+        }
+
+        /// <summary>
         /// Brings this bar in front of all others.
         /// </summary>
         public void BringToFront()
@@ -223,14 +253,14 @@ namespace AntTweakBar
 
         #region IEnumerable
 
-        private readonly ICollection<Variable> variables = new HashSet<Variable>();
+        private readonly ICollection<IVariable> variables = new HashSet<IVariable>();
 
-        internal void Add(Variable variable)
+        internal void Add(IVariable variable)
         {
             variables.Add(variable);
         }
 
-        internal void Remove(Variable variable)
+        internal void Remove(IVariable variable)
         {
             variables.Remove(variable);
         }
@@ -247,7 +277,7 @@ namespace AntTweakBar
             }
         }
 
-        public IEnumerator<Variable> GetEnumerator()
+        public IEnumerator<IVariable> GetEnumerator()
         {
             return variables.GetEnumerator();
         }
