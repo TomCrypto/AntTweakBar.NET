@@ -84,7 +84,7 @@ Any issues or pull requests are welcome, I especially need help with verifying m
 Changelog
 ---------
 
-?? December 2014 (v0.5.0):
+20 December 2014 (v0.5.0)
 
  - changed `Tw.WindowSize` to accept sizes of (0, 0) to allow AntTweakBar resource cleanup (see [#3](https://github.com/TomCrypto/AntTweakBar.NET/issues/3))
  - added `ReleaseResources` and `ResetResources` methods to the `Context` class (see [#3](https://github.com/TomCrypto/AntTweakBar.NET/issues/3))
