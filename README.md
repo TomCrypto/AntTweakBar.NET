@@ -3,7 +3,7 @@ AntTweakBar.NET 0.5.0
 
 AntTweakBar.NET is an MIT-licensed C# wrapper for Philippe Decaudin's [AntTweakBar](http://anttweakbar.sourceforge.net) C/C++ GUI library. It allows C# developers to enhance their tech demos or games with an easy-to-use graphical widget for modifying application parameters in realtime. AntTweakBar.NET offers a high-level interface to the widget which will feel natural to any C# programmer, and also provides access to exception-safe bindings to the native AntTweakBar calls for those who might want them.
 
-AntTweakBar.NET runs on the Microsoft .NET framework and on the Mono runtime, both 32-bit and 64-bit (provided it can find the appropriate AntTweakBar DLL or shared library). It has been tested on Windows and Linux, and is expected to work - but has not yet been tested - on Mac OS X and presumably BSD.
+AntTweakBar.NET runs on the Microsoft .NET framework and on the Mono runtime, both 32-bit and 64-bit (provided it can find the appropriate AntTweakBar DLL or shared library). It has been tested on Windows and Linux, and is expected to work - but has not yet been tested - on Mac OS X and presumably BSD. The library is currently CLS-compliant and so should be able to be used from any .NET language, but this has not been verified.
 
 License
 -------
@@ -13,7 +13,7 @@ The AntTweakBar.NET wrapper is distributed under the MIT license, while AntTweak
 Quick Start
 -----------
 
-You must obtain and install the native AntTweakBar library itself from its [SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download), if you haven't already. For Windows, download the appropriate prebuilt DLL's and install them on your system or as third party libraries in your C# project (note: the 64-bit Windows DLL is called AntTweakBar64.dll, remove the "64" suffix). For Linux, simply `make && make install` as usual . Then add the `AntTweakBar.NET.dll` assembly in your project, either by compiling it from the repository or retrieving it from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/). You're good to go!
+You must obtain and install the native AntTweakBar library itself from its [SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download), if you haven't already. For Windows, download the appropriate prebuilt DLL's and install them on your system or as third party libraries in your C# project (note: the 64-bit Windows DLL is called AntTweakBar64.dll, remove the "64" suffix). For Linux, simply `make && make install` as usual . Then add the `AntTweakBar.NET.dll` assembly in your project, either by compiling it from the repository, downloading the [latest release](https://github.com/TomCrypto/AntTweakBar.NET/releases), or retrieving it from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/). You're good to go!
 
 The AntTweakBar.NET high-level interface is divided into four main concepts: contexts, bars, variables and groups.
 
