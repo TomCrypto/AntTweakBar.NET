@@ -8,12 +8,18 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("AntTweakBar.NET")]
 [assembly: AssemblyDescription("C# wrapper for the AntTweakBar GUI library.")]
+#if DEBUG
 #if STANDALONE
-[assembly: AssemblyConfiguration("Standalone")]
-#elif DEBUG
+[assembly: AssemblyConfiguration("Debug-Standalone")]
+#else
 [assembly: AssemblyConfiguration("Debug")]
+#endif
+#else
+#if STANDALONE
+[assembly: AssemblyConfiguration("Release-Standalone")]
 #else
 [assembly: AssemblyConfiguration("Release")]
+#endif
 #endif
 [assembly: AssemblyCompany("TomCrypto")]
 [assembly: AssemblyProduct("AntTweakBar.NET")]

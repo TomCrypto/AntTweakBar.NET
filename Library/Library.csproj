@@ -41,13 +41,26 @@
     <DocumentationFile>bin\Release\AntTweakBar.NET.xml</DocumentationFile>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Standalone|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug-Standalone|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineConstants>DEBUG;STANDALONE;</DefineConstants>
+    <OutputPath>bin\Debug-Standalone</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\Debug-Standalone\AntTweakBar.NET.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>ExtendedCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-Standalone|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>bin\Standalone</OutputPath>
+    <OutputPath>bin\Release-Standalone</OutputPath>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <GenerateDocumentation>true</GenerateDocumentation>
-    <DocumentationFile>bin\Standalone\AntTweakBar.NET.xml</DocumentationFile>
+    <DocumentationFile>bin\Release-Standalone\AntTweakBar.NET.xml</DocumentationFile>
     <DefineConstants>STANDALONE;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
@@ -87,7 +100,7 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <Choose>
-    <When Condition=" '$(Configuration)'=='Standalone' ">
+    <When Condition=" '$(Configuration)'=='Debug-Standalone' Or '$(Configuration)'=='Release-Standalone' ">
       <ItemGroup>
         <EmbeddedResource Include="Resources\AntTweakBar32.dll" />
         <EmbeddedResource Include="Resources\AntTweakBar64.dll" />
