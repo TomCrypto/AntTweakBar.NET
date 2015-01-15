@@ -15,14 +15,14 @@ namespace AntTweakBar
 
         private static bool AlreadyUnpacked(String path, String checksum)
         {
-            if (!File.Exists(path)) {
-                return false;
-            }
-
-            using (var md5 = MD5.Create()) {
-                using (var file = new FileStream(path, FileMode.Open, FileAccess.Read)) {
-                    return BitConverter.ToString(md5.ComputeHash(file)).Replace("-", "").ToLower() == checksum;
+            try {
+                using (var md5 = MD5.Create()) {
+                    using (var file = new FileStream(path, FileMode.Open, FileAccess.Read)) {
+                        return BitConverter.ToString(md5.ComputeHash(file)).Replace("-", "").ToLower() == checksum;
+                    }
                 }
+            } catch (IOException) {
+                return false;
             }
         }
 
