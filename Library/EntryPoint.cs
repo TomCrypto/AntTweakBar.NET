@@ -28,13 +28,13 @@ namespace AntTweakBar
 
         private static void UnpackDLL()
         {
-            var checksums = new Dictionary<String, String>()
+            var checksums = new Dictionary<String, String>() /* For AntTweakBar version 1.16 */
             {
                 { "AntTweakBar.Resources.AntTweakBar32.dll", "04ec8f97dffcba20d4fe00bfabe4ff46" },
                 { "AntTweakBar.Resources.AntTweakBar64.dll", "bfe4a0029ef35e1299fcd52682cc9557" },
             };
 
-            if (Environment.OSVersion.Platform != PlatformID.Win32NT) {
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
                 var dstName = NativeMethods.DLLName + ".dll"; /* Unpacking is Windows-only. */
                 var srcName = "AntTweakBar.Resources.AntTweakBar" + (IntPtr.Size * 8) + ".dll";
 
