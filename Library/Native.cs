@@ -11,8 +11,7 @@ namespace AntTweakBar
     /// </summary>
     internal static class NativeMethods
     {
-        /* For libAntTweakBar.so, AntTweakBar.dll. */
-        private const String DLLName = "AntTweakBar";
+        public const String DLLName = "AntTweakBar";
 
         [DllImport(DLLName, EntryPoint = "TwGetLastError")]
         public static extern IntPtr TwGetLastError();

@@ -77,20 +77,5 @@ namespace AntTweakBar
         /// Occurs when an AntTweakBar error occurs.
         /// </summary>
         public static event EventHandler<ErrorEventArgs> Error;
-
-        /// <summary>
-        /// Initializes the AntTweakBar.NET wrapper.
-        /// </summary>
-        static Tw()
-        {
-            NativeMethods.TwHandleErrors(ptr =>
-            {
-                var handler = Error;
-
-                if (handler != null) {
-                    handler(null, new ErrorEventArgs(Helpers.StrFromPtr(ptr)));
-                }
-            });
-        }
     }
 }

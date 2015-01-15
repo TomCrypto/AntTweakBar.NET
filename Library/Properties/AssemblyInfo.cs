@@ -8,7 +8,9 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("AntTweakBar.NET")]
 [assembly: AssemblyDescription("C# wrapper for the AntTweakBar GUI library.")]
-#if DEBUG
+#if STANDALONE
+[assembly: AssemblyConfiguration("Standalone")]
+#elif DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else
 [assembly: AssemblyConfiguration("Release")]
@@ -33,5 +35,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("0.5.0.0")]
-[assembly: AssemblyFileVersion("0.5.0.0")]
+[assembly: AssemblyVersion("0.5.1.0")]
+[assembly: AssemblyFileVersion("0.5.1.0")]
