@@ -13,11 +13,11 @@ The AntTweakBar.NET wrapper is distributed under the MIT license, while AntTweak
 Installation
 ------------
 
-For Linux, go to the [AntTweakBar SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download) and download the native library, and simply `make & make install` as usual. You can then use the managed AntTweakBar.NET library, either by compiling it yourself or grabbing it from the [latest release](https://github.com/TomCrypto/AntTweakBar.NET/releases) or from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET.Standalone/.
+For Linux, go to the [AntTweakBar SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download) and download the native library, and simply `make & make install` as usual. You can then use the managed AntTweakBar.NET library, either by compiling it yourself or grabbing it from the [latest release](https://github.com/TomCrypto/AntTweakBar.NET/releases) or from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET.Standalone/).
 
-For Windows, you have two options:
+For Windows, you have two options (the first one is easier, the second one more flexible):
 
-- Use the standalone AntTweakBar.NET assembly, which you can compile from scratch using the Standalone configuration, or can grab from the [latest release](https://github.com/TomCrypto/AntTweakBar.NET/releases) or from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET.Standalone/). This assembly actually contains the native DLL and unpacks it to the current directory as needed, which means it is larger in size and does some more work at startup, but is easier to use. Also, you cannot run a 32-bit and a 64-bit application from the same directory at the same time both using AntTweakBar.NET if using the standalone (this should not be a problem).
+- Use the standalone AntTweakBar.NET assembly, which you can compile from scratch using the Standalone configuration, or can grab from the [latest release](https://github.com/TomCrypto/AntTweakBar.NET/releases) or from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET.Standalone/). This assembly contains the native DLL's and unpacks it to the current directory as needed, which means it is larger in size and does some I/O work on startup, but is easier to use. Also, you cannot run a 32-bit and a 64-bit application from the same directory at the same time both using AntTweakBar.NET if using the standalone, and the unpacking code has a race condition if the DLL hasn't been unpacked yet (this should not be a problem).
 
 - Go to the [AntTweakBar SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download) and download the native library and then either install it on your system or add it to your project's build system. **Important**: AntTweakBar.NET will only ever look for `AntTweakBar.dll` for consistency reasons, so your build system must copy the right 32-bit or 64-bit native DLL to your project's output directory depending on the build configuration. If you are only interested in 64-bit, just discard the 32-bit native library, rename the 64-bit one by removing the "64" suffix, and use that one.
 
@@ -94,6 +94,10 @@ Any issues or pull requests are welcome, I especially need help with verifying m
 
 Changelog
 ---------
+
+TODO:
+
+ - separate assembly for integration in different popular frameworks
 
 15 January 2015 (v0.5.1)
 
