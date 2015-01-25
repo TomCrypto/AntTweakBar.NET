@@ -100,6 +100,7 @@ Changelog
 26 January 2015 (v0.6.0)
 
  - deprecated and removed mapping functionality
+ - tagged v0.6.0 as a release with downloadable assemblies
 
 15 January 2015 (v0.5.1)
 
