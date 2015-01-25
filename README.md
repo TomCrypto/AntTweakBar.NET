@@ -1,4 +1,4 @@
-AntTweakBar.NET 0.5.1
+AntTweakBar.NET 0.6.0
 =====================
 
 AntTweakBar.NET is an MIT-licensed C# wrapper for Philippe Decaudin's [AntTweakBar](http://anttweakbar.sourceforge.net) C/C++ GUI library. It allows C# developers to enhance their tech demos or games with an easy-to-use graphical widget for modifying application parameters in realtime. AntTweakBar.NET offers a high-level interface to the widget which will feel natural to any C# programmer, and also provides access to exception-safe bindings to the native AntTweakBar calls for those who might want them.
@@ -95,9 +95,9 @@ Any issues or pull requests are welcome, I especially need help with verifying m
 Changelog
 ---------
 
-TODO:
+26 January 2015 (v0.6.0)
 
- - separate assembly for integration in different popular frameworks
+ - deprecated and removed mapping functionality
 
 15 January 2015 (v0.5.1)
 
