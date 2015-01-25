@@ -3,7 +3,7 @@ AntTweakBar.NET 0.6.0
 
 AntTweakBar.NET is an MIT-licensed C# wrapper for Philippe Decaudin's [AntTweakBar](http://anttweakbar.sourceforge.net) C/C++ GUI library. It allows C# developers to enhance their tech demos or games with an easy-to-use graphical widget for modifying application parameters in realtime. AntTweakBar.NET offers a high-level interface to the widget which will feel natural to any C# programmer, and also provides access to exception-safe bindings to the native AntTweakBar calls for those who might want them.
 
-AntTweakBar.NET runs on the Microsoft .NET framework and on the Mono runtime, both 32-bit and 64-bit (provided it can find the appropriate AntTweakBar DLL or shared library). It has been tested on Windows and Linux, and is expected to work - but has not yet been tested - on Mac OS X and presumably BSD. The library is currently CLS-compliant and so should be able to be used from any .NET language, but this has not been verified.
+AntTweakBar.NET runs on the Microsoft .NET Framework 4 and on the Mono runtime, both 32-bit and 64-bit (provided it can find the appropriate AntTweakBar DLL or shared library). It has been tested on Windows and Linux, and is expected to work - but has not yet been tested - on Mac OS X and presumably BSD. The library is currently CLS-compliant and so should be able to be used from any .NET language, but this has not been verified.
 
 License
 -------
@@ -36,7 +36,7 @@ The AntTweakBar.NET high-level interface is divided into four main concepts: con
 
 - **Group**: These are used to put a set of variables together in the bar for easy access, you can open (expand) or close (collapse) groups, and can put groups into groups for a hierarchical organization. Please see the "groups" page in the [wiki](https://github.com/TomCrypto/AntTweakBar.NET/wiki) to find out how to use them. 
 
-The first context created should be passed the graphics API you are using, which is some version of OpenGL or DirectX. For DirectX, you must also pass a pointer to the native device, which should be available from the graphics framework you are using somehow (for instance, for SharpDX, use `SharpDX.Direct3D11.Device.NativePointer`).
+The first context created should be passed the graphics API you are using, which is some version of OpenGL or DirectX. For DirectX, you must also pass a pointer to the native device, which should be available from the graphics framework you are using somehow (for instance, for SharpDX with Direct3D11, use `SharpDX.Direct3D11.Device.NativePointer`).
 
 ```csharp
 using AntTweakBar;
@@ -44,9 +44,11 @@ using AntTweakBar;
 /* ... */
 
 context = new Context(Tw.GraphicsAPI.Direct3D11, /* pointer to device */);
+/* or */
+context = new Context(Tw.GraphicsAPI.OpenGL /* or OpenGLCore */);
 ```
 
-Other contexts do not have to provide a graphics API, and can be created as simply `new Context();`. AntTweakBar.NET keeps track of how many contexts are active, and initializes the AntTweakBar library whenever a first one is created, and terminates the library whenever the last one is destroyed.
+Other contexts do not have to provide a graphics API, and can be created as simply `new Context();`. AntTweakBar.NET keeps track of how many contexts are active, initializes the AntTweakBar library whenever a first one is created, and terminates the library whenever the last one is destroyed.
 
 Once you have a context, you can create bars inside it, and you can create variables inside these bars. To draw the context, call its `Draw()` method at the very end of your rendering pipeline. To handle events, hook up the various `Handle*()` methods to your window events. Keep in mind that you generally do not need to keep references to variables around. In many cases, it is sufficient to set up a delegate on the variable's `Changed` event to automatically modify some property in another class, so that your program automatically responds to variable changes.
 
