@@ -21,7 +21,7 @@ For Windows, you have two options (the first one is easier, the second one more 
 
 - Go to the [AntTweakBar SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download) and download the native library and then either install it on your system or add it to your project's build system. **Important**: AntTweakBar.NET will only ever look for `AntTweakBar.dll` for consistency reasons, so your build system must copy the right 32-bit or 64-bit native DLL to your project's output directory depending on the build configuration. If you are only interested in 64-bit, just discard the 32-bit native library, rename the 64-bit one by removing the "64" suffix, and use that one.
 
-You're good to go!
+You're good to go! Please note the standalone build is designed more towards convenience for testing out the wrapper or for small applications, and is just dead weight compared to the normal build on any operating system besides Windows. It is assumed that sufficiently advanced projects will have some kind of build system in which they can integrate 32-bit and 64-bit native (unmanaged) libraries.
 
 Quick Start
 -----------
