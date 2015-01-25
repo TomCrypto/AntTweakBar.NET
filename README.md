@@ -13,7 +13,7 @@ The AntTweakBar.NET wrapper is distributed under the MIT license, while AntTweak
 Installation
 ------------
 
-For Linux, go to the [AntTweakBar SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download) and download the native library, and simply `make & make install` as usual. You can then use the managed AntTweakBar.NET library, either by compiling it yourself or grabbing it from the [latest release](https://github.com/TomCrypto/AntTweakBar.NET/releases) or from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET.Standalone/).
+For Linux, go to the [AntTweakBar SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download) and download the native library, and simply `make & make install` as usual. You can then use the managed AntTweakBar.NET library, either by compiling it yourself or grabbing it from the [latest release](https://github.com/TomCrypto/AntTweakBar.NET/releases) or from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET/).
 
 For Windows, you have two options (the first one is easier, the second one more flexible):
 
