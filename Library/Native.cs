@@ -7,7 +7,7 @@ using System.Text;
 namespace AntTweakBar
 {
     /// <summary>
-    /// The native AntTweakBar calls.
+    /// The native AntTweakBar bindings.
     /// </summary>
     internal static class NativeMethods
     {
