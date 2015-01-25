@@ -181,10 +181,17 @@ namespace Sample
 
         private static bool HandleMouseClick(Context context, MouseButtonEventArgs e)
         {
+            IDictionary<OpenTK.Input.MouseButton, Tw.MouseButton> Mapping = new Dictionary<OpenTK.Input.MouseButton, Tw.MouseButton>()
+            {
+                { OpenTK.Input.MouseButton.Left, Tw.MouseButton.Left },
+                { OpenTK.Input.MouseButton.Middle, Tw.MouseButton.Middle },
+                { OpenTK.Input.MouseButton.Right, Tw.MouseButton.Right },
+            };
+
             var action = e.IsPressed ? Tw.MouseAction.Pressed : Tw.MouseAction.Released;
 
-            if (Tw.Mappings.OpenTK.Buttons.ContainsKey((int)e.Button)) {
-                return context.HandleMouseClick(action, Tw.Mappings.OpenTK.Buttons[(int)e.Button]);
+            if (Mapping.ContainsKey(e.Button)) {
+                return context.HandleMouseClick(action, Mapping[e.Button]);
             } else {
                 return false;
             }
@@ -192,19 +199,81 @@ namespace Sample
 
         private static bool HandleKeyInput(Context context, KeyboardKeyEventArgs e, bool down)
         {
+            IDictionary<OpenTK.Input.Key, Tw.Key> Mapping = new Dictionary<OpenTK.Input.Key, Tw.Key>()
+            {
+                { OpenTK.Input.Key.BackSpace, Tw.Key.Backspace },
+                { OpenTK.Input.Key.Tab, Tw.Key.Tab },
+                { OpenTK.Input.Key.Clear, Tw.Key.Clear },
+                { OpenTK.Input.Key.Enter, Tw.Key.Return },
+                { OpenTK.Input.Key.Pause, Tw.Key.Pause },
+                { OpenTK.Input.Key.Escape, Tw.Key.Escape },
+                { OpenTK.Input.Key.Space, Tw.Key.Space },
+                { OpenTK.Input.Key.Delete, Tw.Key.Delete },
+                { OpenTK.Input.Key.Up, Tw.Key.Up },
+                { OpenTK.Input.Key.Down, Tw.Key.Down },
+                { OpenTK.Input.Key.Right, Tw.Key.Right },
+                { OpenTK.Input.Key.Left, Tw.Key.Left },
+                { OpenTK.Input.Key.Insert, Tw.Key.Insert },
+                { OpenTK.Input.Key.Home, Tw.Key.Home },
+                { OpenTK.Input.Key.End, Tw.Key.End },
+                { OpenTK.Input.Key.PageUp, Tw.Key.PageUp },
+                { OpenTK.Input.Key.PageDown, Tw.Key.PageDown },
+                { OpenTK.Input.Key.F1, Tw.Key.F1 },
+                { OpenTK.Input.Key.F2, Tw.Key.F2 },
+                { OpenTK.Input.Key.F3, Tw.Key.F3 },
+                { OpenTK.Input.Key.F4, Tw.Key.F4 },
+                { OpenTK.Input.Key.F5, Tw.Key.F5 },
+                { OpenTK.Input.Key.F6, Tw.Key.F6 },
+                { OpenTK.Input.Key.F7, Tw.Key.F7 },
+                { OpenTK.Input.Key.F8, Tw.Key.F8 },
+                { OpenTK.Input.Key.F9, Tw.Key.F9 },
+                { OpenTK.Input.Key.F10, Tw.Key.F10 },
+                { OpenTK.Input.Key.F11, Tw.Key.F11 },
+                { OpenTK.Input.Key.F12, Tw.Key.F12 },
+                { OpenTK.Input.Key.F13, Tw.Key.F13 },
+                { OpenTK.Input.Key.F14, Tw.Key.F14 },
+                { OpenTK.Input.Key.F15, Tw.Key.F15 },
+                { OpenTK.Input.Key.A, Tw.Key.A },
+                { OpenTK.Input.Key.B, Tw.Key.B },
+                { OpenTK.Input.Key.C, Tw.Key.C },
+                { OpenTK.Input.Key.D, Tw.Key.D },
+                { OpenTK.Input.Key.E, Tw.Key.E },
+                { OpenTK.Input.Key.F, Tw.Key.F },
+                { OpenTK.Input.Key.G, Tw.Key.G },
+                { OpenTK.Input.Key.H, Tw.Key.H },
+                { OpenTK.Input.Key.I, Tw.Key.I },
+                { OpenTK.Input.Key.J, Tw.Key.J },
+                { OpenTK.Input.Key.K, Tw.Key.K },
+                { OpenTK.Input.Key.L, Tw.Key.L },
+                { OpenTK.Input.Key.M, Tw.Key.M },
+                { OpenTK.Input.Key.N, Tw.Key.N },
+                { OpenTK.Input.Key.O, Tw.Key.O },
+                { OpenTK.Input.Key.P, Tw.Key.P },
+                { OpenTK.Input.Key.Q, Tw.Key.Q },
+                { OpenTK.Input.Key.R, Tw.Key.R },
+                { OpenTK.Input.Key.S, Tw.Key.S },
+                { OpenTK.Input.Key.T, Tw.Key.T },
+                { OpenTK.Input.Key.U, Tw.Key.U },
+                { OpenTK.Input.Key.V, Tw.Key.V },
+                { OpenTK.Input.Key.W, Tw.Key.W },
+                { OpenTK.Input.Key.X, Tw.Key.X },
+                { OpenTK.Input.Key.Y, Tw.Key.Y },
+                { OpenTK.Input.Key.Z, Tw.Key.Z },
+            };
+
             var modifiers = Tw.KeyModifiers.None;
             if (e.Modifiers.HasFlag(KeyModifiers.Alt))
-                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Alt];
+                modifiers |= Tw.KeyModifiers.Alt;
             if (e.Modifiers.HasFlag(KeyModifiers.Shift))
-                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Shift];
+                modifiers |= Tw.KeyModifiers.Shift;
             if (e.Modifiers.HasFlag(KeyModifiers.Control))
-                modifiers |= Tw.Mappings.OpenTK.Modifiers[(int)KeyModifiers.Control];
+                modifiers |= Tw.KeyModifiers.Ctrl;
 
-            if (Tw.Mappings.OpenTK.Keys.ContainsKey((int)e.Key)) {
+            if (Mapping.ContainsKey(e.Key)) {
                 if (down) {
-                    return context.HandleKeyDown(Tw.Mappings.OpenTK.Keys[(int)e.Key], modifiers);
+                    return context.HandleKeyDown(Mapping[e.Key], modifiers);
                 } else {
-                    return context.HandleKeyUp(Tw.Mappings.OpenTK.Keys[(int)e.Key], modifiers);
+                    return context.HandleKeyUp(Mapping[e.Key], modifiers);
                 }
             } else {
                 return false;
