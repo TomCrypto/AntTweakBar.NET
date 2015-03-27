@@ -18,7 +18,7 @@ using DriverType = SharpDX.Direct3D.DriverType;
 
 using AntTweakBar;
 
-namespace DX11Sample
+namespace Sample
 {
     /// <summary>
     /// This form is just like a RenderForm, except it has an AntTweakBar

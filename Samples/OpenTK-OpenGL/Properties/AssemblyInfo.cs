@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AntTweakBar.NET Sample")]
-[assembly: AssemblyDescription("Demonstration sample coming with AntTweakBar.NET.")]
+[assembly: AssemblyDescription("OpenGL Sample for AntTweakBar.NET.")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else

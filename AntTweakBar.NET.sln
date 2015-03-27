@@ -4,14 +4,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "Library\Library.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{B5A2182E-2D73-4EDA-8BC9-C82AF363D748}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{10199F3D-2E04-45FB-8318-ED54FA455BCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample OpenTK OpenGL", "Samples\OpenTK-OpenGL\SampleOpenGL.csproj", "{10199F3D-2E04-45FB-8318-ED54FA455BCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample SharpDX D3D11", "Samples\SharpDX-D3D11\SampleD3D11.csproj", "{FA422016-08E7-49D7-A759-07EC0D8FAA86}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AAD6138C-00D6-429A-9D67-FB8BC0BFC065}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DX11Sample", "DX11Sample\DX11Sample.csproj", "{FA422016-08E7-49D7-A759-07EC0D8FAA86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
