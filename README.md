@@ -102,6 +102,7 @@ Changelog
 
  - restructured project layout for multiple samples
  - moved sample readme stuff to the samples folder
+ - reallowed (0, h) or (w, 0) as parameters to `HandleResize`
 
 23 February 2015 (v0.6.1)
 
