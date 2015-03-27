@@ -1,9 +1,9 @@
-AntTweakBar.NET 0.6.1
+AntTweakBar.NET 0.6.2
 =====================
 
 AntTweakBar.NET is an MIT-licensed C# wrapper for Philippe Decaudin's [AntTweakBar](http://anttweakbar.sourceforge.net) C/C++ GUI library. It allows C# developers to enhance their tech demos or games with an easy-to-use graphical widget for modifying application parameters in realtime. AntTweakBar.NET offers a high-level interface to the widget which will feel natural to any C# programmer, and also provides access to exception-safe bindings to the native AntTweakBar calls for those who might want them.
 
-AntTweakBar.NET runs on the Microsoft .NET Framework 4 and on the Mono runtime, both 32-bit and 64-bit (provided it can find the appropriate AntTweakBar DLL or shared library). It has been tested on Windows and Linux, and is expected to work - but has not yet been tested - on Mac OS X and presumably BSD. The library is currently CLS-compliant and so should be able to be used from any .NET language, but this has not been verified.
+AntTweakBar.NET runs on the Microsoft .NET Framework 4 and on the Mono runtime, both 32-bit and 64-bit (provided it can find the appropriate AntTweakBar DLL or shared library). It has been tested on Windows and Linux, and is expected to work - but has not yet been tested - on Mac OS X and presumably BSD. The library is currently CLS-compliant and so should be able to be used from any .NET language, but this has not yet been verified.
 
 License
 -------
@@ -19,7 +19,7 @@ For Windows, you have two options (the first one is easier, the second one more 
 
 - Use the standalone AntTweakBar.NET assembly, which you can compile from scratch using the standalone configurations, or can grab from the [latest release](https://github.com/TomCrypto/AntTweakBar.NET/releases) or from [NuGet](https://www.nuget.org/packages/AntTweakBar.NET.Standalone/). This assembly contains the native DLL's and unpacks it to the current directory as needed, which means it is larger in size and does some I/O work on startup, but is easier to use. Also, you cannot run a 32-bit and a 64-bit application from the same directory at the same time both using AntTweakBar.NET if using the standalone, and the unpacking code has a race condition if the DLL hasn't been unpacked yet (this should not be a problem).
 
-- Go to the [AntTweakBar SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download) and download the native library and then either install it on your system or add it to your project's build system. **Important**: AntTweakBar.NET will only ever look for `AntTweakBar.dll` for consistency reasons, so your build system must copy the right 32-bit or 64-bit native DLL to your project's output directory depending on the build configuration. If you are only interested in 64-bit, just discard the 32-bit native library, rename the 64-bit one by removing the "64" suffix, and use that one.
+- Go to the [AntTweakBar SourceForge page](http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:download) and download the native library and then either install it on your system or add it to your project's build system. **Important**: AntTweakBar.NET will only ever look for `AntTweakBar.dll` for consistency reasons with other operating systems, so your build system must copy the right 32-bit or 64-bit native DLL to your project's output directory depending on the build configuration. If you are only interested in 64-bit, just discard the 32-bit native library, rename the 64-bit one by removing the "64" suffix, and use that one.
 
 You're good to go! Please note the standalone build is designed more towards convenience for testing out the wrapper or for small applications, and is just dead weight compared to the normal build on any operating system besides Windows. It is assumed that sufficiently advanced projects will have some kind of build system in which they can integrate 32-bit and 64-bit native (unmanaged) libraries.
 
@@ -80,14 +80,15 @@ In general you *do* want to keep references to contexts, because you actually do
 
 For more information, make sure to check out the [wiki](https://github.com/TomCrypto/AntTweakBar.NET/wiki) (it's not finished, but already has some helpful content).
 
-Notes on the Sample
--------------------
+Notes on the Samples
+--------------------
 
-This repository contains a sample, among other things, which is intended to show what a concrete graphics tech demo using AntTweakBar.NET might look like. The sample is an interactive Newton fractal renderer, and is released under the same license as the wrapper. All of the relevant wrapper usage is in `Program.cs`, the rest is just, you know, code. It uses the [OpenTK framework](http://www.opentk.com/), and is cross-platform (OpenTK will be fetched through NuGet - if you have compile errors, try a package restore).
+This repository contains a few samples, which are intended to show how to use the AntTweakBar.NET library with various graphics frameworks. There are currently two samples for the following technologies:
 
-<p align="center">
-<img src="Screenshot.png" alt="Screenshot of the sample program"></img> 
-</p>
+- SharpDX (a D3D11 sample lifted from SharpDX's MiniTri sample with some modifications)
+- OpenGL (a fully fledged Newton fractal renderer with AntTweakBar widget controls)
+
+These use the NuGet packages of their respective graphics frameworks. If you have compile errors, try a package restore. The OpenGL sample should be cross-platform, the SharpDX one is of course Windows-only. See `Samples/README.md` for more information on each.
 
 Contribute
 ----------
@@ -96,6 +97,11 @@ Any issues or pull requests are welcome, I especially need help with verifying m
 
 Changelog
 ---------
+
+28 March 2015 (v0.6.2)
+
+ - restructured project layout for multiple samples
+ - moved sample readme stuff to the samples folder
 
 23 February 2015 (v0.6.1)
 
