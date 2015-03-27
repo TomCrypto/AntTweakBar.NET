@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AntTweakBar.NET Sample")]
-[assembly: AssemblyDescription("Demonstration sample coming with AntTweakBar.NET.")]
+[assembly: AssemblyDescription("D3D11 Sample for AntTweakBar.NET")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("290d5961-3b9f-4e27-b943-c1c9b4b0bdbc")]
+[assembly: Guid("85093a08-4e32-489a-8a31-2343c8f2db5c")]
 
 // Version information for an assembly consists of the following four values:
 //

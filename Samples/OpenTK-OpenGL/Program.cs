@@ -287,7 +287,6 @@ namespace Sample
 
         public Program() : base(1024, 768, GraphicsMode.Default, "AntTweakBar.NET Sample")
         {
-            this.Icon = new Icon("Properties/Fractal.ico");
         }
 
         protected override void OnLoad(EventArgs _)

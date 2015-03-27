@@ -1,30 +1,20 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AntTweakBar.NET")]
-[assembly: AssemblyDescription("C# wrapper for the AntTweakBar GUI library.")]
+[assembly: AssemblyTitle("AntTweakBar.NET Sample")]
+[assembly: AssemblyDescription("OpenGL Sample for AntTweakBar.NET.")]
 #if DEBUG
-#if STANDALONE
-[assembly: AssemblyConfiguration("Debug-Standalone")]
-#else
 [assembly: AssemblyConfiguration("Debug")]
-#endif
-#else
-#if STANDALONE
-[assembly: AssemblyConfiguration("Release-Standalone")]
 #else
 [assembly: AssemblyConfiguration("Release")]
-#endif
 #endif
 [assembly: AssemblyCompany("TomCrypto")]
 [assembly: AssemblyProduct("AntTweakBar.NET")]
 [assembly: AssemblyCopyright("Copyright © 2014-2015 TomCrypto")]
-[assembly: CLSCompliant(true)]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -32,7 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b76d7579-202c-41ab-a31e-097cfe9d3f05")]
+[assembly: Guid("290d5961-3b9f-4e27-b943-c1c9b4b0bdbc")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -41,5 +31,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("0.6.2.0")]
-[assembly: AssemblyFileVersion("0.6.2.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
