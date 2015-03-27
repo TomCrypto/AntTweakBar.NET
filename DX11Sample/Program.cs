@@ -13,6 +13,7 @@ using SharpDX.D3DCompiler;
 
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
+using DXGIDevice = SharpDX.DXGI.Device;
 using DriverType = SharpDX.Direct3D.DriverType;
 
 using AntTweakBar;
@@ -51,9 +52,10 @@ namespace DX11Sample
     /// </summary>
     public class Renderer : IDisposable
     {
-        private readonly Form window;
-
+        /* Not owned by the class. */
         private readonly Device device;
+        private readonly Form window;
+        
         private readonly SwapChain swapChain;
         private readonly DeviceContext context;
         private readonly Factory factory;
@@ -87,7 +89,7 @@ namespace DX11Sample
             rtv = new RenderTargetView(device, backbuffer);
         }
 
-        public Renderer(Form window)
+        public Renderer(Device device, Form window)
         {
             // Default parameter values
 
@@ -97,11 +99,14 @@ namespace DX11Sample
             Wireframe = false;
             Scale = 0.5f;
 
-            // Create device and swapchain
+            // Create swapchain for device and window
 
             this.window = window;
+            this.device = device;
 
-            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.None, new SwapChainDescription()
+            this.factory = device.QueryInterface<DXGIDevice>().GetParent<Adapter>().GetParent<Factory>();
+
+            this.swapChain = new SwapChain(factory, device, new SwapChainDescription()
             {
                 BufferCount = 1,
                 IsWindowed = true,
@@ -117,10 +122,9 @@ namespace DX11Sample
                     Format = Format.R8G8B8A8_UNorm,
                     RefreshRate = new Rational(60, 1),
                 }
-            }, out device, out swapChain);
+            });
 
             context = device.ImmediateContext;
-            factory = swapChain.GetParent<Factory>();
             factory.MakeWindowAssociation(window.Handle, WindowAssociationFlags.IgnoreAll);
 
             // Load shaders, create vertex buffers and stuff
@@ -220,10 +224,8 @@ namespace DX11Sample
                 pixelShader.Dispose();
                 layout.Dispose();
                 vertexBuffer.Dispose();
-                factory.Dispose();
                 context.Dispose();
                 swapChain.Dispose();
-                device.Dispose();
             }
         }
     }
@@ -233,81 +235,84 @@ namespace DX11Sample
         [STAThread]
         public static void Main(string[] args)
         {
-            using (var form = new ATBRenderForm("DX11 AntTweakBar Sample"))
+            using (var device = new Device(DriverType.Hardware))
             {
-                using (var renderer = new Renderer(form))
+                using (var form = new ATBRenderForm("DX11 AntTweakBar Sample"))
                 {
-                    // At this point we can initialize the AntTweakBar context
-                    // (since the renderer has now created the D3D device)
-
-                    using (var context = new Context(Tw.GraphicsAPI.D3D11, renderer.DevicePointer))
+                    using (var renderer = new Renderer(device, form))
                     {
-                        form.Context = context;
+                        // At this point we can initialize the AntTweakBar context
+                        // (since the renderer has now created the D3D device)
 
-                        // Add a bar with some variables in it
-
-                        var exampleBar = new Bar(form.Context);
-                        exampleBar.Label = "Example Bar";
-                        exampleBar.Contained = true;
-
-                        // here we bind the variables to the renderer variables with their Changed event
-                        // (their initial value is whatever the renderer currently has set them to)
-
-                        var color1Var = new ColorVariable(exampleBar, renderer.P1Color.X,
-                                                                      renderer.P1Color.Y,
-                                                                      renderer.P1Color.Z);
-                        color1Var.Label = "P1 color";
-                        color1Var.Changed += delegate { renderer.P1Color = new Vector3(color1Var.R,
-                                                                                       color1Var.G,
-                                                                                       color1Var.G); };
-
-                        var color2Var = new ColorVariable(exampleBar, renderer.P2Color.X,
-                                                                      renderer.P2Color.Y,
-                                                                      renderer.P2Color.Z);
-                        color2Var.Label = "P2 color";
-                        color2Var.Changed += delegate { renderer.P2Color = new Vector3(color2Var.R,
-                                                                                       color2Var.G,
-                                                                                       color2Var.G); };
-
-                        var color3Var = new ColorVariable(exampleBar, renderer.P3Color.X,
-                                                                      renderer.P3Color.Y,
-                                                                      renderer.P3Color.Z);
-                        color3Var.Label = "P3 color";
-                        color3Var.Changed += delegate { renderer.P3Color = new Vector3(color3Var.R,
-                                                                                       color3Var.G,
-                                                                                       color3Var.G); };
-
-                        // Put the color selection variables in their own group
-
-                        var colorGroup = new Group(exampleBar, "Colors", color1Var, color2Var, color3Var);
-
-                        var wireframeVar = new BoolVariable(exampleBar);
-                        wireframeVar.Label = "Wireframe";
-                        wireframeVar.Changed += delegate { renderer.Wireframe = wireframeVar.Value; };
-
-                        var scaleVar = new FloatVariable(exampleBar, 1.0f);
-                        scaleVar.Label = "Scale";
-                        scaleVar.Changed += delegate { renderer.Scale = scaleVar.Value; };
-                        scaleVar.SetDefinition("min=-2 max=2 step=0.01 precision=2");
-
-                        var separator = new Separator(exampleBar);
-
-                        var testButton = new AntTweakBar.Button(exampleBar);
-                        testButton.Label = "Click me!";
-                        testButton.Clicked += delegate { MessageBox.Show("Button Clicked!"); };
-
-                        // The renderer needs to recreate some resources on window resize
-
-                        form.Resize += delegate { renderer.Resize(form.ClientSize); };
-
-                        // In the main loop, render stuff, then the bar(s), then present to screen
-
-                        RenderLoop.Run(form, () =>
+                        using (var context = new Context(Tw.GraphicsAPI.D3D11, renderer.DevicePointer))
                         {
-                            renderer.Render();
-                            form.Context.Draw();
-                            renderer.Present();
-                        });
+                            form.Context = context;
+
+                            // Add a bar with some variables in it
+
+                            var exampleBar = new Bar(form.Context);
+                            exampleBar.Label = "Example Bar";
+                            exampleBar.Contained = true;
+
+                            // here we bind the variables to the renderer variables with their Changed event
+                            // (their initial value is whatever the renderer currently has set them to)
+
+                            var color1Var = new ColorVariable(exampleBar, renderer.P1Color.X,
+                                                                          renderer.P1Color.Y,
+                                                                          renderer.P1Color.Z);
+                            color1Var.Label = "P1 color";
+                            color1Var.Changed += delegate { renderer.P1Color = new Vector3(color1Var.R,
+                                                                                           color1Var.G,
+                                                                                           color1Var.G); };
+
+                            var color2Var = new ColorVariable(exampleBar, renderer.P2Color.X,
+                                                                          renderer.P2Color.Y,
+                                                                          renderer.P2Color.Z);
+                            color2Var.Label = "P2 color";
+                            color2Var.Changed += delegate { renderer.P2Color = new Vector3(color2Var.R,
+                                                                                           color2Var.G,
+                                                                                           color2Var.G); };
+
+                            var color3Var = new ColorVariable(exampleBar, renderer.P3Color.X,
+                                                                          renderer.P3Color.Y,
+                                                                          renderer.P3Color.Z);
+                            color3Var.Label = "P3 color";
+                            color3Var.Changed += delegate { renderer.P3Color = new Vector3(color3Var.R,
+                                                                                           color3Var.G,
+                                                                                           color3Var.G); };
+
+                            // Put the color selection variables in their own group
+
+                            var colorGroup = new Group(exampleBar, "Colors", color1Var, color2Var, color3Var);
+
+                            var wireframeVar = new BoolVariable(exampleBar);
+                            wireframeVar.Label = "Wireframe";
+                            wireframeVar.Changed += delegate { renderer.Wireframe = wireframeVar.Value; };
+
+                            var scaleVar = new FloatVariable(exampleBar, renderer.Scale);
+                            scaleVar.Label = "Scale";
+                            scaleVar.Changed += delegate { renderer.Scale = scaleVar.Value; };
+                            scaleVar.SetDefinition("min=-2 max=2 step=0.01 precision=2");
+
+                            var separator = new Separator(exampleBar);
+
+                            var testButton = new AntTweakBar.Button(exampleBar);
+                            testButton.Label = "Click me!";
+                            testButton.Clicked += delegate { MessageBox.Show("Button Clicked!"); };
+
+                            // The renderer needs to recreate some resources on window resize
+
+                            form.Resize += delegate { renderer.Resize(form.ClientSize); };
+
+                            // In the main loop, render stuff, then the bar(s), then present to screen
+
+                            RenderLoop.Run(form, () =>
+                            {
+                                renderer.Render();
+                                form.Context.Draw();
+                                renderer.Present();
+                            });
+                        }
                     }
                 }
             }
